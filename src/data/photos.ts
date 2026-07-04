@@ -676,5 +676,14 @@ export const photos: Photo[] = [
     "filename": "DSC_5445.JPG",
     "width": 4032,
     "height": 6048
+  },
+  {
+    "id": "photo-074",
+    "src": "/photos/森林/52f66c_f3b6720d4f004573ab558814dd14c842~mv2.avif",
+    "title": "52f66c",
+    "category": "森林",
+    "filename": "52f66c_f3b6720d4f004573ab558814dd14c842~mv2.avif",
+    "width": 2192,
+    "height": 2998
   }
 ];

@@ -131,6 +131,7 @@ function PlantsReferenceLayout({
   title,
   heroPhoto,
   carouselPhotos,
+  featurePhoto,
   stackPhotos,
   squarePhotos,
   allPhotos,
@@ -140,6 +141,7 @@ function PlantsReferenceLayout({
   title: string;
   heroPhoto: Photo;
   carouselPhotos: Photo[];
+  featurePhoto?: Photo;
   stackPhotos: Photo[];
   squarePhotos: Photo[];
   allPhotos: Photo[];
@@ -163,6 +165,17 @@ function PlantsReferenceLayout({
         className="plants-reference-carousel"
         onOpen={(photo) => onOpen(photoIndex(allPhotos, photo))}
       />
+
+      {featurePhoto ? (
+        <div className="plants-reference-feature" aria-label={`${title} feature`}>
+          <ReferencePhoto
+            photo={featurePhoto}
+            allPhotos={allPhotos}
+            onOpen={onOpen}
+            className="plants-reference-feature-photo"
+          />
+        </div>
+      ) : null}
 
       <div className="plants-reference-stack" aria-label={`${title} full-width gallery`}>
         {stackPhotos.map((photo) => {
@@ -224,7 +237,7 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
 
   const groups: PhotoGroup[] = [
     { id: "landscape", title: "Landscape", photos: landscape.slice(0, 24), variant: "cinema" },
-    { id: "quiet", title: "----", photos: squareSet.length ? squareSet : plants.slice(0, 8), variant: "square" },
+    { id: "quiet", title: "", photos: squareSet.length ? squareSet : plants.slice(0, 8), variant: "square" },
     { id: "city", title: "City", photos: city.slice(0, 22), variant: "cinema" },
     { id: "plants", title: "Plants", photos: plants.slice(0, 18), variant: "cinema" },
   ];
@@ -241,6 +254,9 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
     "DSC_0243.JPG",
     "DSC_0257.JPG",
   ]);
+  const plantFeaturePhoto = photos.find(
+    (photo) => photo.filename === "52f66c_f3b6720d4f004573ab558814dd14c842~mv2.avif",
+  );
   const plantSquarePhotos = uniquePhotos(plantPortraitPhotos.slice(1), plantLandscapePhotos.slice(8), mixedArchive).slice(0, 8);
 
   return (
@@ -276,6 +292,7 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
         title={groups[3].title}
         heroPhoto={bannerTwo}
         carouselPhotos={plantCarouselPhotos}
+        featurePhoto={plantFeaturePhoto}
         stackPhotos={plantStackPhotos}
         squarePhotos={plantSquarePhotos}
         allPhotos={photos}

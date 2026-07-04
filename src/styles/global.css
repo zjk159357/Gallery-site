@@ -194,9 +194,11 @@ main {
 
 .page-title-band h1 {
   margin: 0;
-  color: #ffffff;
+  color: #000000;
+  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
   font-size: clamp(44px, 4.45vw, 60px);
-  font-weight: 500;
+  font-weight: 600;
+  font-style: italic;
   line-height: 1;
   letter-spacing: 0;
   text-shadow: 0 2px 28px rgba(0, 0, 0, 0.26);
@@ -630,7 +632,8 @@ main {
 
 .plants-reference {
   overflow: hidden;
-  background: var(--black);
+  background: #555555;
+  color: #f5f5f5;
 }
 
 .plants-reference-photo {
@@ -692,13 +695,29 @@ main {
 .plants-reference-stack {
   display: grid;
   gap: 10px;
-  margin-top: clamp(92px, 10.6vw, 136px);
+  margin-top: 0;
+  background: var(--black);
+}
+
+.plants-reference-feature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 10px 0 0;
+  padding: 0 0 10px;
+  background: var(--black);
+}
+
+.plants-reference-feature-photo {
+  width: 100%;
+  aspect-ratio: 2192 / 2998;
   background: var(--black);
 }
 
 .plants-reference-full {
   width: 100%;
-  background: var(--black);
+  background: #555555;
 }
 
 .plants-reference-full--portrait {
@@ -717,22 +736,16 @@ main {
 
 .plants-reference-squares {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: clamp(260px, calc((100vw - 12px) / 4), 318px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
   width: 100%;
-  margin-top: clamp(84px, 9vw, 116px);
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
+  margin-top: 10px;
   scrollbar-color: rgba(255, 255, 255, 0.72) rgba(255, 255, 255, 0.16);
   scrollbar-width: thin;
 }
 
 .plants-reference-square {
   aspect-ratio: 1;
-  scroll-snap-align: start;
 }
 
 .archive-wall {
@@ -1028,8 +1041,8 @@ main {
   }
 
   .plants-reference-squares {
-    grid-auto-columns: 48vw;
-    margin-top: 58px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 10px;
   }
 
   .archive-wall {
