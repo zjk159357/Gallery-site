@@ -9,7 +9,7 @@ function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
   const heroPhoto = useMemo(() => {
-    return photos.find((photo) => photo.filename === "DSC_5287.JPG") ?? photos.find((photo) => photo.category === "花朵") ?? photos[0];
+    return photos.find((photo) => photo.filename === "DSC_0257.JPG") ?? photos.find((photo) => photo.category === "石塘度假区") ?? photos[0];
   }, []);
 
   return (

@@ -1,0 +1,141 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Photo } from "../data/photos";
+
+const AUTOPLAY_MS = 3000;
+
+type LandscapeSectionProps = {
+  id: string;
+  title: string;
+  photos: Photo[];
+  onOpen: (photo: Photo) => void;
+  className?: string;
+  showTitle?: boolean;
+};
+
+export function LandscapeSection({ id, title, photos, onOpen, className, showTitle = true }: LandscapeSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const landscapePhotos = useMemo(
+    () => photos.filter((photo) => photo.width > photo.height),
+    [photos],
+  );
+
+  const total = landscapePhotos.length;
+  const isFirst = total > 0 && activeIndex === 0;
+  const isLast = total > 0 && activeIndex === total - 1;
+  const active = total > 0 ? landscapePhotos[activeIndex] : undefined;
+
+  useEffect(() => {
+    if (total === 0 || activeIndex >= total - 1) return undefined;
+    const timer = window.setTimeout(() => {
+      setActiveIndex((index) => Math.min(total - 1, index + 1));
+    }, AUTOPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, total]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const child = track.children.item(activeIndex) as HTMLElement | undefined;
+    if (!child) return;
+    const container = track.parentElement;
+    if (!container) return;
+    const containerWidth = container.clientWidth;
+    const trackWidth = track.scrollWidth;
+    const maxScroll = Math.max(0, trackWidth - containerWidth);
+    const desiredScroll = child.offsetLeft - (containerWidth - child.offsetWidth) / 2;
+    const scroll = Math.max(0, Math.min(maxScroll, desiredScroll));
+    track.style.transform = `translate3d(${-scroll}px, 0, 0)`;
+  }, [activeIndex, total]);
+
+  if (!active) return null;
+
+  const goPrev = () => setActiveIndex((index) => Math.max(0, index - 1));
+  const goNext = () => setActiveIndex((index) => Math.min(total - 1, index + 1));
+  const caption = active.title
+    .replace(/^[A-Z]+_/i, "")
+    .replace(/[_-]+/g, " ")
+    .trim();
+
+  return (
+    <section
+      className={`landscape-section${className ? ` ${className}` : ""}`}
+      id={id}
+      aria-label={showTitle ? undefined : `${title} gallery`}
+      aria-labelledby={showTitle ? `${id}-title` : undefined}
+    >
+      {showTitle ? (
+        <div className="featured-title-bar">
+          <h2 id={`${id}-title`}>{title}</h2>
+        </div>
+      ) : null}
+
+      <div className="landscape-stage">
+        {!isFirst && (
+          <button
+            type="button"
+            className="landscape-arrow landscape-arrow--prev"
+            aria-label={`Previous ${title} photo`}
+            onClick={goPrev}
+          >
+            <ChevronLeft size={28} strokeWidth={1.5} aria-hidden="true" />
+          </button>
+        )}
+
+        <button
+          type="button"
+          className="landscape-main"
+          onClick={() => onOpen(active)}
+          aria-label={`Open ${caption}`}
+        >
+          <img
+            src={active.src}
+            alt={caption}
+            width={active.width}
+            height={active.height}
+            decoding="async"
+          />
+          <span className="landscape-caption">{caption}</span>
+        </button>
+
+        {!isLast && (
+          <button
+            type="button"
+            className="landscape-arrow landscape-arrow--next"
+            aria-label={`Next ${title} photo`}
+            onClick={goNext}
+          >
+            <ChevronRight size={28} strokeWidth={1.5} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      <div className="landscape-thumbs" role="tablist" aria-label={`${title} thumbnails`}>
+        <div ref={trackRef} className="landscape-thumbs-track">
+          {landscapePhotos.map((photo, index) => (
+            <button
+              key={photo.id}
+              type="button"
+              role="tab"
+              className={`landscape-thumb ${index === activeIndex ? "is-active" : ""}`}
+              aria-selected={index === activeIndex}
+              aria-label={`Select ${photo.title}`}
+              onClick={() => setActiveIndex(index)}
+            >
+              <img
+                src={photo.src}
+                alt=""
+                width={photo.width}
+                height={photo.height}
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
