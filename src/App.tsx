@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { photos } from "./data/photos";
+import { BalconyView } from "./components/BalconyView";
 import { Footer } from "./components/Footer";
 import { GalleryLightbox } from "./components/GalleryLightbox";
 import { GallerySections } from "./components/GallerySections";
@@ -7,6 +8,7 @@ import { Header } from "./components/Header";
 
 function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const isBalconyPage = window.location.pathname.replace(/\/$/, "") === "/photobalcony";
 
   const heroPhoto = useMemo(() => {
     return photos.find((photo) => photo.filename === "DSC_0257.JPG") ?? photos.find((photo) => photo.category === "石塘度假区") ?? photos[0];
@@ -17,25 +19,33 @@ function App() {
       <Header />
 
       <main>
-        <section className="page-title-band" id="top" aria-labelledby="page-title">
-          <h1 id="page-title">Photography</h1>
-        </section>
+        {isBalconyPage ? (
+          <BalconyView photos={photos} />
+        ) : (
+          <>
+            <section className="page-title-band" id="top" aria-labelledby="page-title">
+              <h1 id="page-title">Photography</h1>
+            </section>
 
-        <section className="hero" aria-label="Featured photograph">
-          <img className="hero-image" src={heroPhoto.src} alt="" aria-hidden="true" />
-        </section>
+            <section className="hero" aria-label="Featured photograph">
+              <img className="hero-image" src={heroPhoto.src} alt="" aria-hidden="true" />
+            </section>
 
-        <GallerySections photos={photos} onOpen={setLightboxIndex} />
+            <GallerySections photos={photos} onOpen={setLightboxIndex} />
+          </>
+        )}
       </main>
 
       <Footer />
 
-      <GalleryLightbox
-        photos={photos}
-        index={lightboxIndex}
-        onClose={() => setLightboxIndex(-1)}
-        onView={setLightboxIndex}
-      />
+      {!isBalconyPage && (
+        <GalleryLightbox
+          photos={photos}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(-1)}
+          onView={setLightboxIndex}
+        />
+      )}
     </>
   );
 }

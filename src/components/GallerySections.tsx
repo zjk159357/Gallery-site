@@ -230,7 +230,12 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
   const mixedArchive = uniquePhotos(byAspect(photos, "portrait"), byAspect(photos, "landscape"), photos).slice(0, 30);
 
   const featureCards = [
-    { id: "balcony-view", title: "Balcony View", photo: city[0] ?? photos[0] },
+    {
+      id: "balcony-view",
+      title: "Balcony View",
+      photo: photos.find((photo) => photo.filename === "DSC_0243.JPG") ?? city[0] ?? photos[0],
+      href: "/photobalcony",
+    },
     { id: "auckland", title: "Auckland", photo: byCategory(photos, "海洋", 1)[0] ?? landscape[0] },
     { id: "australia", title: "Australia", photo: landscape[1] ?? landscape[0] },
   ];
@@ -262,12 +267,24 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
   return (
     <section className="reference-content" id="photography" aria-label="Photography archive">
       <div className="feature-grid" aria-label="Featured photography groups">
-        {featureCards.map(({ id, title, photo }) => (
-          <div className="feature-card" key={id} aria-label={title}>
-            <img src={photo.src} alt={`${title} ${photo.title}`} loading="eager" decoding="async" />
-            <span>{title}</span>
-          </div>
-        ))}
+        {featureCards.map(({ id, title, photo, href }) => {
+          const cardContent = (
+            <>
+              <img src={photo.src} alt={`${title} ${photo.title}`} loading="eager" decoding="async" />
+              <span>{title}</span>
+            </>
+          );
+
+          return href ? (
+            <a className="feature-card feature-card--link" href={href} key={id} aria-label={title}>
+              {cardContent}
+            </a>
+          ) : (
+            <div className="feature-card" key={id} aria-label={title}>
+              {cardContent}
+            </div>
+          );
+        })}
       </div>
 
       <LandscapeSection

@@ -46,6 +46,18 @@ button {
   font: inherit;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .site-header {
   position: sticky;
   z-index: 30;
@@ -260,6 +272,10 @@ main {
   cursor: default;
 }
 
+.feature-card--link {
+  cursor: pointer;
+}
+
 .feature-card img,
 .rail-photo img,
 .wide-banner img,
@@ -289,6 +305,17 @@ main {
   font-weight: 800;
   line-height: 1.6;
   text-align: center;
+}
+
+.feature-card--link span {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+}
+
+.feature-card--link:focus-visible {
+  outline: 3px solid var(--aqua);
+  outline-offset: -3px;
 }
 
 .feature-card:hover img,
@@ -771,6 +798,209 @@ main {
   grid-column: span 2;
 }
 
+.balcony-page {
+  overflow: hidden;
+  background: var(--black);
+  color: var(--soft-white);
+}
+
+.balcony-hero {
+  position: relative;
+  width: 100%;
+  height: clamp(560px, 52.8vw, 760px);
+  overflow: hidden;
+  background: #050505;
+}
+
+.balcony-hero::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.04) 42%, rgba(0, 0, 0, 0.3));
+  content: "";
+  pointer-events: none;
+}
+
+.balcony-hero img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.74) saturate(1.04);
+}
+
+.balcony-month-title {
+  display: grid;
+  min-height: 100px;
+  place-items: center;
+  padding: 26px 24px 22px;
+  background: var(--black);
+}
+
+.balcony-month-title h2 {
+  margin: 0;
+  color: #e8e6e6;
+  font-size: clamp(30px, 2.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.balcony-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 clamp(58px, 4.15vw, 76px) clamp(66px, 5vw, 88px);
+  background: var(--black);
+}
+
+.balcony-carousel-main,
+.balcony-portrait-photo,
+.balcony-grid-photo,
+.balcony-final-photo {
+  position: relative;
+  display: block;
+  border: 0;
+  padding: 0;
+  background: #050505;
+  color: inherit;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.balcony-carousel-main {
+  width: min(100%, 1305px);
+  aspect-ratio: 16 / 9;
+}
+
+.balcony-carousel-main img,
+.balcony-portrait-photo img,
+.balcony-grid-photo img,
+.balcony-final-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 360ms ease, filter 260ms ease;
+}
+
+.balcony-carousel-main:hover img,
+.balcony-carousel-main:focus-visible img,
+.balcony-portrait-photo:hover img,
+.balcony-portrait-photo:focus-visible img,
+.balcony-grid-photo:hover img,
+.balcony-grid-photo:focus-visible img,
+.balcony-final-photo:hover img,
+.balcony-final-photo:focus-visible img {
+  filter: brightness(1.06);
+  transform: scale(1.012);
+}
+
+.balcony-carousel-arrow {
+  position: absolute;
+  top: calc(50% - 34px);
+  z-index: 2;
+  display: grid;
+  width: 54px;
+  height: 68px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.94);
+  cursor: pointer;
+  opacity: 0.86;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.balcony-carousel-arrow:hover,
+.balcony-carousel-arrow:focus-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.balcony-carousel-arrow--prev {
+  left: 8px;
+}
+
+.balcony-carousel-arrow--next {
+  right: 8px;
+}
+
+.balcony-portrait-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(260px, 1fr));
+  gap: 12px;
+  width: 100%;
+  padding: 0 0 74px;
+  overflow-x: auto;
+  background: var(--black);
+  scrollbar-color: rgba(232, 230, 230, 0.72) rgba(255, 255, 255, 0.14);
+  scrollbar-width: thin;
+}
+
+.balcony-portrait-row::-webkit-scrollbar {
+  height: 14px;
+}
+
+.balcony-portrait-row::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.balcony-portrait-row::-webkit-scrollbar-thumb {
+  border: 3px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(232, 230, 230, 0.72);
+}
+
+.balcony-portrait-photo {
+  height: clamp(520px, 48vw, 620px);
+}
+
+.balcony-portrait-photo img {
+  object-position: center;
+}
+
+.balcony-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  padding: 0 clamp(58px, 4.15vw, 76px) 74px;
+  background: var(--black);
+}
+
+.balcony-grid-photo {
+  aspect-ratio: 16 / 10;
+}
+
+.balcony-grid--wide .balcony-grid-photo:first-child {
+  grid-column: span 2;
+  aspect-ratio: 16 / 9;
+}
+
+.balcony-final-stack {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  padding: 0 0 12px;
+  background: var(--black);
+}
+
+.balcony-final-photo {
+  width: min(100%, 1305px);
+  margin-inline: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.balcony-final-photo--large {
+  width: 100%;
+  margin-inline: 0;
+  aspect-ratio: 16 / 8.4;
+}
+
 .site-footer {
   overflow: hidden;
   background: var(--black);
@@ -916,6 +1146,24 @@ main {
     grid-column: auto;
   }
 
+  .balcony-hero {
+    height: clamp(500px, 68vw, 680px);
+  }
+
+  .balcony-carousel,
+  .balcony-grid {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+
+  .balcony-portrait-row {
+    grid-template-columns: repeat(4, minmax(230px, 1fr));
+  }
+
+  .balcony-portrait-photo {
+    height: 520px;
+  }
+
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1055,6 +1303,78 @@ main {
   .archive-photo:nth-child(6n + 4) {
     grid-row: auto;
     min-height: 360px;
+  }
+
+  .balcony-hero {
+    height: max(430px, 86vw);
+  }
+
+  .balcony-month-title {
+    min-height: 82px;
+    padding: 20px 18px 18px;
+  }
+
+  .balcony-month-title h2 {
+    font-size: 28px;
+  }
+
+  .balcony-carousel {
+    padding-right: 0;
+    padding-bottom: 46px;
+    padding-left: 0;
+  }
+
+  .balcony-carousel-main {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+
+  .balcony-carousel-arrow {
+    top: calc(50% - 42px);
+    width: 44px;
+    height: 60px;
+  }
+
+  .balcony-carousel-arrow--prev {
+    left: 0;
+  }
+
+  .balcony-carousel-arrow--next {
+    right: 0;
+  }
+
+  .balcony-portrait-row {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(245px, 78vw);
+    grid-template-columns: none;
+    gap: 8px;
+    padding-bottom: 50px;
+  }
+
+  .balcony-portrait-photo {
+    height: 430px;
+  }
+
+  .balcony-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-right: 0;
+    padding-bottom: 50px;
+    padding-left: 0;
+  }
+
+  .balcony-grid--wide .balcony-grid-photo:first-child {
+    grid-column: auto;
+  }
+
+  .balcony-grid-photo,
+  .balcony-final-photo,
+  .balcony-final-photo--large {
+    aspect-ratio: 4 / 3;
+  }
+
+  .balcony-final-stack {
+    gap: 8px;
   }
 
   .footer-grid {

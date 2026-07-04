@@ -1,0 +1,221 @@
+import { useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Photo } from "../data/photos";
+import { GalleryLightbox } from "./GalleryLightbox";
+
+type BalconyViewProps = {
+  photos: Photo[];
+};
+
+type BalconyCarouselProps = {
+  title: string;
+  photos: Photo[];
+  onOpen: (photo: Photo) => void;
+};
+
+type PhotoButtonProps = {
+  photo: Photo;
+  className: string;
+  loading?: "eager" | "lazy";
+  onOpen: (photo: Photo) => void;
+};
+
+const byFilenames = (photos: Photo[], filenames: string[]) =>
+  filenames.flatMap((filename) => {
+    const photo = photos.find((item) => item.filename === filename);
+    return photo ? [photo] : [];
+  });
+
+function uniquePhotos(...groups: Photo[][]) {
+  const seen = new Set<string>();
+  return groups.flat().filter((photo) => {
+    if (seen.has(photo.src)) return false;
+    seen.add(photo.src);
+    return true;
+  });
+}
+
+function PhotoButton({ photo, className, loading = "lazy", onOpen }: PhotoButtonProps) {
+  return (
+    <button
+      type="button"
+      className={className}
+      onClick={() => onOpen(photo)}
+      aria-label={`Open ${photo.title}`}
+    >
+      <img
+        src={photo.src}
+        alt={`${photo.category} ${photo.title}`}
+        width={photo.width}
+        height={photo.height}
+        loading={loading}
+        decoding="async"
+      />
+    </button>
+  );
+}
+
+function MonthTitle({ title }: { title: string }) {
+  return (
+    <header className="balcony-month-title">
+      <h2>{title}</h2>
+    </header>
+  );
+}
+
+function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  if (photos.length === 0) return null;
+
+  const active = photos[activeIndex];
+  const goPrev = () => setActiveIndex((index) => (index - 1 + photos.length) % photos.length);
+  const goNext = () => setActiveIndex((index) => (index + 1) % photos.length);
+
+  return (
+    <section className="balcony-carousel" aria-label={`${title} slideshow`}>
+      <button
+        type="button"
+        className="balcony-carousel-arrow balcony-carousel-arrow--prev"
+        aria-label={`Previous ${title} photo`}
+        onClick={goPrev}
+      >
+        <ChevronLeft size={42} strokeWidth={1.3} aria-hidden="true" />
+      </button>
+
+      <button
+        type="button"
+        className="balcony-carousel-main"
+        onClick={() => onOpen(active)}
+        aria-label={`Open ${active.title}`}
+      >
+        <img
+          src={active.src}
+          alt={`${active.category} ${active.title}`}
+          width={active.width}
+          height={active.height}
+          decoding="async"
+        />
+      </button>
+
+      <button
+        type="button"
+        className="balcony-carousel-arrow balcony-carousel-arrow--next"
+        aria-label={`Next ${title} photo`}
+        onClick={goNext}
+      >
+        <ChevronRight size={42} strokeWidth={1.3} aria-hidden="true" />
+      </button>
+    </section>
+  );
+}
+
+export function BalconyView({ photos }: BalconyViewProps) {
+  const [lightboxIndex, setLightboxIndex] = useState(-1);
+
+  const content = useMemo(() => {
+    const hero =
+      photos.find((photo) => photo.filename === "DSC_0243.JPG") ??
+      photos.find((photo) => photo.category === "石塘度假区") ??
+      photos[0];
+
+    const may = byFilenames(photos, ["DSC_0257.JPG", "DSC_0518.JPG", "DSC_0521.JPG", "DSC_0522.JPG"]);
+    const marchPortraits = byFilenames(photos, ["DSC_0264.JPG", "DSC_0335.JPG", "DSC_0396.JPG", "DSC_0470.JPG"]);
+    const marchWide = byFilenames(photos, ["DSC_0534.JPG", "DSC_0555.JPG", "DSC_0566.JPG"]);
+    const february = byFilenames(photos, ["DSC_0580.JPG", "DSC_0613.JPG", "DSC_0626.JPG", "DSC_0632.JPG"]);
+    const january = byFilenames(photos, ["DSC_0513.JPG", "DSC_0514.JPG", "DSC_0520.JPG", "DSC_0538.JPG"]);
+    const winter = byFilenames(photos, ["DSC_0546.JPG", "DSC_0551.JPG", "DSC_0552.JPG", "DSC_0571.JPG"]);
+    const summer = byFilenames(photos, ["DSC_0638.JPG", "DSC_0648.JPG", "DSC_0917.JPG", "DSC_2196.JPG"]);
+
+    return {
+      hero,
+      may,
+      marchPortraits,
+      marchWide,
+      february,
+      january,
+      winter,
+      summer,
+      lightboxPhotos: uniquePhotos(may, marchPortraits, marchWide, february, january, winter, summer),
+    };
+  }, [photos]);
+
+  if (!content.hero) return null;
+
+  const openPhoto = (photo: Photo) => {
+    const index = content.lightboxPhotos.findIndex((item) => item.src === photo.src);
+    if (index >= 0) {
+      setLightboxIndex(index);
+    }
+  };
+
+  return (
+    <article className="balcony-page" aria-labelledby="balcony-title">
+      <h1 id="balcony-title" className="sr-only">
+        Balcony View
+      </h1>
+
+      <section className="balcony-hero" aria-label="Balcony View hero">
+        <img
+          src={content.hero.src}
+          alt={`${content.hero.category} ${content.hero.title}`}
+          width={content.hero.width}
+          height={content.hero.height}
+          decoding="async"
+        />
+      </section>
+
+      <MonthTitle title="May 2025" />
+      <BalconyCarousel title="May 2025" photos={content.may} onOpen={openPhoto} />
+
+      <MonthTitle title="March 2025" />
+      <section className="balcony-portrait-row" aria-label="March 2025 portrait photos">
+        {content.marchPortraits.map((photo) => (
+          <PhotoButton
+            key={photo.id}
+            photo={photo}
+            className="balcony-portrait-photo"
+            onOpen={openPhoto}
+          />
+        ))}
+      </section>
+      <BalconyCarousel title="March 2025" photos={content.marchWide} onOpen={openPhoto} />
+
+      <MonthTitle title="Feb 2025" />
+      <BalconyCarousel title="Feb 2025" photos={content.february} onOpen={openPhoto} />
+
+      <MonthTitle title="Jan 2025" />
+      <section className="balcony-grid" aria-label="Jan 2025 photo grid">
+        {content.january.map((photo) => (
+          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={openPhoto} />
+        ))}
+      </section>
+
+      <MonthTitle title="Nov - Dec 2024" />
+      <section className="balcony-grid balcony-grid--wide" aria-label="Nov - Dec 2024 photo grid">
+        {content.winter.map((photo) => (
+          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={openPhoto} />
+        ))}
+      </section>
+
+      <MonthTitle title="July - Aug 2024" />
+      <section className="balcony-final-stack" aria-label="July - Aug 2024 photo stack">
+        {content.summer.map((photo, index) => (
+          <PhotoButton
+            key={photo.id}
+            photo={photo}
+            className={index === 0 ? "balcony-final-photo balcony-final-photo--large" : "balcony-final-photo"}
+            onOpen={openPhoto}
+          />
+        ))}
+      </section>
+
+      <GalleryLightbox
+        photos={content.lightboxPhotos}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(-1)}
+        onView={setLightboxIndex}
+      />
+    </article>
+  );
+}

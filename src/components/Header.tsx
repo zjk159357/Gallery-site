@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 const menuItems = [
-  { label: "Home", href: "#top" },
-  { label: "Photography", href: "#photography" },
-  { label: "Landscape", href: "#landscape" },
-  { label: "City", href: "#city" },
-  { label: "Plants", href: "#plants" },
-  { label: "Contact", href: "#about" },
+  { label: "Home", href: "/#top" },
+  { label: "Photography", href: "/#photography" },
+  { label: "Landscape", href: "/#landscape" },
+  { label: "City", href: "/#city" },
+  { label: "Plants", href: "/#plants" },
+  { label: "Contact", href: "/#about" },
 ];
 
 export function Header() {
@@ -21,7 +21,7 @@ export function Header() {
   return (
     <>
       <header className="site-header" aria-label="Site header">
-        <a className="brand-lockup" href="#top" aria-label="Gallery home">
+        <a className="brand-lockup" href="/" aria-label="Gallery home">
           <span className="brand-mark" aria-hidden="true">
             <span>Ga</span>
             <span>ll</span>
