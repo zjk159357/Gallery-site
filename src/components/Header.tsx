@@ -17,6 +17,19 @@ export function Header() {
     return () => document.body.classList.remove("menu-is-open");
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
   return (
     <>
       <header className="site-header" aria-label="Site header">
@@ -63,8 +76,14 @@ export function Header() {
         </button>
       </header>
 
-      <div className="menu-overlay" data-open={menuOpen} id="site-menu" aria-hidden={!menuOpen}>
-        <nav className="menu-panel" aria-label="Menu navigation">
+      <div
+        className="menu-overlay"
+        data-open={menuOpen}
+        id="site-menu"
+        aria-hidden={!menuOpen}
+        onClick={() => setMenuOpen(false)}
+      >
+        <nav className="menu-panel" aria-label="Menu navigation" onClick={(event) => event.stopPropagation()}>
           {menuItems.map((item) => (
             <a key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
               {item.label}
