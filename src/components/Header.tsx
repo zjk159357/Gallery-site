@@ -21,12 +21,32 @@ export function Header() {
   return (
     <>
       <header className="site-header" aria-label="Site header">
-        <a className="brand-lockup" href="/" aria-label="Gallery home">
+        <a className="brand-lockup" href="/" aria-label="Queenstown home">
           <span className="brand-mark" aria-hidden="true">
-            <span>Ga</span>
-            <span>ll</span>
+            <svg className="brand-mark-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <text
+                x="50"
+                y="68"
+                textAnchor="middle"
+                fontFamily="'Playfair Display', Georgia, serif"
+                fontStyle="italic"
+                fontWeight="700"
+                fontSize="74"
+                fill="#0a0a0a"
+              >
+                Q
+              </text>
+              <path
+                d="M 22 72 L 36 54 L 48 64 L 62 46 L 78 72 Z"
+                fill="#0a0a0a"
+                fillOpacity="0.18"
+              />
+              <circle cx="78" cy="78" r="3.2" fill="#0a0a0a" />
+            </svg>
           </span>
-          <span className="brand-word">Gallery</span>
+          <span className="brand-word">
+            Queenstown<em>.top</em>
+          </span>
         </a>
 
         <button

@@ -84,40 +84,45 @@ button {
 
 .brand-mark {
   display: grid;
-  width: 79px;
-  height: 88px;
+  width: 86px;
+  height: 86px;
   flex: 0 0 auto;
   place-items: center;
   border: 2px solid #0a0a0a;
   border-radius: 50%;
   background: var(--yellow);
   color: #0a0a0a;
-  font-weight: 500;
-  line-height: 0.86;
-  text-align: center;
-  transform: rotate(-8deg);
+  overflow: hidden;
+  transform: rotate(-6deg);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-.brand-mark span:first-child {
+.brand-mark-svg {
   display: block;
-  font-size: 24px;
-  letter-spacing: 0;
-}
-
-.brand-mark span:last-child {
-  display: block;
-  font-size: 14px;
-  letter-spacing: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .brand-word {
-  margin-left: 24px;
+  margin-left: 22px;
   color: #ffffff;
-  font-size: 36px;
-  font-weight: 800;
+  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
   line-height: 1;
-  letter-spacing: 0;
+  letter-spacing: 0.2px;
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.brand-word em {
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.58em;
+  margin-left: 4px;
+  letter-spacing: 1px;
+  opacity: 0.78;
 }
 
 .menu-toggle {
@@ -301,16 +306,18 @@ main {
   bottom: 10%;
   left: 9%;
   color: var(--soft-white);
-  font-size: clamp(24px, 2.15vw, 28px);
-  font-weight: 800;
-  line-height: 1.6;
+  font-family: Poppins, "Helvetica Neue", Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 44.8px;
+  letter-spacing: 0;
   text-align: center;
 }
 
 .feature-card--link span {
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 7px;
+  text-underline-offset: 4px;
 }
 
 .feature-card--link:focus-visible {
@@ -355,10 +362,11 @@ main {
 
 .landscape-section .featured-title-bar h2 {
   margin: 0;
-  color: #f5f5f5;
-  font-size: clamp(28px, 3vw, 40px);
-  font-weight: 700;
-  line-height: 1.1;
+  color: var(--soft-white);
+  font-family: Poppins, "Helvetica Neue", Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 44.8px;
   letter-spacing: 0;
   text-align: center;
 }
@@ -571,16 +579,21 @@ main {
   place-items: center;
 }
 
+#quiet .section-title-row {
+  background: #555555;
+}
+
 .section-title-row--compact {
   min-height: 70px;
 }
 
 .section-title-row h2 {
   margin: 0;
-  color: #ffffff;
-  font-size: clamp(30px, 3vw, 40px);
-  font-weight: 800;
-  line-height: 1.1;
+  color: var(--soft-white);
+  font-family: Poppins, "Helvetica Neue", Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 44.8px;
   letter-spacing: 0;
   text-align: center;
 }
@@ -839,10 +852,11 @@ main {
 
 .balcony-month-title h2 {
   margin: 0;
-  color: #e8e6e6;
+  color: var(--soft-white);
+  font-family: Poppins, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(30px, 2.5vw, 32px);
-  font-weight: 700;
-  line-height: 1.4;
+  font-weight: 500;
+  line-height: 44.8px;
   letter-spacing: 0;
   text-align: center;
 }
@@ -1118,13 +1132,13 @@ main {
   }
 
   .brand-mark {
-    width: 70px;
-    height: 78px;
+    width: 72px;
+    height: 72px;
   }
 
   .brand-word {
     margin-left: 18px;
-    font-size: 31px;
+    font-size: 28px;
   }
 
   .menu-toggle {
@@ -1183,22 +1197,14 @@ main {
   }
 
   .brand-mark {
-    width: 56px;
-    height: 62px;
+    width: 58px;
+    height: 58px;
     border-width: 1.5px;
   }
 
-  .brand-mark span:first-child {
-    font-size: 19px;
-  }
-
-  .brand-mark span:last-child {
-    font-size: 12px;
-  }
-
   .brand-word {
-    margin-left: 13px;
-    font-size: 22px;
+    margin-left: 12px;
+    font-size: 21px;
   }
 
   .menu-toggle {
@@ -1242,7 +1248,8 @@ main {
   }
 
   .feature-card span {
-    font-size: 24px;
+    font-size: 32px;
+    line-height: 44.8px;
   }
 
   .section-title-row {
