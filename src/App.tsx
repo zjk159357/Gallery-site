@@ -1,14 +1,22 @@
 import { useMemo, useState } from "react";
 import { photos } from "./data/photos";
+import { About } from "./components/About";
 import { BalconyView } from "./components/BalconyView";
 import { Footer } from "./components/Footer";
 import { GalleryLightbox } from "./components/GalleryLightbox";
 import { GallerySections } from "./components/GallerySections";
 import { Header } from "./components/Header";
+import { Journal } from "./components/Journal";
+import { PhotoStory } from "./components/PhotoStory";
 
 function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const isBalconyPage = window.location.pathname.replace(/\/$/, "") === "/photobalcony";
+  const pathname = window.location.pathname.replace(/\/$/, "") || "/";
+  const isBalconyPage = pathname === "/photobalcony";
+  const isStoryPage = pathname === "/photostory";
+  const isAboutPage = pathname === "/about";
+  const isJournalPage = pathname === "/journal";
+  const isStaticPage = isBalconyPage || isStoryPage || isAboutPage || isJournalPage;
 
   const heroPhoto = useMemo(() => {
     return photos.find((photo) => photo.filename === "DSC_0257.JPG") ?? photos.find((photo) => photo.category === "石塘度假区") ?? photos[0];
@@ -21,6 +29,12 @@ function App() {
       <main>
         {isBalconyPage ? (
           <BalconyView photos={photos} />
+        ) : isStoryPage ? (
+          <PhotoStory photos={photos} />
+        ) : isAboutPage ? (
+          <About />
+        ) : isJournalPage ? (
+          <Journal photos={photos} />
         ) : (
           <>
             <section className="page-title-band" id="top" aria-labelledby="page-title">
@@ -31,6 +45,14 @@ function App() {
               <img className="hero-image" src={heroPhoto.src} alt="" aria-hidden="true" />
             </section>
 
+            <a className="story-test-cta" href="/photostory" aria-label="Open photo notes and stories">
+              <span className="story-test-cta-tag">摄影手记</span>
+              <span className="story-test-cta-text">
+                阅读照片背后的地点、参数与创作记录
+              </span>
+              <span className="story-test-cta-arrow" aria-hidden="true">→</span>
+            </a>
+
             <GallerySections photos={photos} onOpen={setLightboxIndex} />
           </>
         )}
@@ -38,7 +60,7 @@ function App() {
 
       <Footer />
 
-      {!isBalconyPage && (
+      {!isStaticPage && (
         <GalleryLightbox
           photos={photos}
           index={lightboxIndex}

@@ -1,6 +1,7 @@
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import type { Photo } from "../data/photos";
+import { photoMeta, photoStories } from "../data/stories";
 
 type GalleryLightboxProps = {
   photos: Photo[];
@@ -37,13 +38,42 @@ export function GalleryLightbox({ photos, index, onClose, onView }: GalleryLight
             return null;
           }
 
+          const meta = photoMeta[photo.filename];
+          const story = photoStories[photo.filename];
+          const title = story?.title ?? photo.title;
+
           return (
             <div className="lightbox-meta">
-              <div>
-                <p>{photo.title}</p>
-                <span>{photo.category}</span>
+              <div className="lightbox-meta-main">
+                <p>{title}</p>
+                <span>{meta?.location ?? photo.category}</span>
+                {meta ? (
+                  <dl className="lightbox-meta-list">
+                    <div>
+                      <dt>日期</dt>
+                      <dd>{meta.date}</dd>
+                    </div>
+                    <div>
+                      <dt>器材</dt>
+                      <dd>{meta.camera}</dd>
+                    </div>
+                    <div>
+                      <dt>镜头</dt>
+                      <dd>{meta.lens}</dd>
+                    </div>
+                    <div>
+                      <dt>参数</dt>
+                      <dd>{`${meta.focalLength} · ${meta.aperture} · ${meta.shutter} · ISO ${meta.iso}`}</dd>
+                    </div>
+                  </dl>
+                ) : null}
+                {story ? (
+                  <a className="lightbox-story-link" href="/journal">
+                    查看手记
+                  </a>
+                ) : null}
               </div>
-              <span>{`${photoIndex + 1} / ${photos.length}`}</span>
+              <span className="lightbox-count">{`${photoIndex + 1} / ${photos.length}`}</span>
             </div>
           );
         },

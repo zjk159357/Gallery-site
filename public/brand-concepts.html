@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Queenstown.top Brand Concepts</title>
+    <style>
+      :root {
+        --black: #050505;
+        --aqua: #8cefe9;
+        --yellow: #ffc928;
+        --soft: #f5f3ed;
+        font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+        color: var(--soft);
+        background: var(--black);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: clamp(24px, 5vw, 72px);
+        background:
+          linear-gradient(180deg, rgba(140, 239, 233, 0.08), transparent 34%),
+          #050505;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(34px, 6vw, 82px);
+        font-style: italic;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .intro {
+        max-width: 760px;
+        margin: 0 0 clamp(32px, 6vw, 72px);
+        color: rgba(245, 243, 237, 0.72);
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: clamp(18px, 3vw, 34px);
+      }
+
+      .concept {
+        display: grid;
+        gap: 18px;
+        align-content: start;
+      }
+
+      .mark {
+        display: grid;
+        aspect-ratio: 1;
+        place-items: center;
+        border: 1px solid rgba(245, 243, 237, 0.12);
+        border-radius: 8px;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+          #101010;
+      }
+
+      svg {
+        width: min(72%, 220px);
+        height: auto;
+      }
+
+      h2 {
+        margin: 0;
+        color: var(--aqua);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      p {
+        margin: 0;
+        color: rgba(245, 243, 237, 0.68);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .wordmark {
+        margin-top: 4px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 24px;
+        font-style: italic;
+        color: #ffffff;
+      }
+
+      .wordmark small {
+        font-size: 0.58em;
+        opacity: 0.72;
+      }
+
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 22px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Brand Concepts</h1>
+    <p class="intro">
+      这组方向根据现有作品提炼：石塘建筑的硬朗几何、海岸线的横向层次、山脊路径的延伸感，以及日落水面的低光。当前线上图标不变，这里只做候选方案预览。
+    </p>
+
+    <main class="grid">
+      <section class="concept">
+        <div class="mark">
+          <svg viewBox="0 0 100 100" aria-label="Stone Path Q">
+            <circle cx="50" cy="50" r="48" fill="#ffc928" />
+            <path
+              d="M 50 14 C 28 14 14 29 14 50 C 14 71 29 86 50 86 C 60 86 69 82 75 76 L 84 85 C 87 88 92 88 95 85 C 98 82 98 78 95 75 L 86 66 C 89 61 91 55 91 50 C 91 29 73 14 50 14 Z M 50 27 C 64 27 75 37 75 50 C 75 63 64 73 50 73 C 36 73 25 63 25 50 C 25 37 36 27 50 27 Z"
+              fill="#0a0a0a"
+              fill-rule="evenodd"
+            />
+            <path d="M 27 66 L 37 57 L 48 63 L 62 49 L 75 66 Z" fill="#0a0a0a" fill-opacity="0.18" />
+            <path d="M 40 72 L 45 61 L 53 73 L 59 58 L 68 71" fill="none" stroke="#ffc928" stroke-width="2.4" stroke-linecap="round" opacity="0.72" />
+          </svg>
+        </div>
+        <h2>Stone Path Q</h2>
+        <p>偏石塘建筑和山路：圆形 Q 很稳，内部用折线表达石墙、路径和山脊。</p>
+        <div class="wordmark">Queenstown<small>.top</small></div>
+      </section>
+
+      <section class="concept">
+        <div class="mark">
+          <svg viewBox="0 0 100 100" aria-label="Coastline Q">
+            <circle cx="50" cy="50" r="48" fill="#ffc928" />
+            <path d="M 18 50 C 18 30 32 17 51 17 C 70 17 84 31 84 50 C 84 68 71 82 51 82 C 31 82 18 68 18 50 Z" fill="none" stroke="#0a0a0a" stroke-width="10" />
+            <path d="M 64 65 L 83 84" stroke="#0a0a0a" stroke-width="10" stroke-linecap="round" />
+            <path d="M 25 55 C 34 50 43 51 51 55 C 60 60 68 59 77 53" fill="none" stroke="#0a0a0a" stroke-width="3.6" stroke-linecap="round" />
+            <path d="M 25 65 C 36 62 44 64 52 67 C 61 70 69 68 78 63" fill="none" stroke="#0a0a0a" stroke-width="2.4" stroke-linecap="round" opacity="0.42" />
+          </svg>
+        </div>
+        <h2>Coastline Q</h2>
+        <p>偏海岸和浪线：更轻、更摄影，适合海洋、日落、水面这些作品。</p>
+        <div class="wordmark">Queenstown<small>.top</small></div>
+      </section>
+
+      <section class="concept">
+        <div class="mark">
+          <svg viewBox="0 0 100 100" aria-label="Aperture Ridge">
+            <circle cx="50" cy="50" r="48" fill="#ffc928" />
+            <path d="M 50 13 L 81 31 L 81 68 L 50 87 L 19 68 L 19 31 Z" fill="#0a0a0a" />
+            <circle cx="50" cy="50" r="22" fill="#ffc928" />
+            <path d="M 28 58 L 39 46 L 48 55 L 61 39 L 74 58 Z" fill="#0a0a0a" fill-opacity="0.86" />
+            <path d="M 63 62 L 81 80" stroke="#0a0a0a" stroke-width="8" stroke-linecap="round" />
+            <circle cx="50" cy="50" r="11" fill="#ffc928" />
+          </svg>
+        </div>
+        <h2>Aperture Ridge</h2>
+        <p>镜头光圈 + 山脊，摄影属性更明确，但比普通相机图标更克制。</p>
+        <div class="wordmark">Queenstown<small>.top</small></div>
+      </section>
+
+      <section class="concept">
+        <div class="mark">
+          <svg viewBox="0 0 100 100" aria-label="Sun Water Mark">
+            <circle cx="50" cy="50" r="48" fill="#ffc928" />
+            <path d="M 51 15 C 30 15 16 30 16 50 C 16 70 30 84 51 84 C 61 84 70 80 76 73 L 86 84" fill="none" stroke="#0a0a0a" stroke-width="9" stroke-linecap="round" />
+            <circle cx="50" cy="42" r="8" fill="#0a0a0a" />
+            <path d="M 31 58 H 69" stroke="#0a0a0a" stroke-width="4" stroke-linecap="round" />
+            <path d="M 35 67 C 43 63 48 63 55 67 C 61 70 67 69 73 65" fill="none" stroke="#0a0a0a" stroke-width="2.8" stroke-linecap="round" />
+          </svg>
+        </div>
+        <h2>Sun Water Mark</h2>
+        <p>来自日落海面：太阳、水平线、水纹。更安静，也更有“光”的主题。</p>
+        <div class="wordmark">Queenstown<small>.top</small></div>
+      </section>
+    </main>
+  </body>
+</html>

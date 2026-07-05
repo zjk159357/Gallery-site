@@ -1,32 +1,72 @@
-# React + TypeScript + Vite
+# Queenstown.top Photography Archive
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Personal photography archive built with React, TypeScript, and Vite. The site presents large-format galleries, a Balcony View series, an About page, a Journal page, and a preserved `/photostory` preview module for testing richer photo notes.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The dev script runs `sync:photos` first, then starts Vite.
+
+## Build
+
+```bash
+npm run build
+```
+
+The build script syncs photos, runs TypeScript, and creates the production output in `dist/`.
+
+## Photo Sync
+
+Source photos live one level above this app in category folders such as:
+
+- `山野`
+- `建筑`
+- `日出日落`
+- `森林`
+- `河流`
+- `海洋`
+- `石塘度假区`
+- `花朵`
+
+Run this when photos are added, removed, or replaced:
+
+```bash
+npm run sync:photos
+```
+
+The sync script copies image files into `public/photos/` and regenerates `src/data/photos.ts` with dimensions, filenames, categories, and public URLs.
+
+## Photo Notes
+
+Narrative and EXIF-like sample content lives in `src/data/stories.ts`.
+
+- `photoMeta` adds date, location, camera, lens, aperture, shutter, ISO, and focal length.
+- `photoStories` adds a title, excerpt, and body paragraphs.
+- `/journal` shows story entries.
+- `/photostory` is intentionally kept as a preview/test module for evaluating About, metadata, and story layouts together.
+
+## Main Pages
+
+- `/` home gallery
+- `/photobalcony` Balcony View series
+- `/journal` photo stories
+- `/about` photographer profile
+- `/photostory` preserved content preview module
+
+## Verification Checklist
+
+Before handing off changes:
+
+```bash
+npm run build
+```
+
+Then spot-check:
+
+- Home page has no horizontal overflow on mobile.
+- Gallery images open in the lightbox.
+- Lightbox shows metadata for photos listed in `photoMeta`.
+- `/photobalcony`, `/journal`, `/about`, and `/photostory` load correctly.

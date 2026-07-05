@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Queenstown.top Colorways</title>
+    <style>
+      :root {
+        color: #f3f0e8;
+        background: #050505;
+        font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: clamp(24px, 5vw, 72px);
+        background: #050505;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(34px, 6vw, 82px);
+        font-style: italic;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .intro {
+        max-width: 760px;
+        margin: 0 0 clamp(30px, 5vw, 60px);
+        color: rgba(243, 240, 232, 0.7);
+        font-size: 15px;
+        line-height: 1.8;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: clamp(18px, 3vw, 34px);
+      }
+
+      .card {
+        display: grid;
+        gap: 16px;
+      }
+
+      .stage {
+        display: grid;
+        aspect-ratio: 1;
+        place-items: center;
+        border: 1px solid rgba(243, 240, 232, 0.11);
+        border-radius: 8px;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+          #111;
+      }
+
+      svg {
+        width: min(70%, 220px);
+        height: auto;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+
+      p {
+        margin: 0;
+        color: rgba(243, 240, 232, 0.66);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .swatches {
+        display: flex;
+        gap: 8px;
+      }
+
+      .swatch {
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .classic {
+        --paper: #ffc928;
+        --ink: #0a0a0a;
+        --soft: rgba(10, 10, 10, 0.16);
+      }
+
+      .stone {
+        --paper: #e8e2d3;
+        --ink: #171511;
+        --soft: rgba(23, 21, 17, 0.18);
+      }
+
+      .mist {
+        --paper: #9bb7c1;
+        --ink: #102833;
+        --soft: rgba(16, 40, 51, 0.2);
+      }
+
+      .sun {
+        --paper: #d8aa62;
+        --ink: #1d1712;
+        --soft: rgba(29, 23, 18, 0.18);
+      }
+
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        body {
+          padding: 22px;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Colorways</h1>
+    <p class="intro">
+      这里用同一个“海岸线 Q”图形测试不同配色。黄黑保留现有识别度；石灰黑贴近石墙建筑；雾蓝深海贴近清晨海面；暖日金更接近日落和低光。
+    </p>
+
+    <main class="grid">
+      <section class="card classic">
+        <div class="stage">
+          <svg viewBox="0 0 100 100" aria-label="Classic yellow black">
+            <circle cx="50" cy="50" r="48" fill="var(--paper)" />
+            <path d="M 18 50 C 18 30 32 17 51 17 C 70 17 84 31 84 50 C 84 68 71 82 51 82 C 31 82 18 68 18 50 Z" fill="none" stroke="var(--ink)" stroke-width="10" />
+            <path d="M 64 65 L 83 84" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" />
+            <path d="M 25 55 C 34 50 43 51 51 55 C 60 60 68 59 77 53" fill="none" stroke="var(--ink)" stroke-width="3.6" stroke-linecap="round" />
+            <path d="M 25 65 C 36 62 44 64 52 67 C 61 70 69 68 78 63" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" opacity="0.42" />
+          </svg>
+        </div>
+        <h2>Classic Yellow</h2>
+        <div class="swatches"><span class="swatch" style="background:#ffc928"></span><span class="swatch" style="background:#0a0a0a"></span></div>
+        <p>识别度强，最像现在的网站，但也最活泼。</p>
+      </section>
+
+      <section class="card stone">
+        <div class="stage">
+          <svg viewBox="0 0 100 100" aria-label="Stone lime black">
+            <circle cx="50" cy="50" r="48" fill="var(--paper)" />
+            <path d="M 18 50 C 18 30 32 17 51 17 C 70 17 84 31 84 50 C 84 68 71 82 51 82 C 31 82 18 68 18 50 Z" fill="none" stroke="var(--ink)" stroke-width="10" />
+            <path d="M 64 65 L 83 84" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" />
+            <path d="M 25 55 C 34 50 43 51 51 55 C 60 60 68 59 77 53" fill="none" stroke="var(--ink)" stroke-width="3.6" stroke-linecap="round" />
+            <path d="M 25 65 C 36 62 44 64 52 67 C 61 70 69 68 78 63" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" opacity="0.42" />
+          </svg>
+        </div>
+        <h2>Stone Lime</h2>
+        <div class="swatches"><span class="swatch" style="background:#e8e2d3"></span><span class="swatch" style="background:#171511"></span></div>
+        <p>建筑感和石墙感更强，安静、克制，适合石塘系列。</p>
+      </section>
+
+      <section class="card mist">
+        <div class="stage">
+          <svg viewBox="0 0 100 100" aria-label="Mist blue deep sea">
+            <circle cx="50" cy="50" r="48" fill="var(--paper)" />
+            <path d="M 18 50 C 18 30 32 17 51 17 C 70 17 84 31 84 50 C 84 68 71 82 51 82 C 31 82 18 68 18 50 Z" fill="none" stroke="var(--ink)" stroke-width="10" />
+            <path d="M 64 65 L 83 84" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" />
+            <path d="M 25 55 C 34 50 43 51 51 55 C 60 60 68 59 77 53" fill="none" stroke="var(--ink)" stroke-width="3.6" stroke-linecap="round" />
+            <path d="M 25 65 C 36 62 44 64 52 67 C 61 70 69 68 78 63" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" opacity="0.42" />
+          </svg>
+        </div>
+        <h2>Mist Blue</h2>
+        <div class="swatches"><span class="swatch" style="background:#9bb7c1"></span><span class="swatch" style="background:#102833"></span></div>
+        <p>最贴清晨海面和山雾，气质更冷静，也更摄影。</p>
+      </section>
+
+      <section class="card sun">
+        <div class="stage">
+          <svg viewBox="0 0 100 100" aria-label="Warm sun carbon">
+            <circle cx="50" cy="50" r="48" fill="var(--paper)" />
+            <path d="M 18 50 C 18 30 32 17 51 17 C 70 17 84 31 84 50 C 84 68 71 82 51 82 C 31 82 18 68 18 50 Z" fill="none" stroke="var(--ink)" stroke-width="10" />
+            <path d="M 64 65 L 83 84" stroke="var(--ink)" stroke-width="10" stroke-linecap="round" />
+            <path d="M 25 55 C 34 50 43 51 51 55 C 60 60 68 59 77 53" fill="none" stroke="var(--ink)" stroke-width="3.6" stroke-linecap="round" />
+            <path d="M 25 65 C 36 62 44 64 52 67 C 61 70 69 68 78 63" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" opacity="0.42" />
+          </svg>
+        </div>
+        <h2>Warm Sun</h2>
+        <div class="swatches"><span class="swatch" style="background:#d8aa62"></span><span class="swatch" style="background:#1d1712"></span></div>
+        <p>保留暖色，但比黄黑成熟，更接近日落和石材高光。</p>
+      </section>
+    </main>
+  </body>
+</html>
