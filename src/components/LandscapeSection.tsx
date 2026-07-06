@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
+
+const ARROW_PATH_NEXT = "m9 18 6-6-6-6";
+const ARROW_PATH_PREV = "m15 18-6-6 6-6";
 
 const AUTOPLAY_MS = 3000;
 
@@ -15,6 +17,9 @@ type LandscapeSectionProps = {
 
 export function LandscapeSection({ id, title, photos, onOpen, className, showTitle = true }: LandscapeSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const mainRef = useRef<HTMLButtonElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
   const landscapePhotos = useMemo(
@@ -26,14 +31,32 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
   const isFirst = total > 0 && activeIndex === 0;
   const isLast = total > 0 && activeIndex === total - 1;
   const active = total > 0 ? landscapePhotos[activeIndex] : undefined;
+  const previous =
+    previousIndex !== null && previousIndex !== activeIndex
+      ? landscapePhotos[previousIndex]
+      : undefined;
 
   useEffect(() => {
-    if (total === 0 || activeIndex >= total - 1) return undefined;
+    if (isPaused || total === 0 || activeIndex >= total - 1) return undefined;
     const timer = window.setTimeout(() => {
-      setActiveIndex((index) => Math.min(total - 1, index + 1));
+      if (mainRef.current?.matches(":hover, :focus-visible")) {
+        setIsPaused(true);
+        return;
+      }
+      setActiveIndex((index) => {
+        const nextIndex = Math.min(total - 1, index + 1);
+        if (nextIndex !== index) setPreviousIndex(index);
+        return nextIndex;
+      });
     }, AUTOPLAY_MS);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, total]);
+  }, [activeIndex, isPaused, total]);
+
+  useEffect(() => {
+    if (previousIndex === null) return undefined;
+    const timer = window.setTimeout(() => setPreviousIndex(null), 760);
+    return () => window.clearTimeout(timer);
+  }, [previousIndex]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -52,8 +75,15 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
 
   if (!active) return null;
 
-  const goPrev = () => setActiveIndex((index) => Math.max(0, index - 1));
-  const goNext = () => setActiveIndex((index) => Math.min(total - 1, index + 1));
+  const changeActiveIndex = (getNextIndex: (index: number) => number) => {
+    setActiveIndex((index) => {
+      const nextIndex = getNextIndex(index);
+      if (nextIndex !== index) setPreviousIndex(index);
+      return nextIndex;
+    });
+  };
+  const goPrev = () => changeActiveIndex((index) => Math.max(0, index - 1));
+  const goNext = () => changeActiveIndex((index) => Math.min(total - 1, index + 1));
   const caption = active.title
     .replace(/^[A-Z]+_/i, "")
     .replace(/[_-]+/g, " ")
@@ -80,21 +110,48 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
             aria-label={`Previous ${title} photo`}
             onClick={goPrev}
           >
-            <ChevronLeft size={28} strokeWidth={1.5} aria-hidden="true" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="42"
+              height="42"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d={ARROW_PATH_PREV} />
+            </svg>
           </button>
         )}
 
         <button
+          ref={mainRef}
           type="button"
           className="landscape-main"
           onClick={() => onOpen(active)}
+          onBlur={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onPointerEnter={() => setIsPaused(true)}
+          onPointerLeave={() => setIsPaused(false)}
           aria-label={`Open ${caption}`}
         >
+          {previous ? (
+            <img
+              className="landscape-image landscape-image--previous"
+              src={previous.src}
+              alt=""
+              decoding="async"
+            />
+          ) : null}
           <img
+            className="landscape-image landscape-image--active"
             src={active.src}
             alt={caption}
-            width={active.width}
-            height={active.height}
             decoding="async"
           />
           <span className="landscape-caption">{caption}</span>
@@ -107,7 +164,20 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
             aria-label={`Next ${title} photo`}
             onClick={goNext}
           >
-            <ChevronRight size={28} strokeWidth={1.5} aria-hidden="true" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="42"
+              height="42"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d={ARROW_PATH_NEXT} />
+            </svg>
           </button>
         )}
       </div>
@@ -122,13 +192,11 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
               className={`landscape-thumb ${index === activeIndex ? "is-active" : ""}`}
               aria-selected={index === activeIndex}
               aria-label={`Select ${photo.title}`}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => changeActiveIndex(() => index)}
             >
               <img
                 src={photo.src}
                 alt=""
-                width={photo.width}
-                height={photo.height}
                 loading="lazy"
                 decoding="async"
               />

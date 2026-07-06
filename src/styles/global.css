@@ -438,14 +438,14 @@ main {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 12px clamp(40px, 8vw, 128px);
+  padding: 0 0 clamp(10px, 1vw, 16px);
+  background: #555555;
 }
 
 .landscape-main {
   position: relative;
   display: block;
-  width: 100%;
-  height: auto;
+  width: min(76.25vw, 1098px);
   aspect-ratio: 16 / 9;
   border: 0;
   padding: 0;
@@ -455,47 +455,77 @@ main {
   overflow: hidden;
 }
 
-.landscape-main img {
-  display: block;
+.landscape-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 600ms ease, filter 320ms ease;
+  pointer-events: none;
+  transform: translateZ(0);
 }
 
-.landscape-main:hover img,
-.landscape-main:focus-visible img {
-  transform: scale(1.012);
-  filter: brightness(1.04);
+.landscape-main:hover .landscape-image,
+.landscape-main:focus-visible .landscape-image {
+  filter: none;
+  transform: none;
+}
+
+.landscape-image--active {
+  z-index: 1;
+  animation: landscape-image-enter 760ms ease both;
+}
+
+.landscape-image--previous {
+  z-index: 0;
+  animation: landscape-image-exit 760ms ease both;
+}
+
+@keyframes landscape-image-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes landscape-image-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 .landscape-caption {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  color: rgba(255, 255, 255, 0.98);
+  color: rgba(0, 0, 0, 0.95);
   font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: 0.01em;
   text-align: center;
-  text-shadow: 0 2px 22px rgba(0, 0, 0, 0.75), 0 0 6px rgba(0, 0, 0, 0.55);
+  text-shadow: none;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 220ms ease, transform 220ms ease;
+  transition: opacity 220ms ease;
   pointer-events: none;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.18) 60%, rgba(0, 0, 0, 0.32) 100%);
+  background: transparent;
 }
 
 .landscape-main:hover .landscape-caption,
 .landscape-main:focus-visible .landscape-caption {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .landscape-arrow {
@@ -503,31 +533,30 @@ main {
   top: 50%;
   z-index: 2;
   display: grid;
-  width: clamp(40px, 3.4vw, 52px);
-  height: clamp(40px, 3.4vw, 52px);
+  width: 54px;
+  height: 68px;
   place-items: center;
+  padding: 0;
   border: 0;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.18);
-  color: #f5f5f5;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.95);
   cursor: pointer;
+  opacity: 0.86;
   transform: translateY(-50%);
-  transition: background 180ms ease, transform 180ms ease, opacity 180ms ease;
-  opacity: 0.7;
+  transition: opacity 160ms ease, transform 160ms ease;
 }
 
 .landscape-arrow:hover,
 .landscape-arrow:focus-visible {
-  background: rgba(0, 0, 0, 0.42);
   opacity: 1;
 }
 
 .landscape-arrow--prev {
-  left: clamp(16px, 2vw, 32px);
+  left: 18px;
 }
 
 .landscape-arrow--next {
-  right: clamp(16px, 2vw, 32px);
+  right: 18px;
 }
 
 .landscape-thumbs {
@@ -536,7 +565,7 @@ main {
   height: 130px;
   padding: 5px 0 5px 5px;
   overflow: hidden;
-  background: transparent;
+  background: #555555;
 }
 
 .landscape-thumbs-track {
@@ -638,8 +667,8 @@ main {
 
 @media (max-width: 1000px) {
   .landscape-stage {
-    padding-right: 48px;
-    padding-left: 48px;
+    padding-right: 40px;
+    padding-left: 40px;
   }
 
   .landscape-thumbs {
@@ -660,17 +689,23 @@ main {
     padding-left: 16px;
   }
 
+  .landscape-main {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
   .landscape-arrow {
-    width: 38px;
-    height: 38px;
+    top: 50%;
+    width: 44px;
+    height: 60px;
   }
 
   .landscape-arrow--prev {
-    left: 8px;
+    left: 0;
   }
 
   .landscape-arrow--next {
-    right: 8px;
+    right: 0;
   }
 
   .landscape-thumbs {
@@ -1207,6 +1242,10 @@ main {
   filter: none;
 }
 
+.yarl__slide:has(.lightbox-meta) {
+  padding-bottom: clamp(140px, 18vh, 200px);
+}
+
 .lightbox-meta {
   position: absolute;
   right: 18px;
@@ -1513,7 +1552,7 @@ main {
     height: 330px;
   }
 
-  .lightbox-meta {
+.lightbox-meta {
     right: 10px;
     bottom: 10px;
     left: 10px;
@@ -1521,6 +1560,10 @@ main {
     gap: 10px;
     max-width: calc(100vw - 20px);
     padding: 12px;
+  }
+
+  .yarl__slide:has(.lightbox-meta) {
+    padding-bottom: clamp(180px, 32vh, 260px);
   }
 
   .lightbox-meta p {
