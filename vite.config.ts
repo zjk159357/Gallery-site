@@ -1,15 +1,8 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 
-/**
- * Drop .woff fallback @font-face sources AND their asset files.
- *
- * @fontsource emits both woff and woff2 sources for every face. Modern
- * browsers (98%+) support woff2; the woff fallback is dead weight
- * (≈half the font bytes) for our audience. Woff is kept in the dev
- * build so older debugging browsers still see the fonts, but only
- * woff2 reaches production.
- */
+const IMAGE_CDN_SUFFIX = '?w=2560&q=90&auto=format&fit=max'
+
 function dropWoffFallback(): Plugin {
   return {
     name: 'drop-woff-fallback',
@@ -46,7 +39,38 @@ function dropWoffFallback(): Plugin {
   }
 }
 
+/**
+ * Ask Sanity which photo is the homepage hero and inject a preload link
+ * so the browser can download it in parallel with the JS bundle.
+ *
+ * We use a hardcoded Sanity asset URL for the hero photo. If the hero
+ * changes in the CMS (different photo, re-upload, etc.), update this URL
+ * and rebuild. A stale preload is harmless — the browser just downloads
+ * one extra image it won't use, and React chooses the real hero at
+ * runtime based on the Sanity data.
+ */
+function heroPreloadPlugin(): Plugin {
+  // Current hero: DSC_0257.JPG (石塘度假区)
+  const heroUrl = 'https://cdn.sanity.io/images/zj2ik922/production/84010d241db624957eb22b4a39f61115a55f84be-6048x4032.jpg'
+
+  return {
+    name: 'hero-preload',
+    apply: 'build',
+    enforce: 'pre',
+    transformIndexHtml(html) {
+      const preconnect = '  <link rel="preconnect" href="https://cdn.sanity.io">\n'
+      const preload = `  <link rel="preload" as="image" href="${heroUrl}${IMAGE_CDN_SUFFIX}" fetchpriority="high">\n`
+
+      if (!html.includes('cdn.sanity.io')) {
+        html = html.replace('</head>', `${preconnect}${preload}  </head>`)
+      }
+
+      return html
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), dropWoffFallback()],
+  plugins: [react(), dropWoffFallback(), heroPreloadPlugin()],
 })
