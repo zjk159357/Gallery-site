@@ -1,7 +1,25 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { createClient } from '@sanity/client'
 
 const IMAGE_CDN_SUFFIX = '?w=2560&q=90&auto=format&fit=max'
+
+async function fetchHeroUrlFromSanity(): Promise<string | null> {
+  try {
+    const client = createClient({
+      projectId: 'zj2ik922',
+      dataset: 'production',
+      apiVersion: '2025-02-19',
+      useCdn: true,
+    })
+    const result = await client.fetch<{ s?: string }>(
+      `*[_type=="photo"&&isHero==true][0]{"s":image.asset->url}`
+    )
+    return result?.s ?? null
+  } catch {
+    return null
+  }
+}
 
 function dropWoffFallback(): Plugin {
   return {
@@ -43,23 +61,28 @@ function dropWoffFallback(): Plugin {
  * Ask Sanity which photo is the homepage hero and inject a preload link
  * so the browser can download it in parallel with the JS bundle.
  *
- * We use a hardcoded Sanity asset URL for the hero photo. If the hero
- * changes in the CMS (different photo, re-upload, etc.), update this URL
- * and rebuild. A stale preload is harmless — the browser just downloads
- * one extra image it won't use, and React chooses the real hero at
- * runtime based on the Sanity data.
+ * At build time this queries Sanity for the hero photo's CDN URL. If the
+ * query fails (no network, proxy issue), the preload is silently skipped
+ * but the preconnect to cdn.sanity.io is still added — a smaller but
+ * still useful optimisation.
+ *
+ * When the hero changes in Sanity (isHero flag moved or uploaded),
+ * the next build automatically picks up the new URL. No manual edit
+ * needed.
  */
 function heroPreloadPlugin(): Plugin {
-  // Current hero: DSC_0257.JPG (石塘度假区)
-  const heroUrl = 'https://cdn.sanity.io/images/zj2ik922/production/84010d241db624957eb22b4a39f61115a55f84be-6048x4032.jpg'
-
   return {
     name: 'hero-preload',
     apply: 'build',
     enforce: 'pre',
-    transformIndexHtml(html) {
+    async transformIndexHtml(html) {
       const preconnect = '  <link rel="preconnect" href="https://cdn.sanity.io">\n'
-      const preload = `  <link rel="preload" as="image" href="${heroUrl}${IMAGE_CDN_SUFFIX}" fetchpriority="high">\n`
+      let preload = ''
+
+      const src = await fetchHeroUrlFromSanity()
+      if (src) {
+        preload = `  <link rel="preload" as="image" href="${src}${IMAGE_CDN_SUFFIX}" fetchpriority="high">\n`
+      }
 
       if (!html.includes('cdn.sanity.io')) {
         html = html.replace('</head>', `${preconnect}${preload}  </head>`)
