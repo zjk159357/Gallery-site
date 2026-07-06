@@ -261,9 +261,7 @@ export function Footer() {
               </span>
             </div>
 
-            <p className="footer-colophon__meta">
-              Built with React + Vite · Last updated {__LAST_UPDATED__}
-            </p>
+            <p className="footer-colophon__meta">Built with React + Vite</p>
           </div>
         </div>
       </div>

@@ -1,1 +1,1 @@
-declare const __LAST_UPDATED__: string
+/// <reference types="vite/client" />

@@ -9,7 +9,7 @@ const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
 
 export default defineConfig({
   name: "default",
-  title: "Queenstown Gallery CMS",
+  title: "Queenstown.top CMS",
   projectId,
   dataset,
   plugins: [structureTool({ structure }), visionTool()],

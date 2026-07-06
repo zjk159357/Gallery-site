@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { About } from "./components/About";
 import { BalconyView } from "./components/BalconyView";
+import { CmsSourceBadge } from "./components/CmsSourceBadge";
 import { Footer } from "./components/Footer";
 import { GalleryLightbox } from "./components/GalleryLightbox";
 import { GallerySections } from "./components/GallerySections";
@@ -27,6 +28,8 @@ function App() {
   return (
     <>
       <Header />
+
+      <CmsSourceBadge content={content} />
 
       <main>
         {isBalconyPage ? (
