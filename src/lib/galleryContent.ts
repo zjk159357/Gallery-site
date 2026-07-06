@@ -76,11 +76,16 @@ function toPhoto(photo: CmsPhoto): Photo | null {
   };
 }
 
+const IMAGE_CDN_PARAMS = "?w=2560&q=90&auto=format&fit=max";
+
 function resolvePhotoSrc(sanityUrl: string | undefined, legacyPublicPath: string | undefined): string | undefined {
   if (import.meta.env.DEV && legacyPublicPath) {
     return legacyPublicPath;
   }
-  return sanityUrl || legacyPublicPath;
+  if (sanityUrl) {
+    return `${sanityUrl}${IMAGE_CDN_PARAMS}`;
+  }
+  return legacyPublicPath;
 }
 
 function toPhotoMeta(photos: CmsPhoto[]) {
