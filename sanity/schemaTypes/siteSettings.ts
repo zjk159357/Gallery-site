@@ -67,7 +67,7 @@ export const siteSettingsType = defineType({
           fields: [
             defineField({ name: "label", title: "Label", type: "string" }),
             defineField({ name: "value", title: "Value", type: "string" }),
-            defineField({ name: "href", title: "URL", type: "url" }),
+            defineField({ name: "href", title: "URL", type: "string" }),
           ],
           preview: {
             select: {
