@@ -1168,12 +1168,17 @@ main {
 .site-footer {
   overflow: hidden;
   background: var(--black);
-  padding: clamp(64px, 6vw, 78px) 6vw 54px;
+  padding: clamp(48px, 5vw, 64px) 6vw 32px;
   color: var(--soft-white);
 }
 
 .site-footer p {
   margin: 0;
+}
+
+.site-footer__inner {
+  max-width: 1160px;
+  margin: 0 auto;
 }
 
 .footer-brand {
@@ -1188,12 +1193,27 @@ main {
   white-space: nowrap;
 }
 
+.footer-brand-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-tagline {
+  margin: clamp(8px, 1.2vw, 14px) 0 0 !important;
+  max-width: 540px;
+  color: rgba(232, 230, 230, 0.7);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .footer-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 1.2fr) repeat(3, minmax(150px, 0.55fr));
+  grid-template-columns: minmax(240px, 1.3fr) repeat(3, minmax(160px, 0.6fr));
   gap: clamp(26px, 5vw, 78px);
-  margin-top: clamp(28px, 3.2vw, 42px);
-  max-width: 1160px;
+  margin-top: clamp(36px, 4vw, 56px);
 }
 
 .footer-about,
@@ -1215,8 +1235,12 @@ main {
 }
 
 .footer-label {
+  margin: 0 0 14px;
   color: #ffffff;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .footer-column a {
@@ -1228,10 +1252,202 @@ main {
   color: var(--aqua);
 }
 
+.footer-sub {
+  color: rgba(232, 230, 230, 0.55);
+  font-size: 13px;
+}
+
+.footer-socials {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.footer-socials a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.footer-socials a:hover,
+.footer-socials a:focus-visible {
+  color: var(--aqua);
+}
+
+.footer-socials__arrow {
+  margin-left: 2px;
+  opacity: 0.55;
+}
+
+.footer-top-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1px solid rgba(232, 230, 230, 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--soft-white);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.footer-top-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.footer-top-btn:hover,
+.footer-top-btn:focus-visible {
+  border-color: var(--aqua);
+  color: var(--aqua);
+}
+
+.footer-bottom {
+  margin-top: clamp(40px, 5vw, 64px);
+  padding-top: 20px;
+  border-top: 1px solid rgba(232, 230, 230, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
 .footer-copy {
-  margin-top: clamp(48px, 6vw, 76px) !important;
+  margin: 0 !important;
   color: rgba(232, 230, 230, 0.62);
   font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-about {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ---------- Footer colophon (Nikon + tools) ---------- */
+.footer-colophon {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  text-align: right;
+}
+
+.footer-colophon__line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.footer-colophon__label {
+  color: rgba(232, 230, 230, 0.4);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.footer-colophon__camera-block {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.nikon-mark {
+  height: 22px;
+  width: 22px;
+  display: block;
+  border-radius: 2px;
+}
+
+.footer-colophon__model {
+  color: rgba(232, 230, 230, 0.72);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.footer-colophon__tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.footer-colophon__tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(232, 230, 230, 0.7);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.footer-colophon__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: rgba(232, 230, 230, 0.85);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.footer-colophon__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.footer-colophon__icon img {
+  display: block;
+  object-fit: cover;
+}
+
+.footer-colophon__meta {
+  margin: 4px 0 0 !important;
+  color: rgba(232, 230, 230, 0.38);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 600px) {
+  .footer-colophon {
+    justify-items: start;
+    text-align: left;
+  }
+  .footer-colophon__line,
+  .footer-colophon__tools {
+    justify-content: flex-start;
+  }
 }
 
 .yarl__container {
