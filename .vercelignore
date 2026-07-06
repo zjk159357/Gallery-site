@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-studio
+public/photos
+.sanity
+.env
+.env.*
+sanity/seed/generated
+.qa
