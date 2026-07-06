@@ -1,8 +1,18 @@
 import type { Photo } from "../data/photos";
-import { aboutData, photoMeta, photoStories } from "../data/stories";
+import {
+  aboutData as staticAboutData,
+  photoMeta as staticPhotoMeta,
+  photoStories as staticPhotoStories,
+  type AboutData,
+  type PhotoMeta,
+  type PhotoStory as PhotoStoryData,
+} from "../data/stories";
 
 type PhotoStoryProps = {
   photos: Photo[];
+  photoMeta?: Record<string, PhotoMeta>;
+  photoStories?: Record<string, PhotoStoryData>;
+  aboutData?: AboutData;
 };
 
 function findPhoto(photos: Photo[], filename: string): Photo | undefined {
@@ -18,7 +28,7 @@ function MetaRow({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-function MetaCard({ photo, meta }: { photo: Photo; meta: (typeof photoMeta)[string] }) {
+function MetaCard({ photo, meta }: { photo: Photo; meta: PhotoMeta }) {
   return (
     <article className="story-meta-card">
       <div className="story-meta-photo">
@@ -47,7 +57,7 @@ function StoryEntry({
   align,
 }: {
   photo: Photo;
-  story: (typeof photoStories)[string];
+  story: PhotoStoryData;
   align: "left" | "right";
 }) {
   return (
@@ -67,7 +77,7 @@ function StoryEntry({
   );
 }
 
-export function AboutSection() {
+export function AboutSection({ aboutData = staticAboutData }: { aboutData?: AboutData }) {
   return (
     <section className="story-section story-about" aria-labelledby="story-about-title">
       <div className="story-section-head">
@@ -116,13 +126,13 @@ export function AboutSection() {
   );
 }
 
-export function MetadataSection({ photos }: PhotoStoryProps) {
+export function MetadataSection({ photos, photoMeta = staticPhotoMeta }: PhotoStoryProps) {
   const metaEntries = Object.entries(photoMeta)
     .map(([filename, meta]) => {
       const photo = findPhoto(photos, filename);
       return photo ? { photo, meta } : null;
     })
-    .filter((entry): entry is { photo: Photo; meta: (typeof photoMeta)[string] } => entry !== null);
+    .filter((entry): entry is { photo: Photo; meta: PhotoMeta } => entry !== null);
 
   return (
     <section className="story-section story-meta-section" aria-labelledby="story-meta-title">
@@ -143,13 +153,13 @@ export function MetadataSection({ photos }: PhotoStoryProps) {
   );
 }
 
-export function JournalSection({ photos }: PhotoStoryProps) {
+export function JournalSection({ photos, photoStories = staticPhotoStories }: PhotoStoryProps) {
   const storyEntries = Object.entries(photoStories)
     .map(([filename, story]) => {
       const photo = findPhoto(photos, filename);
       return photo ? { photo, story } : null;
     })
-    .filter((entry): entry is { photo: Photo; story: (typeof photoStories)[string] } => entry !== null);
+    .filter((entry): entry is { photo: Photo; story: PhotoStoryData } => entry !== null);
 
   return (
     <section className="story-section story-entries-section" aria-labelledby="story-entries-title">
@@ -175,7 +185,12 @@ export function JournalSection({ photos }: PhotoStoryProps) {
   );
 }
 
-export function PhotoStory({ photos }: PhotoStoryProps) {
+export function PhotoStory({
+  photos,
+  photoMeta = staticPhotoMeta,
+  photoStories = staticPhotoStories,
+  aboutData = staticAboutData,
+}: PhotoStoryProps) {
   return (
     <article className="story-page">
       <div className="story-banner" role="note">
@@ -186,9 +201,9 @@ export function PhotoStory({ photos }: PhotoStoryProps) {
         </p>
       </div>
 
-      <AboutSection />
-      <MetadataSection photos={photos} />
-      <JournalSection photos={photos} />
+      <AboutSection aboutData={aboutData} />
+      <MetadataSection photos={photos} photoMeta={photoMeta} />
+      <JournalSection photos={photos} photoStories={photoStories} />
     </article>
   );
 }

@@ -4,6 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "cms:login": "sanity login",
+    "cms:projects": "sanity projects list",
+    "cms:dev": "sanity dev",
+    "cms:build": "sanity build",
+    "cms:deploy": "sanity deploy",
+    "cms:seed": "node scripts/generate-sanity-seed.mjs",
+    "cms:status": "node scripts/check-sanity-status.mjs",
+    "cms:sync": "node scripts/sync-sanity-content.mjs",
+    "cms:upload-assets": "node scripts/upload-sanity-assets.mjs",
     "sync:photos": "node scripts/sync-photos.mjs",
     "predev": "npm run sync:photos",
     "dev": "vite",
@@ -13,10 +22,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sanity/client": "^6.29.1",
+    "@sanity/vision": "^3.99.0",
     "image-size": "^2.0.2",
     "lucide-react": "^1.22.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "sanity": "^3.99.0",
+    "styled-components": "^6.4.3",
     "yet-another-react-lightbox": "^3.32.0"
   },
   "devDependencies": {
@@ -24,6 +37,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "esbuild": "^0.28.1",
     "oxlint": "^1.71.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"

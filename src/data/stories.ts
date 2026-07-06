@@ -15,6 +15,14 @@ export type PhotoStory = {
   body: string[];
 };
 
+export type AboutData = {
+  name: string;
+  location: string;
+  bio: string[];
+  gear: { name: string; value: string }[];
+  contact: { label: string; value: string; href: string }[];
+};
+
 export const photoMeta: Record<string, PhotoMeta> = {
   "DSC_0257.JPG": {
     date: "2025-05-18",
@@ -108,7 +116,7 @@ export const photoStories: Record<string, PhotoStory> = {
   },
 };
 
-export const aboutData = {
+export const aboutData: AboutData = {
   name: "Leon Li",
   location: "浙江台州 / 上海",
   bio: [

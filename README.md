@@ -10,6 +10,58 @@ npm run dev
 
 The dev script runs `sync:photos` first, then starts Vite.
 
+## CMS Admin
+
+This project uses Sanity Studio for the admin CMS. Create a Sanity project, copy `.env.example` to `.env.local`, and fill in:
+
+```bash
+SANITY_STUDIO_PROJECT_ID=your_sanity_project_id
+SANITY_STUDIO_DATASET=production
+VITE_SANITY_PROJECT_ID=your_sanity_project_id
+VITE_SANITY_DATASET=production
+```
+
+Run the Studio locally:
+
+```bash
+npm run cms:dev
+```
+
+Build the Studio:
+
+```bash
+npm run cms:build
+```
+
+Generate Sanity seed data from the current static content:
+
+```bash
+npm run cms:seed
+```
+
+Validate the local image upload manifest:
+
+```bash
+npm run cms:upload-assets -- --dry-run
+```
+
+Check whether the configured Sanity dataset has the expected imported content:
+
+```bash
+npm run cms:status
+```
+
+Run the full content sync after `.env.local` is configured:
+
+```bash
+npm run cms:sync -- --limit 2
+```
+
+See `docs/sanity-migration.md` for the import workflow.
+See `docs/deployment.md` for the GitHub + Vercel deployment workflow.
+
+The public site uses local static data as a fallback. When `VITE_SANITY_PROJECT_ID` and `VITE_SANITY_DATASET` are configured, the browser loads published Sanity content and replaces the fallback data after startup.
+
 ## Build
 
 ```bash
@@ -20,7 +72,7 @@ The build script syncs photos, runs TypeScript, and creates the production outpu
 
 ## Photo Sync
 
-Source photos live one level above this app in category folders such as:
+Source photos live inside this app in category folders such as:
 
 - `山野`
 - `建筑`
@@ -37,7 +89,7 @@ Run this when photos are added, removed, or replaced:
 npm run sync:photos
 ```
 
-The sync script copies image files into `public/photos/` and regenerates `src/data/photos.ts` with dimensions, filenames, categories, and public URLs.
+The sync script copies image files from the project-level category folders into `public/photos/` and regenerates `src/data/photos.ts` with dimensions, filenames, categories, and public URLs.
 
 ## Photo Notes
 

@@ -1,16 +1,30 @@
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import type { Photo } from "../data/photos";
-import { photoMeta, photoStories } from "../data/stories";
+import {
+  photoMeta as staticPhotoMeta,
+  photoStories as staticPhotoStories,
+  type PhotoMeta,
+  type PhotoStory,
+} from "../data/stories";
 
 type GalleryLightboxProps = {
   photos: Photo[];
   index: number;
   onClose: () => void;
   onView: (index: number) => void;
+  photoMeta?: Record<string, PhotoMeta>;
+  photoStories?: Record<string, PhotoStory>;
 };
 
-export function GalleryLightbox({ photos, index, onClose, onView }: GalleryLightboxProps) {
+export function GalleryLightbox({
+  photos,
+  index,
+  onClose,
+  onView,
+  photoMeta = staticPhotoMeta,
+  photoStories = staticPhotoStories,
+}: GalleryLightboxProps) {
   const slides = photos.map((photo) => ({
     src: photo.src,
     alt: `${photo.category} ${photo.title}`,

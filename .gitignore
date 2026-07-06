@@ -8,8 +8,11 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.sanity
 dist
+dist-studio
 public/photos
+sanity/seed/generated
 dist-ssr
 *.local
 .qa

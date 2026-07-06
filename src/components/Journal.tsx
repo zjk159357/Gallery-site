@@ -1,14 +1,16 @@
 import type { Photo } from "../data/photos";
+import type { PhotoStory } from "../data/stories";
 import { JournalSection } from "./PhotoStory";
 
 type JournalProps = {
   photos: Photo[];
+  photoStories?: Record<string, PhotoStory>;
 };
 
-export function Journal({ photos }: JournalProps) {
+export function Journal({ photos, photoStories }: JournalProps) {
   return (
     <article className="story-page">
-      <JournalSection photos={photos} />
+      <JournalSection photos={photos} photoStories={photoStories} />
     </article>
   );
 }

@@ -1,10 +1,13 @@
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
+import type { PhotoMeta, PhotoStory } from "../data/stories";
 import { GalleryLightbox } from "./GalleryLightbox";
 
 type BalconyViewProps = {
   photos: Photo[];
+  photoMeta?: Record<string, PhotoMeta>;
+  photoStories?: Record<string, PhotoStory>;
 };
 
 type BalconyCarouselProps = {
@@ -110,7 +113,7 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
   );
 }
 
-export function BalconyView({ photos }: BalconyViewProps) {
+export function BalconyView({ photos, photoMeta, photoStories }: BalconyViewProps) {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
   const content = useMemo(() => {
@@ -215,6 +218,8 @@ export function BalconyView({ photos }: BalconyViewProps) {
         index={lightboxIndex}
         onClose={() => setLightboxIndex(-1)}
         onView={setLightboxIndex}
+        photoMeta={photoMeta}
+        photoStories={photoStories}
       />
     </article>
   );

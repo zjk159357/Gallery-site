@@ -6,7 +6,7 @@ import { imageSizeFromFile } from "image-size/fromFile";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
-const sourceRoot = path.resolve(projectRoot, "..");
+const sourceRoot = projectRoot;
 const publicPhotoRoot = path.join(projectRoot, "public", "photos");
 const dataFile = path.join(projectRoot, "src", "data", "photos.ts");
 

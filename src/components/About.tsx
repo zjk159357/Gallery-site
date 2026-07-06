@@ -1,9 +1,10 @@
+import type { AboutData } from "../data/stories";
 import { AboutSection } from "./PhotoStory";
 
-export function About() {
+export function About({ aboutData }: { aboutData?: AboutData }) {
   return (
     <article className="story-page">
-      <AboutSection />
+      <AboutSection aboutData={aboutData} />
     </article>
   );
 }

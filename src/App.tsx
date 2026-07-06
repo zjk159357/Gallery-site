@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { photos } from "./data/photos";
 import { About } from "./components/About";
 import { BalconyView } from "./components/BalconyView";
 import { Footer } from "./components/Footer";
@@ -8,9 +7,12 @@ import { GallerySections } from "./components/GallerySections";
 import { Header } from "./components/Header";
 import { Journal } from "./components/Journal";
 import { PhotoStory } from "./components/PhotoStory";
+import { useGalleryContent } from "./lib/galleryContent";
 
 function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const content = useGalleryContent();
+  const { photos, photoMeta, photoStories, aboutData } = content;
   const pathname = window.location.pathname.replace(/\/$/, "") || "/";
   const isBalconyPage = pathname === "/photobalcony";
   const isStoryPage = pathname === "/photostory";
@@ -20,7 +22,7 @@ function App() {
 
   const heroPhoto = useMemo(() => {
     return photos.find((photo) => photo.filename === "DSC_0257.JPG") ?? photos.find((photo) => photo.category === "石塘度假区") ?? photos[0];
-  }, []);
+  }, [photos]);
 
   return (
     <>
@@ -28,13 +30,13 @@ function App() {
 
       <main>
         {isBalconyPage ? (
-          <BalconyView photos={photos} />
+          <BalconyView photos={photos} photoMeta={photoMeta} photoStories={photoStories} />
         ) : isStoryPage ? (
-          <PhotoStory photos={photos} />
+          <PhotoStory photos={photos} photoMeta={photoMeta} photoStories={photoStories} aboutData={aboutData} />
         ) : isAboutPage ? (
-          <About />
+          <About aboutData={aboutData} />
         ) : isJournalPage ? (
-          <Journal photos={photos} />
+          <Journal photos={photos} photoStories={photoStories} />
         ) : (
           <>
             <section className="page-title-band" id="top" aria-labelledby="page-title">
@@ -66,6 +68,8 @@ function App() {
           index={lightboxIndex}
           onClose={() => setLightboxIndex(-1)}
           onView={setLightboxIndex}
+          photoMeta={photoMeta}
+          photoStories={photoStories}
         />
       )}
     </>
