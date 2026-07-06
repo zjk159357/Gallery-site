@@ -2,6 +2,8 @@
 
 Personal photography archive built with React, TypeScript, and Vite. The site presents large-format galleries, a Balcony View series, an About page, a Journal page, and a preserved `/photostory` preview module for testing richer photo notes.
 
+<!-- auto-deploy test: 2026-07-06 verify Vercel GitHub integration -->
+
 ## Local Development
 
 ```bash
