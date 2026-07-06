@@ -192,15 +192,19 @@ export function PhotoStory({
   photoStories = staticPhotoStories,
   aboutData = staticAboutData,
 }: PhotoStoryProps) {
+  const showPreview = new URLSearchParams(window.location.search).has("preview");
+
   return (
     <article className="story-page">
-      <div className="story-banner" role="note">
-        <span className="story-banner-tag">测试模块</span>
-        <p>
-          这是一个内容侧功能的预览版,用于评估效果。所有文字和参数都是基于现有照片的填充示例,
-          可以稍后替换成真实内容或删除。访问 <code>/photostory</code> 查看。
-        </p>
-      </div>
+      {showPreview && (
+        <div className="story-banner" role="note">
+          <span className="story-banner-tag">测试模块</span>
+          <p>
+            这是一个内容侧功能的预览版,用于评估效果。所有文字和参数都是基于现有照片的填充示例,
+            可以稍后替换成真实内容或删除。访问 <code>/photostory</code> 查看。
+          </p>
+        </div>
+      )}
 
       <AboutSection aboutData={aboutData} />
       <MetadataSection photos={photos} photoMeta={photoMeta} />
