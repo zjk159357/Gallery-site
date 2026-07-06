@@ -22,7 +22,7 @@ import { getSanityClient, isSanityConfigured } from "./sanity";
 export type GalleryContent = {
   photos: Photo[];
   photoMeta: Record<string, PhotoMeta>;
-  photoStories: Record<string, PhotoStory>;
+  photoStories: Record<string, PhotoStory[]>;
   aboutData: AboutData;
   source: "static" | "cms";
   isLoading: boolean;
@@ -103,15 +103,20 @@ function toPhotoMeta(photos: CmsPhoto[]) {
 }
 
 function toPhotoStories(stories: CmsStory[]) {
-  return stories.reduce<Record<string, PhotoStory>>((storiesByFilename, story) => {
+  return stories.reduce<Record<string, PhotoStory[]>>((storiesByFilename, story) => {
     const filename = story.coverPhoto?.filename ?? story.relatedPhotos?.find((photo) => photo.filename)?.filename;
     if (!filename || !story.title) return storiesByFilename;
 
-    storiesByFilename[filename] = {
+    const entry: PhotoStory = {
       title: story.title,
       excerpt: story.excerpt ?? "",
       body: blocksToLines(story.body),
     };
+
+    if (!storiesByFilename[filename]) {
+      storiesByFilename[filename] = [];
+    }
+    storiesByFilename[filename].push(entry);
 
     return storiesByFilename;
   }, {});

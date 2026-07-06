@@ -7,7 +7,7 @@ import { GalleryLightbox } from "./GalleryLightbox";
 type BalconyViewProps = {
   photos: Photo[];
   photoMeta?: Record<string, PhotoMeta>;
-  photoStories?: Record<string, PhotoStory>;
+  photoStories?: Record<string, PhotoStory[]>;
 };
 
 type BalconyCarouselProps = {

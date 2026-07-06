@@ -14,7 +14,7 @@ type GalleryLightboxProps = {
   onClose: () => void;
   onView: (index: number) => void;
   photoMeta?: Record<string, PhotoMeta>;
-  photoStories?: Record<string, PhotoStory>;
+  photoStories?: Record<string, PhotoStory[]>;
 };
 
 export function GalleryLightbox({
@@ -53,7 +53,7 @@ export function GalleryLightbox({
           }
 
           const meta = photoMeta[photo.filename];
-          const story = photoStories[photo.filename];
+          const story = photoStories[photo.filename]?.[0];
           const title = story?.title ?? photo.title;
 
           return (

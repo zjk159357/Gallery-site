@@ -4,7 +4,7 @@ import { JournalSection } from "./PhotoStory";
 
 type JournalProps = {
   photos: Photo[];
-  photoStories?: Record<string, PhotoStory>;
+  photoStories?: Record<string, PhotoStory[]>;
 };
 
 export function Journal({ photos, photoStories }: JournalProps) {

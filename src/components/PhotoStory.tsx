@@ -11,7 +11,7 @@ import {
 type PhotoStoryProps = {
   photos: Photo[];
   photoMeta?: Record<string, PhotoMeta>;
-  photoStories?: Record<string, PhotoStoryData>;
+  photoStories?: Record<string, PhotoStoryData[]>;
   aboutData?: AboutData;
 };
 
@@ -155,9 +155,10 @@ export function MetadataSection({ photos, photoMeta = staticPhotoMeta }: PhotoSt
 
 export function JournalSection({ photos, photoStories = staticPhotoStories }: PhotoStoryProps) {
   const storyEntries = Object.entries(photoStories)
-    .map(([filename, story]) => {
+    .flatMap(([filename, storyList]) => {
       const photo = findPhoto(photos, filename);
-      return photo ? { photo, story } : null;
+      if (!photo) return [];
+      return storyList.map((story) => ({ photo, story }));
     })
     .filter((entry): entry is { photo: Photo; story: PhotoStoryData } => entry !== null);
 
