@@ -7,6 +7,7 @@ export type CmsPhoto = {
   filename: string;
   width: number;
   height: number;
+  isHero?: boolean;
   date?: string;
   location?: string;
   camera?: string;
@@ -60,6 +61,7 @@ export const cmsPhotosQuery = `*[_type == "photo" && isHidden != true] | order(s
   "filename": sourceFilename,
   "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
   "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height),
+  isHero,
   date,
   location,
   camera,

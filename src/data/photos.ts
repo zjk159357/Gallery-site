@@ -6,6 +6,7 @@ export type Photo = {
   filename: string;
   width: number;
   height: number;
+  isHero?: boolean;
 };
 
 export const categories = [
@@ -27,7 +28,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_0888.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-002",
@@ -36,7 +38,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_1293.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-003",
@@ -45,7 +48,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_1295.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-004",
@@ -54,7 +58,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_1353.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-005",
@@ -63,7 +68,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_1367.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-006",
@@ -72,7 +78,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_1411.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-007",
@@ -81,7 +88,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_2347.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-008",
@@ -90,7 +98,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_4820.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-009",
@@ -99,7 +108,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_4826.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-010",
@@ -108,7 +118,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_4853.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-011",
@@ -117,7 +128,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_4858.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-012",
@@ -126,7 +138,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_5403_01.JPG",
     "width": 5723,
-    "height": 3815
+    "height": 3815,
+    "isHero": false
   },
   {
     "id": "photo-013",
@@ -135,7 +148,8 @@ export const photos: Photo[] = [
     "category": "山野",
     "filename": "DSC_5404.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-014",
@@ -144,7 +158,8 @@ export const photos: Photo[] = [
     "category": "建筑",
     "filename": "DSC_2935.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-015",
@@ -153,7 +168,8 @@ export const photos: Photo[] = [
     "category": "建筑",
     "filename": "DSC_4837.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-016",
@@ -162,7 +178,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_0713.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-017",
@@ -171,7 +188,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_0735.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-018",
@@ -180,7 +198,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_2087.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-019",
@@ -189,7 +208,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_2107.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-020",
@@ -198,7 +218,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_2210.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-021",
@@ -207,7 +228,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_3559.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-022",
@@ -216,7 +238,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_5499.JPG",
     "width": 5924,
-    "height": 3950
+    "height": 3950,
+    "isHero": false
   },
   {
     "id": "photo-023",
@@ -225,7 +248,8 @@ export const photos: Photo[] = [
     "category": "日出日落",
     "filename": "DSC_5503.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-024",
@@ -234,7 +258,8 @@ export const photos: Photo[] = [
     "category": "森林",
     "filename": "DSC_2913.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-025",
@@ -243,7 +268,8 @@ export const photos: Photo[] = [
     "category": "森林",
     "filename": "DSC_2952.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-026",
@@ -252,7 +278,8 @@ export const photos: Photo[] = [
     "category": "森林",
     "filename": "DSC_3247.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-027",
@@ -261,7 +288,8 @@ export const photos: Photo[] = [
     "category": "森林",
     "filename": "DSC_3343.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-028",
@@ -270,7 +298,8 @@ export const photos: Photo[] = [
     "category": "森林",
     "filename": "DSC_4832.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-029",
@@ -279,7 +308,8 @@ export const photos: Photo[] = [
     "category": "河流",
     "filename": "DSC_4840.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-030",
@@ -288,7 +318,8 @@ export const photos: Photo[] = [
     "category": "河流",
     "filename": "DSC_4844.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-031",
@@ -297,7 +328,8 @@ export const photos: Photo[] = [
     "category": "海洋",
     "filename": "DSC_2100.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-032",
@@ -306,7 +338,8 @@ export const photos: Photo[] = [
     "category": "海洋",
     "filename": "DSC_5552.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-033",
@@ -315,7 +348,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0243.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-034",
@@ -324,7 +358,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0257.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": true
   },
   {
     "id": "photo-035",
@@ -333,7 +368,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0264.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-036",
@@ -342,7 +378,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0335.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-037",
@@ -351,7 +388,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0396.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-038",
@@ -360,7 +398,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0470.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-039",
@@ -369,7 +408,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0513.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-040",
@@ -378,7 +418,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0514.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-041",
@@ -387,7 +428,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0518.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-042",
@@ -396,7 +438,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0520.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-043",
@@ -405,7 +448,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0521.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-044",
@@ -414,7 +458,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0522.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-045",
@@ -423,7 +468,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0534.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-046",
@@ -432,7 +478,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0538.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-047",
@@ -441,7 +488,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0546.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-048",
@@ -450,7 +498,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0551.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-049",
@@ -459,7 +508,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0552.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-050",
@@ -468,7 +518,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0555.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-051",
@@ -477,7 +528,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0566.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-052",
@@ -486,7 +538,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0568.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-053",
@@ -495,7 +548,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0571.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-054",
@@ -504,7 +558,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0580.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-055",
@@ -513,7 +568,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0613.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-056",
@@ -522,7 +578,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0614.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-057",
@@ -531,7 +588,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0625.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-058",
@@ -540,7 +598,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0626.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-059",
@@ -549,7 +608,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0632.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-060",
@@ -558,7 +618,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0636.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-061",
@@ -567,7 +628,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0638.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-062",
@@ -576,7 +638,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0648.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-063",
@@ -585,7 +648,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_0917.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-064",
@@ -594,7 +658,8 @@ export const photos: Photo[] = [
     "category": "石塘度假区",
     "filename": "DSC_2196.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-065",
@@ -603,7 +668,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5267.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-066",
@@ -612,7 +678,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5282.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-067",
@@ -621,7 +688,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5287.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-068",
@@ -630,7 +698,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5311.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-069",
@@ -639,7 +708,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5336.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-070",
@@ -648,7 +718,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5340.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-071",
@@ -657,7 +728,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5345.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   },
   {
     "id": "photo-072",
@@ -666,7 +738,8 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5347.JPG",
     "width": 6048,
-    "height": 4032
+    "height": 4032,
+    "isHero": false
   },
   {
     "id": "photo-073",
@@ -675,6 +748,7 @@ export const photos: Photo[] = [
     "category": "花朵",
     "filename": "DSC_5445.JPG",
     "width": 4032,
-    "height": 6048
+    "height": 6048,
+    "isHero": false
   }
 ];

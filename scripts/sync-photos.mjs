@@ -94,6 +94,7 @@ async function collectPhotos() {
         filename,
         width: shouldSwap ? rawHeight : rawWidth,
         height: shouldSwap ? rawWidth : rawHeight,
+        isHero: filename === "DSC_0257.JPG",
       });
     }
   }
@@ -112,6 +113,7 @@ function serializeData(photos) {
   filename: string;
   width: number;
   height: number;
+  isHero?: boolean;
 };
 
 export const categories = ${JSON.stringify(categories, null, 2)} as const;

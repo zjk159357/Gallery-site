@@ -73,6 +73,7 @@ function toPhoto(photo: CmsPhoto): Photo | null {
     filename: photo.filename,
     width: photo.width || 1,
     height: photo.height || 1,
+    isHero: photo.isHero,
   };
 }
 
