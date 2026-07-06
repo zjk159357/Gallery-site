@@ -1,6 +1,7 @@
 export type CmsPhoto = {
   id: string;
   src: string;
+  legacyPublicPath?: string;
   title: string;
   category: string;
   filename: string;
@@ -46,12 +47,14 @@ type CmsStoryPhoto = {
   id?: string;
   title?: string;
   src?: string;
+  legacyPublicPath?: string;
   filename?: string;
 };
 
 export const cmsPhotosQuery = `*[_type == "photo" && isHidden != true] | order(sortOrder asc, date desc) {
   "id": _id,
-  "src": coalesce(image.asset->url, legacyPublicPath),
+  "src": image.asset->url,
+  "legacyPublicPath": legacyPublicPath,
   title,
   "category": category->title,
   "filename": sourceFilename,
@@ -86,12 +89,14 @@ export const cmsStoriesQuery = `*[_type == "story"] | order(publishedAt desc) {
     "id": _id,
     title,
     "src": image.asset->url,
+    "legacyPublicPath": legacyPublicPath,
     "filename": sourceFilename
   },
   "relatedPhotos": relatedPhotos[]->{
     "id": _id,
     title,
     "src": image.asset->url,
+    "legacyPublicPath": legacyPublicPath,
     "filename": sourceFilename
   }
 }`;
@@ -102,6 +107,7 @@ export const cmsSiteSettingsQuery = `*[_type == "siteSettings"][0] {
     "id": _id,
     title,
     "src": image.asset->url,
+    "legacyPublicPath": legacyPublicPath,
     "filename": sourceFilename
   },
   aboutName,

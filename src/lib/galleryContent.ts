@@ -60,19 +60,27 @@ function isCompleteMeta(photo: CmsPhoto) {
 }
 
 function toPhoto(photo: CmsPhoto): Photo | null {
-  if (!photo.src || !photo.title || !photo.category || !photo.filename) {
+  const src = resolvePhotoSrc(photo.src, photo.legacyPublicPath);
+  if (!src || !photo.title || !photo.category || !photo.filename) {
     return null;
   }
 
   return {
     id: photo.id,
-    src: photo.src,
+    src,
     title: photo.title,
     category: photo.category,
     filename: photo.filename,
     width: photo.width || 1,
     height: photo.height || 1,
   };
+}
+
+function resolvePhotoSrc(sanityUrl: string | undefined, legacyPublicPath: string | undefined): string | undefined {
+  if (import.meta.env.DEV && legacyPublicPath) {
+    return legacyPublicPath;
+  }
+  return sanityUrl || legacyPublicPath;
 }
 
 function toPhotoMeta(photos: CmsPhoto[]) {
