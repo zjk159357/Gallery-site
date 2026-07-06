@@ -23,6 +23,16 @@ function sanitizeIdPart(value, fallback) {
   return ascii || `${fallback}-${stableHash(value, 8)}`;
 }
 
+function slugify(value) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-")
+    .replace(/[^\p{L}\p{N}-]+/gu, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function fileBase(filename) {
   return path.basename(filename, path.extname(filename));
 }
@@ -84,7 +94,7 @@ const categoryDocs = categories.map((title, index) => {
     title,
     slug: {
       _type: "slug",
-      current: sanitizeIdPart(title, `category-${index + 1}`),
+      current: slugify(title) || `category-${index + 1}`,
     },
     sortOrder: (index + 1) * 10,
     isVisible: true,
@@ -104,7 +114,7 @@ const photoDocs = photos.map((photo, index) => {
     title: photo.title,
     slug: {
       _type: "slug",
-      current: sanitizeIdPart(`${fileBase(photo.filename)}-${stableHash(photo.src, 6)}`, "photo"),
+      current: slugify(fileBase(photo.filename)) || `photo-${index + 1}`,
     },
     legacyId: photo.id,
     sourceFilename: photo.filename,
@@ -150,7 +160,7 @@ const storyDocs = Object.entries(photoStories).map(([filename, story], index) =>
     title: story.title,
     slug: {
       _type: "slug",
-      current: sanitizeIdPart(`${fileBase(filename)}-${stableHash(story.title, 6)}`, "story"),
+      current: `${slugify(fileBase(filename)) || slugify(story.title) || `story-${index + 1}`}`,
     },
     excerpt: story.excerpt,
     publishedAt: meta?.date ? `${meta.date}T00:00:00.000Z` : undefined,

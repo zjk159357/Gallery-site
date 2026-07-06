@@ -47,7 +47,15 @@ function App() {
             </section>
 
             <section className="hero" aria-label="Featured photograph">
-              <img className="hero-image" src={heroPhoto.src} alt="" aria-hidden="true" />
+              <img
+                className="hero-image"
+                src={heroPhoto.src}
+                alt=""
+                aria-hidden="true"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
             </section>
 
             <a className="story-test-cta" href="/photostory" aria-label="Open photo notes and stories">
