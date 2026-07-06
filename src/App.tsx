@@ -20,6 +20,7 @@ function App() {
   const isAboutPage = pathname === "/about";
   const isJournalPage = pathname === "/journal";
   const isStaticPage = isBalconyPage || isStoryPage || isAboutPage || isJournalPage;
+  const showPreview = new URLSearchParams(window.location.search).has("preview");
 
   const heroPhoto = useMemo(() => {
     return photos.find((photo) => photo.isHero)
@@ -61,6 +62,7 @@ function App() {
               />
             </section>
 
+            {showPreview && (
             <a className="story-test-cta" href="/photostory" aria-label="Open photo notes and stories">
               <span className="story-test-cta-tag">摄影手记</span>
               <span className="story-test-cta-text">
@@ -68,6 +70,7 @@ function App() {
               </span>
               <span className="story-test-cta-arrow" aria-hidden="true">→</span>
             </a>
+            )}
 
             <GallerySections photos={photos} onOpen={setLightboxIndex} />
           </>
