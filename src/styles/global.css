@@ -259,7 +259,7 @@ main {
   margin: 0;
   padding: 0.04em 0.18em 0.12em;
   color: #000000;
-  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: clamp(44px, 4.45vw, 60px);
   font-weight: 600;
   font-style: italic;
@@ -1184,7 +1184,7 @@ main {
 .footer-brand {
   color: var(--aqua);
   max-width: 100%;
-  font-family: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: clamp(38px, 9vw, 124px);
   font-weight: 700;
   font-style: italic;
