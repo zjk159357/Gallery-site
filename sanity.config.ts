@@ -12,6 +12,7 @@ export default defineConfig({
   title: "Queenstown.top CMS",
   projectId,
   dataset,
+  basePath: "/studio",
   plugins: [structureTool({ structure }), visionTool()],
   schema: {
     types: schemaTypes,
