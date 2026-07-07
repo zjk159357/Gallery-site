@@ -149,26 +149,30 @@ for (const categoryDoc of categoryDocs) {
   }
 }
 
-const storyDocs = Object.entries(photoStories).map(([filename, story], index) => {
-  const relatedPhotoId = photoIdByFilename.get(filename);
-  const meta = photoMeta[filename];
-  const id = `story-${sanitizeIdPart(`${filename}-${story.title}`, "story")}`;
+let storyIndex = 0;
+const storyDocs = Object.entries(photoStories).flatMap(([filename, stories]) => {
+  return stories.map((story) => {
+    storyIndex += 1;
+    const relatedPhotoId = photoIdByFilename.get(filename);
+    const meta = photoMeta[filename];
+    const id = `story-${sanitizeIdPart(`${filename}-${story.title}`, "story")}`;
 
-  return {
-    _id: id,
-    _type: "story",
-    title: story.title,
-    slug: {
-      _type: "slug",
-      current: `${slugify(fileBase(filename)) || slugify(story.title) || `story-${index + 1}`}`,
-    },
-    excerpt: story.excerpt,
-    publishedAt: meta?.date ? `${meta.date}T00:00:00.000Z` : undefined,
-    coverPhoto: relatedPhotoId ? ref(relatedPhotoId) : undefined,
-    relatedPhotos: relatedPhotoId ? [ref(relatedPhotoId)] : [],
-    body: story.body.map(blockFromText),
-    sortOrder: (index + 1) * 10,
-  };
+    return {
+      _id: id,
+      _type: "story",
+      title: story.title,
+      slug: {
+        _type: "slug",
+        current: `${slugify(fileBase(filename)) || slugify(story.title) || `story-${storyIndex}`}`,
+      },
+      excerpt: story.excerpt,
+      publishedAt: meta?.date ? `${meta.date}T00:00:00.000Z` : undefined,
+      coverPhoto: relatedPhotoId ? ref(relatedPhotoId) : undefined,
+      relatedPhotos: relatedPhotoId ? [ref(relatedPhotoId)] : [],
+      body: (story.body ?? []).map(blockFromText),
+      sortOrder: storyIndex * 10,
+    };
+  });
 });
 
 const heroPhoto = photoDocs.find((photo) => photo.isHero) ?? photoDocs[0];

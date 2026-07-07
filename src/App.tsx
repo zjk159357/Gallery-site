@@ -19,7 +19,8 @@ function App() {
   const isStoryPage = pathname === "/photostory";
   const isAboutPage = pathname === "/about";
   const isJournalPage = pathname === "/journal";
-  const isStaticPage = isBalconyPage || isStoryPage || isAboutPage || isJournalPage;
+  const isFooterPreviewPage = pathname === "/footer-preview";
+  const isStaticPage = isBalconyPage || isStoryPage || isAboutPage || isJournalPage || isFooterPreviewPage;
   const showPreview = new URLSearchParams(window.location.search).has("preview");
 
   const heroPhoto = useMemo(() => {
@@ -44,6 +45,11 @@ function App() {
           <About aboutData={aboutData} />
         ) : isJournalPage ? (
           <Journal photos={photos} photoStories={photoStories} />
+        ) : isFooterPreviewPage ? (
+          <section className="footer-preview-stage" aria-labelledby="footer-preview-title">
+            <p className="footer-preview-kicker">Design study</p>
+            <h1 id="footer-preview-title">Footer Background</h1>
+          </section>
         ) : (
           <>
             <section className="page-title-band" id="top" aria-labelledby="page-title">
@@ -77,7 +83,7 @@ function App() {
         )}
       </main>
 
-      <Footer />
+      <Footer aboutData={aboutData} showPreview={showPreview} variant={isFooterPreviewPage ? "photo" : "default"} />
 
       {!isStaticPage && (
         <GalleryLightbox

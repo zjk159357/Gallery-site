@@ -140,7 +140,7 @@ export const aboutData: AboutData = {
     { name: "三脚架", value: "Peak Design Travel" },
   ],
   contact: [
-    { label: "Email", value: "hello@example.com", href: "mailto:hello@example.com" },
+    { label: "Email", value: "3552219514@qq.com", href: "mailto:3552219514@qq.com" },
     { label: "Instagram", value: "@gallery", href: "https://www.instagram.com/" },
     { label: "Youtube", value: "Channel", href: "https://www.youtube.com/" },
   ],

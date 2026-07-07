@@ -30,7 +30,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  overflow-x: clip;
+  overflow-x: hidden;
   background: var(--black);
 }
 
@@ -101,27 +101,31 @@ button {
 }
 
 .brand-word {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
   margin-left: 22px;
   color: #ffffff;
-  font-family: Poppins, "Helvetica Neue", Arial, sans-serif;
-  font-size: 29px;
-  font-weight: 800;
-  line-height: 0.96;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1;
   letter-spacing: 0;
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.34);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .brand-word em {
-  font-family: inherit;
+  position: relative;
+  top: -1px;
+  font-family: Poppins, "Helvetica Neue", Arial, sans-serif;
   font-style: normal;
-  font-weight: 700;
-  font-size: 0.56em;
-  margin-left: 3px;
+  font-weight: 600;
+  font-size: 0.42em;
   letter-spacing: 0;
-  opacity: 0.84;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .menu-toggle {
@@ -1166,10 +1170,32 @@ main {
 }
 
 .site-footer {
+  position: relative;
   overflow: hidden;
   background: var(--black);
   padding: clamp(48px, 5vw, 64px) 6vw 32px;
   color: var(--soft-white);
+}
+
+.site-footer--photo {
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.86) 48%, rgba(5, 5, 5, 0.58) 100%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.86) 0%, rgba(5, 5, 5, 0.62) 46%, rgba(5, 5, 5, 0.92) 100%),
+    url("/photos/石塘度假区/DSC_0257.JPG") center 44% / cover no-repeat;
+}
+
+.site-footer--photo::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: rgba(5, 5, 5, 0.08);
+  backdrop-filter: saturate(0.8);
+}
+
+.site-footer > * {
+  position: relative;
+  z-index: 1;
 }
 
 .site-footer p {
@@ -1444,6 +1470,14 @@ main {
   letter-spacing: 0.02em;
 }
 
+.site-footer--photo .footer-brand {
+  color: #ffffff;
+}
+
+.site-footer--photo .footer-bottom {
+  border-top-color: rgba(255, 255, 255, 0.18);
+}
+
 @media (max-width: 600px) {
   .footer-colophon {
     justify-items: start;
@@ -1553,6 +1587,38 @@ main {
   white-space: nowrap;
 }
 
+.footer-preview-stage {
+  min-height: clamp(320px, 42vh, 480px);
+  display: grid;
+  align-content: end;
+  gap: 10px;
+  padding: calc(var(--header-h) + 24px) 6vw clamp(44px, 7vw, 80px);
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.18), rgba(5, 5, 5, 0.96)),
+    url("/photos/石塘度假区/DSC_0257.JPG") center / cover no-repeat;
+  color: #ffffff;
+}
+
+.footer-preview-kicker {
+  margin: 0;
+  color: var(--aqua);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.footer-preview-stage h1 {
+  margin: 0;
+  max-width: 100%;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(48px, 9vw, 112px);
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+}
+
 @media (max-width: 1000px) {
   :root {
     --header-h: 120px;
@@ -1573,7 +1639,7 @@ main {
   .brand-word {
     margin-left: 18px;
     max-width: calc(100vw - 210px);
-    font-size: 26px;
+    font-size: 31px;
   }
 
   .menu-toggle {
@@ -1642,6 +1708,9 @@ main {
   }
 
   .site-header {
+    right: 0;
+    left: 0;
+    width: 100vw;
     padding-right: 20px;
     padding-left: 20px;
   }
@@ -1654,11 +1723,16 @@ main {
 
   .brand-word {
     margin-left: 12px;
-    max-width: calc(100vw - 164px);
-    font-size: 19px;
+    max-width: calc(100vw - 188px);
+    gap: 5px;
+    font-size: 21px;
   }
 
   .menu-toggle {
+    position: fixed;
+    top: calc((var(--header-h) - 60px) / 2);
+    right: clamp(20px, calc(100vw - 370px), 130px);
+    z-index: 50;
     width: 60px;
     height: 60px;
     border-radius: 15px;
@@ -1707,6 +1781,18 @@ main {
 
   .menu-overlay[data-open="true"] .menu-panel {
     transform: translateY(0) scale(1);
+  }
+
+  .footer-preview-stage h1 {
+    font-size: clamp(42px, 15vw, 64px);
+  }
+
+  .footer-brand {
+    max-width: min(100%, calc(100vw - 40px));
+    font-size: clamp(38px, 11vw, 48px);
+    line-height: 0.96;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .page-title-band {
@@ -1916,9 +2002,6 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .footer-brand {
-    font-size: clamp(72px, 22vw, 118px);
-  }
 }
 
 .story-page {

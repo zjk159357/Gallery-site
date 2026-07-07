@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
+import type { AboutData } from "../data/stories";
 
-const navLinks = [
+const baseNavLinks = [
   { label: "Photography", href: "/#photography" },
   { label: "Balcony View", href: "/photobalcony" },
-  { label: "Photo Notes", href: "/photostory" },
   { label: "Journal", href: "/journal" },
   { label: "About", href: "/about" },
 ];
+
+const previewNavLink = { label: "Photo Notes", href: "/photostory" };
 
 const socials = [
   {
@@ -76,6 +78,21 @@ function formatLastUpdate(value: string) {
   })
     .format(date)
     .replaceAll("-", ".");
+}
+
+function normalizeHref(label: string, value: string, href: string) {
+  const trimmedHref = href.trim();
+  const trimmedValue = value.trim();
+
+  if (/^(mailto:|https?:\/\/|tel:)/i.test(trimmedHref)) {
+    return trimmedHref;
+  }
+
+  if (label.toLowerCase() === "email" || trimmedHref.includes("@") || trimmedValue.includes("@")) {
+    return `mailto:${trimmedHref || trimmedValue}`;
+  }
+
+  return trimmedHref || trimmedValue;
 }
 
 function NikonMark() {
@@ -162,7 +179,13 @@ function NikonMark() {
   );
 }
 
-export function Footer() {
+type FooterProps = {
+  aboutData?: AboutData;
+  showPreview?: boolean;
+  variant?: "default" | "photo";
+};
+
+export function Footer({ aboutData, showPreview = false, variant = "default" }: FooterProps) {
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => {
@@ -175,9 +198,12 @@ export function Footer() {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   const year = new Date().getFullYear();
   const lastUpdate = formatLastUpdate(__LAST_UPDATE__);
+  const navLinks = import.meta.env.DEV || showPreview ? [...baseNavLinks, previewNavLink] : baseNavLinks;
+  const emailContact = aboutData?.contact.find((item) => item.label.toLowerCase() === "email");
+  const emailHref = emailContact ? normalizeHref(emailContact.label, emailContact.value, emailContact.href) : undefined;
 
   return (
-    <footer className="site-footer">
+    <footer className={`site-footer ${variant === "photo" ? "site-footer--photo" : ""}`}>
       <div className="site-footer__inner">
         <div className="footer-brand-row">
           <p className="footer-brand">Queenstown.top</p>
@@ -221,8 +247,12 @@ export function Footer() {
 
           <div className="footer-column">
             <h2 className="footer-label">Contact</h2>
-            <a href="mailto:hello@queenstown.top">hello@queenstown.top</a>
-            <p className="footer-sub">Based in Shanghai</p>
+            {emailContact && emailHref ? (
+              <a href={emailHref}>{emailContact.value}</a>
+            ) : (
+              <a href="mailto:3552219514@qq.com">3552219514@qq.com</a>
+            )}
+            <p className="footer-sub">Based in Zhejiang</p>
           </div>
 
           <div className="footer-column">
