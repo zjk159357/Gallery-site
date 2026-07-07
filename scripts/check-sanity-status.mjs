@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
 import path from "node:path";
-import { createClient } from "@sanity/client";
+import { promisify } from "node:util";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
+const execFileAsync = promisify(execFile);
 
 async function loadEnvFile(filename) {
   const filePath = path.join(projectRoot, filename);
@@ -55,6 +57,75 @@ function isMissingProjectId(projectId) {
   return !projectId || projectId === "your_sanity_project_id" || projectId === "yourprojectid";
 }
 
+async function fetchStatusCounts({ projectId, dataset, token }) {
+  const query = `{
+    "categories": count(*[_type == "category"]),
+    "photos": count(*[_type == "photo"]),
+    "photosWithImages": count(*[_type == "photo" && defined(image.asset)]),
+    "stories": count(*[_type == "story"]),
+    "siteSettings": count(*[_type == "siteSettings"]),
+    "heroPhotos": count(*[_type == "photo" && isHero == true])
+  }`;
+  const url = new URL(`https://${projectId}.api.sanity.io/v2025-02-19/data/query/${dataset}`);
+  url.searchParams.set("query", query);
+
+  const response = await fetch(url, {
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    signal: AbortSignal.timeout(15000),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Sanity status query failed: ${response.status} ${await response.text()}`);
+  }
+
+  const payload = await response.json();
+  return payload.result;
+}
+
+async function fetchStatusCountsWithPowerShell({ projectId, dataset, token }) {
+  const query = `{
+    "categories": count(*[_type == "category"]),
+    "photos": count(*[_type == "photo"]),
+    "photosWithImages": count(*[_type == "photo" && defined(image.asset)]),
+    "stories": count(*[_type == "story"]),
+    "siteSettings": count(*[_type == "siteSettings"]),
+    "heroPhotos": count(*[_type == "photo" && isHero == true])
+  }`;
+  const url = new URL(`https://${projectId}.api.sanity.io/v2025-02-19/data/query/${dataset}`);
+  url.searchParams.set("query", query);
+
+  const command = [
+    "$headers = @{}",
+    "if ($env:SANITY_STATUS_TOKEN) { $headers.Authorization = \"Bearer $env:SANITY_STATUS_TOKEN\" }",
+    "$response = Invoke-WebRequest -UseBasicParsing -Uri $env:SANITY_STATUS_URL -Headers $headers -TimeoutSec 20",
+    "$response.Content",
+  ].join("; ");
+
+  const { stdout } = await execFileAsync("powershell.exe", ["-NoProfile", "-Command", command], {
+    env: {
+      ...process.env,
+      SANITY_STATUS_URL: url.toString(),
+      SANITY_STATUS_TOKEN: token ?? "",
+    },
+    timeout: 25000,
+  });
+  const payload = JSON.parse(stdout);
+  return payload.result;
+}
+
+async function getStatusCounts(config) {
+  try {
+    return await fetchStatusCounts(config);
+  } catch (error) {
+    if (process.platform !== "win32") {
+      throw error;
+    }
+
+    console.log("Node fetch timed out; retrying with Windows web request...");
+    return fetchStatusCountsWithPowerShell(config);
+  }
+}
+
 async function main() {
   await loadEnv();
 
@@ -71,22 +142,7 @@ async function main() {
     return;
   }
 
-  const client = createClient({
-    projectId,
-    dataset,
-    token,
-    apiVersion: "2025-02-19",
-    useCdn: false,
-  });
-
-  const result = await client.fetch(`{
-    "categories": count(*[_type == "category"]),
-    "photos": count(*[_type == "photo"]),
-    "photosWithImages": count(*[_type == "photo" && defined(image.asset)]),
-    "stories": count(*[_type == "story"]),
-    "siteSettings": count(*[_type == "siteSettings"]),
-    "heroPhotos": count(*[_type == "photo" && isHero == true])
-  }`);
+  const result = await getStatusCounts({ projectId, dataset, token });
 
   console.log("Remote counts:");
   console.log(JSON.stringify(result, null, 2));
