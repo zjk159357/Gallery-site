@@ -91,26 +91,33 @@ async function main() {
   console.log("Remote counts:");
   console.log(JSON.stringify(result, null, 2));
 
-  const expected = {
-    categories: 8,
-    photos: 73,
-    stories: 3,
-    siteSettings: 1,
-  };
+  const issues = [];
 
-  const mismatches = Object.entries(expected).filter(([key, value]) => result[key] !== value);
+  if (result.categories < 1) {
+    issues.push("No categories found.");
+  }
 
-  if (mismatches.length > 0) {
-    console.log("Status: connected, but content counts differ from the current seed.");
-    for (const [key, value] of mismatches) {
-      console.log(`- ${key}: expected ${value}, got ${result[key]}`);
-    }
-    return;
+  if (result.photos < 1) {
+    issues.push("No photos found.");
   }
 
   if (result.photosWithImages < result.photos) {
-    console.log("Status: documents imported; image upload is incomplete.");
-    console.log(`Images patched: ${result.photosWithImages}/${result.photos}`);
+    issues.push(`Image upload is incomplete: ${result.photosWithImages}/${result.photos} photos have images.`);
+  }
+
+  if (result.siteSettings < 1) {
+    issues.push("No site settings document found.");
+  }
+
+  if (result.heroPhotos !== 1) {
+    issues.push(`Expected exactly 1 homepage hero photo, got ${result.heroPhotos}.`);
+  }
+
+  if (issues.length > 0) {
+    console.log("Status: connected, but content needs attention.");
+    for (const issue of issues) {
+      console.log(`- ${issue}`);
+    }
     return;
   }
 
