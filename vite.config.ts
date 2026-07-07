@@ -95,5 +95,8 @@ function heroPreloadPlugin(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    __LAST_UPDATE__: JSON.stringify(new Date().toISOString()),
+  },
   plugins: [react(), dropWoffFallback(), heroPreloadPlugin()],
 })

@@ -61,6 +61,23 @@ const tools = [
   },
 ];
 
+function formatLastUpdate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Unknown";
+  }
+
+  return new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Shanghai",
+  })
+    .format(date)
+    .replaceAll("-", ".");
+}
+
 function NikonMark() {
   return (
     <svg className="nikon-mark" viewBox="0 0 400 400" aria-label="Nikon">
@@ -157,6 +174,7 @@ export function Footer() {
 
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   const year = new Date().getFullYear();
+  const lastUpdate = formatLastUpdate(__LAST_UPDATE__);
 
   return (
     <footer className="site-footer">
@@ -261,7 +279,10 @@ export function Footer() {
               </span>
             </div>
 
-            <p className="footer-colophon__meta">Built with React + Vite</p>
+            <div className="footer-colophon__meta">
+              <span>Built with React + Vite</span>
+              <span>Last update · {lastUpdate}</span>
+            </div>
           </div>
         </div>
       </div>

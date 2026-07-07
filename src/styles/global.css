@@ -1433,7 +1433,12 @@ main {
 }
 
 .footer-colophon__meta {
-  margin: 4px 0 0 !important;
+  margin: 4px 0 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   color: rgba(232, 230, 230, 0.38);
   font-size: 11px;
   letter-spacing: 0.02em;
@@ -1445,7 +1450,8 @@ main {
     text-align: left;
   }
   .footer-colophon__line,
-  .footer-colophon__tools {
+  .footer-colophon__tools,
+  .footer-colophon__meta {
     justify-content: flex-start;
   }
 }
