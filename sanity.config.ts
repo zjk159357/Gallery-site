@@ -13,6 +13,7 @@ export default defineConfig({
   projectId,
   dataset,
   basePath: "/studio",
+  // Env vars SANITY_STUDIO_PROJECT_ID + SANITY_STUDIO_DATASET must be present at build time
   plugins: [structureTool({ structure }), visionTool()],
   schema: {
     types: schemaTypes,
