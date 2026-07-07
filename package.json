@@ -7,7 +7,7 @@
     "cms:login": "sanity login",
     "cms:projects": "sanity projects list",
     "cms:dev": "sanity dev",
-    "cms:build": "sanity build",
+    "cms:build": "node scripts/build-studio.mjs",
     "cms:deploy": "sanity deploy",
     "cms:seed": "node scripts/generate-sanity-seed.mjs",
     "cms:status": "node scripts/check-sanity-status.mjs",
