@@ -83,7 +83,7 @@ function App() {
         )}
       </main>
 
-      <Footer aboutData={aboutData} showPreview={showPreview} variant={isFooterPreviewPage ? "photo" : "default"} />
+      <Footer aboutData={aboutData} showPreview={showPreview} variant="photo" />
 
       {!isStaticPage && (
         <GalleryLightbox
