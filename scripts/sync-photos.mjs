@@ -18,6 +18,16 @@ const toPosix = (value) => value.split(path.sep).join("/");
 
 const titleFromFilename = (filename) => path.basename(filename, path.extname(filename));
 
+function slugify(value) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-")
+    .replace(/[^\p{L}\p{N}-]+/gu, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 async function copyIfChanged(source, target) {
   const sourceStats = await stat(source);
 
@@ -90,6 +100,7 @@ async function collectPhotos() {
         id: `photo-${String(photos.length + 1).padStart(3, "0")}`,
         src: `/${toPosix(path.relative(path.join(projectRoot, "public"), targetPath))}`,
         title: titleFromFilename(filename),
+        slug: slugify(titleFromFilename(filename)) || `photo-${String(photos.length + 1).padStart(3, "0")}`,
         category,
         filename,
         width: shouldSwap ? rawHeight : rawWidth,
@@ -109,6 +120,7 @@ function serializeData(photos) {
   id: string;
   src: string;
   title: string;
+  slug?: string;
   category: string;
   filename: string;
   width: number;

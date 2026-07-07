@@ -3,6 +3,7 @@ export type CmsPhoto = {
   src: string;
   legacyPublicPath?: string;
   title: string;
+  slug?: string;
   category: string;
   filename: string;
   width: number;
@@ -47,9 +48,12 @@ export type PortableTextBlock = {
 type CmsStoryPhoto = {
   id?: string;
   title?: string;
+  slug?: string;
   src?: string;
   legacyPublicPath?: string;
   filename?: string;
+  width?: number;
+  height?: number;
 };
 
 export const cmsPhotosQuery = `*[_type == "photo" && isHidden != true] | order(sortOrder asc, date desc) {
@@ -57,6 +61,7 @@ export const cmsPhotosQuery = `*[_type == "photo" && isHidden != true] | order(s
   "src": image.asset->url,
   "legacyPublicPath": legacyPublicPath,
   title,
+  "slug": slug.current,
   "category": category->title,
   "filename": sourceFilename,
   "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
@@ -90,16 +95,22 @@ export const cmsStoriesQuery = `*[_type == "story"] | order(publishedAt desc) {
   "coverPhoto": coverPhoto->{
     "id": _id,
     title,
+    "slug": slug.current,
     "src": image.asset->url,
     "legacyPublicPath": legacyPublicPath,
-    "filename": sourceFilename
+    "filename": sourceFilename,
+    "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
+    "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
   },
   "relatedPhotos": relatedPhotos[]->{
     "id": _id,
     title,
+    "slug": slug.current,
     "src": image.asset->url,
     "legacyPublicPath": legacyPublicPath,
-    "filename": sourceFilename
+    "filename": sourceFilename,
+    "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
+    "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
   }
 }`;
 
@@ -108,9 +119,12 @@ export const cmsSiteSettingsQuery = `*[_type == "siteSettings"][0] {
   "heroPhoto": heroPhoto->{
     "id": _id,
     title,
+    "slug": slug.current,
     "src": image.asset->url,
     "legacyPublicPath": legacyPublicPath,
-    "filename": sourceFilename
+    "filename": sourceFilename,
+    "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
+    "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
   },
   aboutName,
   aboutLocation,

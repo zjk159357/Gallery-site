@@ -11,6 +11,7 @@ export type PhotoMeta = {
 
 export type PhotoStory = {
   title: string;
+  slug?: string;
   excerpt: string;
   body: string[];
 };
@@ -123,7 +124,7 @@ export const photoStories: Record<string, PhotoStory[]> = {
 };
 
 export const aboutData: AboutData = {
-  name: "Leon Li",
+  name: "JiaKaiZhong",
   location: "浙江台州 / 上海",
   bio: [
     "在浙江长大,工作后搬到上海。喜欢清晨和傍晚的光,平时用一台 A7M4 记录身边能走到的地方。",

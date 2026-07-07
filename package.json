@@ -16,7 +16,7 @@
     "sync:photos": "node scripts/sync-photos.mjs",
     "predev": "npm run sync:photos",
     "dev": "vite",
-    "prebuild": "npm run sync:photos && npm run cms:build && node scripts/embed-studio.mjs",
+    "prebuild": "npm run sync:photos && node scripts/generate-sitemap.mjs && npm run cms:build && node scripts/embed-studio.mjs",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"

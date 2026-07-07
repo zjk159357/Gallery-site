@@ -7,6 +7,7 @@ import {
   type PhotoMeta,
   type PhotoStory,
 } from "../data/stories";
+import { storyPath } from "../lib/routes";
 
 type GalleryLightboxProps = {
   photos: Photo[];
@@ -82,7 +83,7 @@ export function GalleryLightbox({
                   </dl>
                 ) : null}
                 {story ? (
-                  <a className="lightbox-story-link" href="/journal">
+                  <a className="lightbox-story-link" href={storyPath(story, photo.slug)}>
                     查看手记
                   </a>
                 ) : null}

@@ -24,6 +24,7 @@ export type GalleryContent = {
   photoMeta: Record<string, PhotoMeta>;
   photoStories: Record<string, PhotoStory[]>;
   aboutData: AboutData;
+  heroPhoto?: Photo;
   source: "static" | "cms";
   isLoading: boolean;
   error?: string;
@@ -69,6 +70,7 @@ function toPhoto(photo: CmsPhoto): Photo | null {
     id: photo.id,
     src,
     title: photo.title,
+    slug: photo.slug,
     category: photo.category,
     filename: photo.filename,
     width: photo.width || 1,
@@ -108,6 +110,24 @@ function toPhotoMeta(photos: CmsPhoto[]) {
   }, {});
 }
 
+function toReferencedPhoto(photo: CmsSiteSettings["heroPhoto"]): Photo | undefined {
+  const src = resolvePhotoSrc(photo?.src, photo?.legacyPublicPath);
+  if (!photo?.id || !src || !photo.title || !photo.filename) {
+    return undefined;
+  }
+
+  return {
+    id: photo.id,
+    src,
+    title: photo.title,
+    slug: photo.slug,
+    category: "",
+    filename: photo.filename,
+    width: photo.width || 1,
+    height: photo.height || 1,
+  };
+}
+
 function toPhotoStories(stories: CmsStory[]) {
   return stories.reduce<Record<string, PhotoStory[]>>((storiesByFilename, story) => {
     const filename = story.coverPhoto?.filename ?? story.relatedPhotos?.find((photo) => photo.filename)?.filename;
@@ -115,6 +135,7 @@ function toPhotoStories(stories: CmsStory[]) {
 
     const entry: PhotoStory = {
       title: story.title,
+      slug: story.slug,
       excerpt: story.excerpt ?? "",
       body: blocksToLines(story.body),
     };
@@ -159,6 +180,9 @@ async function loadCmsContent(): Promise<GalleryContent> {
   ]);
 
   const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
+  const heroPhoto =
+    photos.find((photo) => photo.id === cmsSiteSettings?.heroPhoto?.id) ??
+    toReferencedPhoto(cmsSiteSettings?.heroPhoto);
 
   if (photos.length === 0) {
     throw new Error("Sanity returned no publishable photos");
@@ -169,6 +193,7 @@ async function loadCmsContent(): Promise<GalleryContent> {
     photoMeta: toPhotoMeta(cmsPhotos),
     photoStories: toPhotoStories(cmsStories),
     aboutData: toAboutData(cmsSiteSettings),
+    heroPhoto,
     source: "cms",
     isLoading: false,
   };

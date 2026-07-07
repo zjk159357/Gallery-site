@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { About } from "./components/About";
 import { BalconyView } from "./components/BalconyView";
 import { CmsSourceBadge } from "./components/CmsSourceBadge";
@@ -7,8 +7,25 @@ import { GalleryLightbox } from "./components/GalleryLightbox";
 import { GallerySections } from "./components/GallerySections";
 import { Header } from "./components/Header";
 import { Journal } from "./components/Journal";
+import { PhotoDetail } from "./components/PhotoDetail";
 import { PhotoStory } from "./components/PhotoStory";
+import { StoryDetail } from "./components/StoryDetail";
 import { useGalleryContent } from "./lib/galleryContent";
+import { matchesPhotoSlug, matchesStorySlug } from "./lib/routes";
+
+const SITE_TITLE = "Queenstown.top | Photography";
+const DEFAULT_DESCRIPTION =
+  "Queenstown.top 是 JiaKaiZhong 的摄影档案，记录山野、海岸、森林、花朵、城市边缘与旅行片段。";
+
+function setMeta(name: string, content: string, attribute: "name" | "property" = "name") {
+  let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${name}"]`);
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attribute, name);
+    document.head.append(tag);
+  }
+  tag.content = content;
+}
 
 function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -20,15 +37,55 @@ function App() {
   const isAboutPage = pathname === "/about";
   const isJournalPage = pathname === "/journal";
   const isFooterPreviewPage = pathname === "/footer-preview";
-  const isStaticPage = isBalconyPage || isStoryPage || isAboutPage || isJournalPage || isFooterPreviewPage;
+  const photoRouteSlug = pathname.startsWith("/photos/") ? decodeURIComponent(pathname.slice("/photos/".length)) : "";
+  const storyRouteSlug = pathname.startsWith("/stories/") ? decodeURIComponent(pathname.slice("/stories/".length)) : "";
   const showPreview = new URLSearchParams(window.location.search).has("preview");
 
   const heroPhoto = useMemo(() => {
-    return photos.find((photo) => photo.isHero)
+    return content.heroPhoto
+      ?? photos.find((photo) => photo.isHero)
       ?? photos.find((photo) => photo.filename === "DSC_0257.JPG")
-      ?? photos.find((photo) => photo.category === "石塘度假区")
       ?? photos[0];
-  }, [photos]);
+  }, [content.heroPhoto, photos]);
+
+  const activePhoto = useMemo(() => {
+    if (!photoRouteSlug) return undefined;
+    return photos.find((photo) => matchesPhotoSlug(photo, photoRouteSlug));
+  }, [photoRouteSlug, photos]);
+
+  const activeStory = useMemo(() => {
+    if (!storyRouteSlug) return undefined;
+
+    for (const [filename, stories] of Object.entries(photoStories)) {
+      const photo = photos.find((item) => item.filename === filename);
+      if (!photo) continue;
+
+      const story = stories.find((item) => matchesStorySlug(item, storyRouteSlug, photo));
+      if (story) {
+        return { photo, story };
+      }
+    }
+
+    return undefined;
+  }, [photoStories, photos, storyRouteSlug]);
+
+  const isDetailPage = Boolean(photoRouteSlug || storyRouteSlug);
+  const isStaticPage =
+    isBalconyPage || isStoryPage || isAboutPage || isJournalPage || isFooterPreviewPage || isDetailPage;
+
+  useEffect(() => {
+    const title = activePhoto?.title ?? activeStory?.story.title;
+    const description =
+      activeStory?.story.excerpt ??
+      (activePhoto ? `${activePhoto.category} / ${activePhoto.filename}` : DEFAULT_DESCRIPTION);
+    const image = activePhoto?.src ?? activeStory?.photo.src ?? heroPhoto?.src;
+
+    document.title = title ? `${title} | Queenstown.top` : SITE_TITLE;
+    setMeta("description", description);
+    setMeta("og:title", title ? `${title} | Queenstown.top` : SITE_TITLE, "property");
+    setMeta("og:description", description, "property");
+    if (image) setMeta("og:image", image, "property");
+  }, [activePhoto, activeStory, heroPhoto]);
 
   return (
     <>
@@ -37,7 +94,25 @@ function App() {
       <CmsSourceBadge content={content} />
 
       <main>
-        {isBalconyPage ? (
+        {activePhoto ? (
+          <PhotoDetail photo={activePhoto} photoMeta={photoMeta} photoStories={photoStories} />
+        ) : activeStory ? (
+          <StoryDetail photo={activeStory.photo} story={activeStory.story} />
+        ) : (photoRouteSlug || storyRouteSlug) && content.isLoading ? (
+          <section className="detail-page detail-empty" aria-labelledby="detail-loading-title">
+            <p className="detail-kicker">Loading</p>
+            <h1 id="detail-loading-title">Loading this entry.</h1>
+          </section>
+        ) : photoRouteSlug || storyRouteSlug ? (
+          <section className="detail-page detail-empty" aria-labelledby="detail-empty-title">
+            <p className="detail-kicker">Not Found</p>
+            <h1 id="detail-empty-title">This entry is not available.</h1>
+            <a className="detail-related-link" href="/">
+              <span>Back to Queenstown.top</span>
+              <small>Return to the photography archive</small>
+            </a>
+          </section>
+        ) : isBalconyPage ? (
           <BalconyView photos={photos} photoMeta={photoMeta} photoStories={photoStories} />
         ) : isStoryPage ? (
           <PhotoStory photos={photos} photoMeta={photoMeta} photoStories={photoStories} aboutData={aboutData} />
@@ -69,13 +144,13 @@ function App() {
             </section>
 
             {showPreview && (
-            <a className="story-test-cta" href="/photostory" aria-label="Open photo notes and stories">
-              <span className="story-test-cta-tag">摄影手记</span>
-              <span className="story-test-cta-text">
-                阅读照片背后的地点、参数与创作记录
-              </span>
-              <span className="story-test-cta-arrow" aria-hidden="true">→</span>
-            </a>
+              <a className="story-test-cta" href="/photostory" aria-label="Open photo notes and stories">
+                <span className="story-test-cta-tag">Photo Notes</span>
+                <span className="story-test-cta-text">
+                  Read locations, camera settings, and field notes behind selected photographs.
+                </span>
+                <span className="story-test-cta-arrow" aria-hidden="true">-&gt;</span>
+              </a>
             )}
 
             <GallerySections photos={photos} onOpen={setLightboxIndex} />

@@ -7,6 +7,7 @@ import {
   type PhotoMeta,
   type PhotoStory as PhotoStoryData,
 } from "../data/stories";
+import { photoPath, storyPath } from "../lib/routes";
 
 type PhotoStoryProps = {
   photos: Photo[];
@@ -67,7 +68,9 @@ function StoryEntry({
       </div>
       <div className="story-entry-body">
         <p className="story-entry-kicker">{photo.category} · {photo.filename}</p>
-        <h2 className="story-entry-title">{story.title}</h2>
+        <h2 className="story-entry-title">
+          <a href={storyPath(story, photo.slug)}>{story.title}</a>
+        </h2>
         <p className="story-entry-excerpt">{story.excerpt}</p>
         {story.body.map((paragraph, index) => (
           <p key={index} className="story-entry-paragraph">{paragraph}</p>
@@ -146,7 +149,9 @@ export function MetadataSection({ photos, photoMeta = staticPhotoMeta }: PhotoSt
 
       <div className="story-meta-grid">
         {metaEntries.map(({ photo, meta }) => (
-          <MetaCard key={photo.id} photo={photo} meta={meta} />
+          <a className="story-meta-card-link" key={photo.id} href={photoPath(photo)}>
+            <MetaCard photo={photo} meta={meta} />
+          </a>
         ))}
       </div>
     </section>
@@ -175,7 +180,7 @@ export function JournalSection({ photos, photoStories = staticPhotoStories }: Ph
       <div className="story-entries">
         {storyEntries.map(({ photo, story }, index) => (
           <StoryEntry
-            key={photo.id}
+            key={`${photo.id}-${story.title}`}
             photo={photo}
             story={story}
             align={index % 2 === 0 ? "left" : "right"}

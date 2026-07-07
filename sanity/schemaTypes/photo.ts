@@ -16,6 +16,7 @@ export const photoType = defineType({
       title: "Slug",
       type: "slug",
       options: { source: "title", maxLength: 96 },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "image",
