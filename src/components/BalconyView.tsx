@@ -2,7 +2,9 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
 import type { PhotoMeta, PhotoStory } from "../data/stories";
-import { GalleryLightbox } from "./GalleryLightbox";
+import { sizedImageUrl } from "../lib/imageUrl";
+import { photoPath } from "../lib/routes";
+import { AdvancedPhotoLightbox } from "./AdvancedPhotoLightbox";
 
 type BalconyViewProps = {
   photos: Photo[];
@@ -47,7 +49,9 @@ function PhotoButton({ photo, className, loading = "lazy", onOpen }: PhotoButton
       aria-label={`Open ${photo.title}`}
     >
       <img
-        src={photo.src}
+        src={sizedImageUrl(photo.src, 900)}
+        srcSet={`${sizedImageUrl(photo.src, 700)} 700w, ${sizedImageUrl(photo.src, 1100)} 1100w`}
+        sizes="(max-width: 700px) 92vw, 32vw"
         alt={`${photo.category} ${photo.title}`}
         width={photo.width}
         height={photo.height}
@@ -93,10 +97,13 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
         aria-label={`Open ${active.title}`}
       >
         <img
-          src={active.src}
+          src={sizedImageUrl(active.src, 1500, 86)}
+          srcSet={`${sizedImageUrl(active.src, 1100)} 1100w, ${sizedImageUrl(active.src, 1700, 86)} 1700w`}
+          sizes="(max-width: 900px) 92vw, 76vw"
           alt={`${active.category} ${active.title}`}
           width={active.width}
           height={active.height}
+          loading="eager"
           decoding="async"
         />
       </button>
@@ -160,10 +167,14 @@ export function BalconyView({ photos, photoMeta, photoStories }: BalconyViewProp
 
       <section className="balcony-hero" aria-label="Balcony View hero">
         <img
-          src={content.hero.src}
+          src={sizedImageUrl(content.hero.src, 1800, 88)}
+          srcSet={`${sizedImageUrl(content.hero.src, 1200)} 1200w, ${sizedImageUrl(content.hero.src, 2200, 88)} 2200w`}
+          sizes="100vw"
           alt={`${content.hero.category} ${content.hero.title}`}
           width={content.hero.width}
           height={content.hero.height}
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
         />
       </section>
@@ -213,13 +224,18 @@ export function BalconyView({ photos, photoMeta, photoStories }: BalconyViewProp
         ))}
       </section>
 
-      <GalleryLightbox
+      <AdvancedPhotoLightbox
         photos={content.lightboxPhotos}
         index={lightboxIndex}
         onClose={() => setLightboxIndex(-1)}
-        onView={setLightboxIndex}
+        onNavigate={setLightboxIndex}
         photoMeta={photoMeta}
         photoStories={photoStories}
+        shareUrl={
+          lightboxIndex >= 0
+            ? `${window.location.origin}${photoPath(content.lightboxPhotos[lightboxIndex])}`
+            : undefined
+        }
       />
     </article>
   );

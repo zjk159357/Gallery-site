@@ -16,6 +16,6 @@ export function getSanityClient(): SanityClient | null {
     projectId,
     dataset,
     apiVersion: "2025-02-19",
-    useCdn: true,
+    useCdn: false,
   });
 }

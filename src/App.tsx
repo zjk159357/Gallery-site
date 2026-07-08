@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { About } from "./components/About";
+import { AdvancedPhotoLightbox } from "./components/AdvancedPhotoLightbox";
 import { BalconyView } from "./components/BalconyView";
 import { CmsSourceBadge } from "./components/CmsSourceBadge";
 import { Footer } from "./components/Footer";
-import { GalleryLightbox } from "./components/GalleryLightbox";
 import { GallerySections } from "./components/GallerySections";
 import { Header } from "./components/Header";
 import { Journal } from "./components/Journal";
-import { PhotoDetail } from "./components/PhotoDetail";
 import { PhotoStory } from "./components/PhotoStory";
 import { StoryDetail } from "./components/StoryDetail";
 import { useGalleryContent } from "./lib/galleryContent";
-import { matchesPhotoSlug, matchesStorySlug } from "./lib/routes";
+import { matchesPhotoSlug, matchesStorySlug, photoPath } from "./lib/routes";
 
 const SITE_TITLE = "Queenstown.top | Photography";
 const DEFAULT_DESCRIPTION =
@@ -29,9 +28,10 @@ function setMeta(name: string, content: string, attribute: "name" | "property" =
 
 function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname.replace(/\/$/, "") || "/");
   const content = useGalleryContent();
   const { photos, photoMeta, photoStories, aboutData } = content;
-  const pathname = window.location.pathname.replace(/\/$/, "") || "/";
+  const pathname = currentPath;
   const isBalconyPage = pathname === "/photobalcony";
   const isStoryPage = pathname === "/photostory";
   const isAboutPage = pathname === "/about";
@@ -42,8 +42,8 @@ function App() {
   const showPreview = new URLSearchParams(window.location.search).has("preview");
 
   const heroPhoto = useMemo(() => {
-    return content.heroPhoto
-      ?? photos.find((photo) => photo.isHero)
+    return photos.find((photo) => photo.isHero)
+      ?? content.heroPhoto
       ?? photos.find((photo) => photo.filename === "DSC_0257.JPG")
       ?? photos[0];
   }, [content.heroPhoto, photos]);
@@ -51,6 +51,11 @@ function App() {
   const activePhoto = useMemo(() => {
     if (!photoRouteSlug) return undefined;
     return photos.find((photo) => matchesPhotoSlug(photo, photoRouteSlug));
+  }, [photoRouteSlug, photos]);
+
+  const activePhotoIndex = useMemo(() => {
+    if (!photoRouteSlug) return -1;
+    return photos.findIndex((photo) => matchesPhotoSlug(photo, photoRouteSlug));
   }, [photoRouteSlug, photos]);
 
   const activeStory = useMemo(() => {
@@ -69,9 +74,62 @@ function App() {
     return undefined;
   }, [photoStories, photos, storyRouteSlug]);
 
-  const isDetailPage = Boolean(photoRouteSlug || storyRouteSlug);
-  const isStaticPage =
-    isBalconyPage || isStoryPage || isAboutPage || isJournalPage || isFooterPreviewPage || isDetailPage;
+  const advancedLightboxIndex = activePhotoIndex >= 0 ? activePhotoIndex : lightboxIndex;
+
+  const setBrowserPath = (path: string, mode: "push" | "replace" = "push") => {
+    if (window.location.pathname === path) {
+      setCurrentPath(path.replace(/\/$/, "") || "/");
+      return;
+    }
+
+    window.history[mode === "push" ? "pushState" : "replaceState"]({}, "", path);
+    setCurrentPath(path.replace(/\/$/, "") || "/");
+  };
+
+  useEffect(() => {
+    if (!photoRouteSlug || !activePhoto) return;
+
+    const canonicalPath = photoPath(activePhoto);
+    if (pathname !== canonicalPath) {
+      setBrowserPath(canonicalPath, "replace");
+    }
+  }, [activePhoto, photoRouteSlug, pathname]);
+
+  const openPhoto = (index: number) => {
+    const photo = photos[index];
+    if (!photo) return;
+
+    setLightboxIndex(index);
+    setBrowserPath(photoPath(photo), "push");
+  };
+
+  const navigatePhoto = (index: number) => {
+    const photo = photos[index];
+    if (!photo) return;
+
+    setLightboxIndex(index);
+    setBrowserPath(photoPath(photo), "replace");
+  };
+
+  const closePhoto = () => {
+    setLightboxIndex(-1);
+    if (photoRouteSlug) {
+      setBrowserPath("/", "replace");
+    }
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      const nextPath = window.location.pathname.replace(/\/$/, "") || "/";
+      setCurrentPath(nextPath);
+      if (!nextPath.startsWith("/photos/")) {
+        setLightboxIndex(-1);
+      }
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     const title = activePhoto?.title ?? activeStory?.story.title;
@@ -94,10 +152,28 @@ function App() {
       <CmsSourceBadge content={content} />
 
       <main>
-        {activePhoto ? (
-          <PhotoDetail photo={activePhoto} photoMeta={photoMeta} photoStories={photoStories} />
-        ) : activeStory ? (
+        {activeStory ? (
           <StoryDetail photo={activeStory.photo} story={activeStory.story} />
+        ) : photoRouteSlug && activePhoto ? (
+          <>
+            <section className="page-title-band" id="top" aria-labelledby="page-title">
+              <h1 id="page-title">Photography</h1>
+            </section>
+
+            <section className="hero" aria-label="Featured photograph">
+              <img
+                className="hero-image"
+                src={heroPhoto.src}
+                alt=""
+                aria-hidden="true"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </section>
+
+            <GallerySections photos={photos} onOpen={openPhoto} />
+          </>
         ) : (photoRouteSlug || storyRouteSlug) && content.isLoading ? (
           <section className="detail-page detail-empty" aria-labelledby="detail-loading-title">
             <p className="detail-kicker">Loading</p>
@@ -153,19 +229,19 @@ function App() {
               </a>
             )}
 
-            <GallerySections photos={photos} onOpen={setLightboxIndex} />
+            <GallerySections photos={photos} onOpen={openPhoto} />
           </>
         )}
       </main>
 
       <Footer aboutData={aboutData} showPreview={showPreview} variant="photo" />
 
-      {!isStaticPage && (
-        <GalleryLightbox
+      {advancedLightboxIndex >= 0 && (
+        <AdvancedPhotoLightbox
           photos={photos}
-          index={lightboxIndex}
-          onClose={() => setLightboxIndex(-1)}
-          onView={setLightboxIndex}
+          index={advancedLightboxIndex}
+          onClose={closePhoto}
+          onNavigate={navigatePhoto}
           photoMeta={photoMeta}
           photoStories={photoStories}
         />

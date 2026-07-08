@@ -17,7 +17,7 @@ export function filenameSlug(filename: string) {
 }
 
 export function photoSlug(photo: Pick<Photo, "filename" | "slug">) {
-  return photo.slug || filenameSlug(photo.filename);
+  return filenameSlug(photo.filename);
 }
 
 export function photoPath(photo: Pick<Photo, "filename" | "slug">) {

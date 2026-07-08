@@ -181,6 +181,7 @@ async function loadCmsContent(): Promise<GalleryContent> {
 
   const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
   const heroPhoto =
+    photos.find((photo) => photo.isHero) ??
     photos.find((photo) => photo.id === cmsSiteSettings?.heroPhoto?.id) ??
     toReferencedPhoto(cmsSiteSettings?.heroPhoto);
 

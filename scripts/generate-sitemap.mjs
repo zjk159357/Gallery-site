@@ -74,7 +74,7 @@ async function fetchCmsEntries() {
     return null;
   }
 
-  const client = createClient({ projectId, dataset, apiVersion: "2025-02-19", useCdn: true });
+  const client = createClient({ projectId, dataset, apiVersion: "2025-02-19", useCdn: false });
   const [photos, stories] = await Promise.all([
     client.fetch(`*[_type == "photo" && isHidden != true]{
       "slug": slug.current,
@@ -123,7 +123,7 @@ const routes = [
   route("/journal", undefined, "0.7"),
   route("/about", undefined, "0.6"),
   route("/photobalcony", undefined, "0.6"),
-  ...entries.photos.map((photo) => route(`/photos/${photo.slug || filenameSlug(photo.filename)}`, photo.updatedAt || photo.date, "0.8")),
+  ...entries.photos.map((photo) => route(`/photos/${filenameSlug(photo.filename)}`, photo.updatedAt || photo.date, "0.8")),
   ...entries.stories.map((story) => route(`/stories/${story.slug || slugify(story.title)}`, story.updatedAt || story.publishedAt, "0.7")),
 ];
 

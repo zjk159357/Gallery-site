@@ -16,6 +16,7 @@ type GalleryLightboxProps = {
   onView: (index: number) => void;
   photoMeta?: Record<string, PhotoMeta>;
   photoStories?: Record<string, PhotoStory[]>;
+  showMeta?: boolean;
 };
 
 export function GalleryLightbox({
@@ -25,6 +26,7 @@ export function GalleryLightbox({
   onView,
   photoMeta = staticPhotoMeta,
   photoStories = staticPhotoStories,
+  showMeta = true,
 }: GalleryLightboxProps) {
   const slides = photos.map((photo) => ({
     src: photo.src,
@@ -44,7 +46,7 @@ export function GalleryLightbox({
       on={{
         view: ({ index: nextIndex }) => onView(nextIndex),
       }}
-      render={{
+      render={showMeta ? {
         slideFooter: ({ slide }) => {
           const photoIndex = photos.findIndex((photo) => photo.src === slide.src);
           const photo = photoIndex >= 0 ? photos[photoIndex] : photos[index];
@@ -92,7 +94,7 @@ export function GalleryLightbox({
             </div>
           );
         },
-      }}
+      } : undefined}
       styles={{
         root: {
           "--yarl__color_backdrop": "#050505",
