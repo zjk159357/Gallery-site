@@ -2,8 +2,6 @@
 
 Personal photography archive built with React, TypeScript, and Vite. The site presents large-format galleries, a Balcony View series, an About page, a Journal page, and a preserved `/photostory` preview module for testing richer photo notes.
 
-<!-- auto-deploy test: 2026-07-06 verify Vercel GitHub integration -->
-
 ## Local Development
 
 ```bash
@@ -61,6 +59,7 @@ npm run cms:sync -- --limit 2
 
 See `docs/sanity-migration.md` for the import workflow.
 See `docs/deployment.md` for the GitHub + Vercel deployment workflow.
+See `docs/auto-deploy.md` for wiring Sanity to Vercel auto-rebuilds on CMS changes.
 
 The public site uses local static data as a fallback. When `VITE_SANITY_PROJECT_ID` and `VITE_SANITY_DATASET` are configured, the browser loads published Sanity content and replaces the fallback data after startup.
 
