@@ -1882,6 +1882,8 @@ main {
   }
 
   .advanced-lightbox-layout {
+    display: flex;
+    flex-direction: column;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto;
     align-content: start;
@@ -1893,29 +1895,30 @@ main {
   }
 
   .advanced-lightbox-media-column {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+    display: contents;
   }
 
   .advanced-lightbox-photo {
     min-height: 300px;
     height: 52vh;
     flex: 0 0 auto;
-  }
-
-  .advanced-lightbox-meta {
-    grid-template-columns: 1fr;
-    flex: 0 0 auto;
-  }
-
-  .advanced-lightbox-copy {
-    justify-self: start;
+    order: 1;
   }
 
   .advanced-lightbox-story {
     min-height: 320px;
     overflow: visible;
+    order: 2;
+  }
+
+  .advanced-lightbox-meta {
+    grid-template-columns: 1fr;
+    flex: 0 0 auto;
+    order: 3;
+  }
+
+  .advanced-lightbox-copy {
+    justify-self: start;
   }
 
   .site-header {
