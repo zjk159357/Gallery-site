@@ -2033,6 +2033,7 @@ main {
   }
 
   .advanced-lightbox-close {
+    position: fixed;
     top: 6px;
     right: 6px;
     width: 42px;
