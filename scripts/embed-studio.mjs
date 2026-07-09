@@ -1,5 +1,4 @@
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { cpSync, existsSync, mkdirSync } from "node:fs";
 
 const src = "dist";
 const dst = "public/studio";
@@ -12,15 +11,8 @@ if (!existsSync(src + "/index.html")) {
 mkdirSync(dst, { recursive: true });
 cpSync(src, dst, { recursive: true, force: true });
 
-// Fix absolute paths in the studio HTML so it works from /studio/ subdirectory.
-// The Sanity Studio build outputs <script src="/static/..."> but we need
-// <script src="./static/..."> so the browser resolves relative to /studio/.
-const indexPath = join(dst, "index.html");
-const html = readFileSync(indexPath, "utf8");
-const patched = html
-  .replace(/(src|href)="\/static\//g, '$1="./static/')
-  .replace(/(src|href)="\/favicon/g, '$1="./favicon');
-writeFileSync(indexPath, patched, "utf8");
-console.log(`patched ${indexPath}: /static/ -> ./static/`);
+// Keep the Sanity Studio's absolute /static/... asset paths. The vercel.json
+// rewrite maps /static/:path* -> /studio/static/:path* so they resolve
+// correctly at any /studio/* sub-path (e.g. /studio/structure/homepage).
 
 console.log("studio copied to public/studio/");
