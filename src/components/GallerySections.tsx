@@ -1,9 +1,11 @@
 import type { Photo } from "../data/photos";
+import type { HomepageLayout } from "../lib/homepageLayout";
 import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 import { LandscapeSection } from "./LandscapeSection";
 
 type GallerySectionsProps = {
   photos: Photo[];
+  homepageLayout?: HomepageLayout;
   onOpen: (index: number) => void;
 };
 
@@ -34,6 +36,8 @@ const byFilenames = (photos: Photo[], filenames: string[]) =>
     const photo = photos.find((item) => item.filename === filename);
     return photo ? [photo] : [];
   });
+
+const configuredPhotos = (photos: Photo[] | undefined, fallback: Photo[]) => (photos?.length ? photos : fallback);
 
 function uniquePhotos(...groups: Photo[][]) {
   const seen = new Set<string>();
@@ -92,7 +96,15 @@ function GalleryRail({
   );
 }
 
-function BannerImage({ photo, allPhotos, onOpen }: { photo: Photo | undefined; allPhotos: Photo[]; onOpen: (index: number) => void }) {
+function BannerImage({
+  photo,
+  allPhotos,
+  onOpen,
+}: {
+  photo: Photo | undefined;
+  allPhotos: Photo[];
+  onOpen: (index: number) => void;
+}) {
   if (!photo) return null;
 
   return (
@@ -239,7 +251,7 @@ function PlantsReferenceLayout({
   );
 }
 
-export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
+export function GallerySections({ photos, homepageLayout, onOpen }: GallerySectionsProps) {
   const landscapeCandidates = uniquePhotos(
     byCategory(photos, "山野", 9),
     byCategory(photos, "日出日落", 8),
@@ -254,40 +266,73 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
   const squareSet = byAspect(photos, "square").slice(0, 8);
   const mixedArchive = uniquePhotos(byAspect(photos, "portrait"), byAspect(photos, "landscape"), photos).slice(0, 30);
 
-  const featureCards = [
+  const fallbackFeatureCards = [
     {
       id: "balcony-view",
       title: "Balcony View",
       photo: photos.find((photo) => photo.filename === "DSC_0243.JPG") ?? city[0] ?? photos[0],
       href: "/photobalcony",
     },
-    { id: "auckland", title: "Auckland", photo: byCategory(photos, "海洋", 1)[0] ?? landscape[0] },
-    { id: "australia", title: "Australia", photo: landscape[1] ?? landscape[0] },
+    { id: "auckland", title: "Auckland", photo: byCategory(photos, "海洋", 1)[0] ?? landscape[0] ?? photos[0] },
+    { id: "australia", title: "Australia", photo: landscape[1] ?? landscape[0] ?? photos[0] },
   ];
+  const featureCards = fallbackFeatureCards.map((fallbackCard, index) => {
+    const configuredCard = homepageLayout?.featureCards?.[index];
+
+    return configuredCard
+      ? {
+          id: fallbackCard.id,
+          title: configuredCard.title,
+          photo: configuredCard.photo,
+          href: configuredCard.href,
+        }
+      : fallbackCard;
+  });
 
   const groups: PhotoGroup[] = [
-    { id: "landscape", title: "Landscape", photos: landscape.slice(0, 24), variant: "cinema" },
-    { id: "quiet", title: "", photos: squareSet.length ? squareSet : plants.slice(0, 8), variant: "square" },
-    { id: "city", title: "City", photos: city.slice(0, 22), variant: "cinema" },
-    { id: "plants", title: "Plants", photos: plants.slice(0, 18), variant: "cinema" },
+    {
+      id: "landscape",
+      title: "Landscape",
+      photos: configuredPhotos(homepageLayout?.landscapePhotos, landscape.slice(0, 24)),
+      variant: "cinema",
+    },
+    {
+      id: "quiet",
+      title: "",
+      photos: configuredPhotos(homepageLayout?.quietPhotos, squareSet.length ? squareSet : plants.slice(0, 8)),
+      variant: "square",
+    },
+    {
+      id: "city",
+      title: "City",
+      photos: configuredPhotos(homepageLayout?.cityPhotos, city.slice(0, 22)),
+      variant: "cinema",
+    },
+    {
+      id: "plants",
+      title: "Plants",
+      photos: configuredPhotos(homepageLayout?.plantsCarouselPhotos, plants.slice(0, 18)),
+      variant: "cinema",
+    },
   ];
 
-  const bannerOne = byCategory(photos, "石塘度假区", 1, 8)[0] ?? city[0];
+  const bannerOne = homepageLayout?.bannerOnePhoto ?? byCategory(photos, "石塘度假区", 1, 8)[0] ?? city[0];
   const plantLandscapePhotos = byAspect(plants, "landscape");
   const plantPortraitPhotos = byAspect(plants, "portrait");
-  const bannerTwo = photos.find((photo) => photo.filename === "DSC_0555.JPG") ?? plantLandscapePhotos[0] ?? plants[0];
+  const bannerTwo =
+    homepageLayout?.plantsHeroPhoto ?? photos.find((photo) => photo.filename === "DSC_0555.JPG") ?? plantLandscapePhotos[0] ?? plants[0];
   const plantCarouselPhotos = groups[3].photos;
-  const plantStackPhotos = byFilenames(photos, [
-    "DSC_3343.JPG",
-    "DSC_2952.JPG",
-    "DSC_3247.JPG",
-    "DSC_0243.JPG",
-    "DSC_0257.JPG",
-  ]);
-  const plantFeaturePhoto = photos.find(
-    (photo) => photo.filename === "52f66c_f3b6720d4f004573ab558814dd14c842~mv2.avif",
+  const plantStackPhotos = configuredPhotos(
+    homepageLayout?.plantsStackPhotos,
+    byFilenames(photos, ["DSC_3343.JPG", "DSC_2952.JPG", "DSC_3247.JPG", "DSC_0243.JPG", "DSC_0257.JPG"]),
   );
-  const plantSquarePhotos = uniquePhotos(plantPortraitPhotos.slice(1), plantLandscapePhotos.slice(8), mixedArchive).slice(0, 8);
+  const plantFeaturePhoto =
+    homepageLayout?.plantsFeaturePhoto ??
+    photos.find((photo) => photo.filename === "52f66c_f3b6720d4f004573ab558814dd14c842~mv2.avif");
+  const plantSquarePhotos = configuredPhotos(
+    homepageLayout?.plantsSquarePhotos,
+    uniquePhotos(plantPortraitPhotos.slice(1), plantLandscapePhotos.slice(8), mixedArchive).slice(0, 8),
+  );
 
   return (
     <section className="reference-content" id="photography" aria-label="Photography archive">
@@ -337,17 +382,19 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
       <div className="section-title-row section-title-row--compact">
         <h2>Plants</h2>
       </div>
-      <PlantsReferenceLayout
-        id={groups[3].id}
-        title={groups[3].title}
-        heroPhoto={bannerTwo}
-        carouselPhotos={plantCarouselPhotos}
-        featurePhoto={plantFeaturePhoto}
-        stackPhotos={plantStackPhotos}
-        squarePhotos={plantSquarePhotos}
-        allPhotos={photos}
-        onOpen={onOpen}
-      />
+      {bannerTwo ? (
+        <PlantsReferenceLayout
+          id={groups[3].id}
+          title={groups[3].title}
+          heroPhoto={bannerTwo}
+          carouselPhotos={plantCarouselPhotos}
+          featurePhoto={plantFeaturePhoto}
+          stackPhotos={plantStackPhotos}
+          squarePhotos={plantSquarePhotos}
+          allPhotos={photos}
+          onOpen={onOpen}
+        />
+      ) : null}
     </section>
   );
 }

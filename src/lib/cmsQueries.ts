@@ -40,6 +40,19 @@ export type CmsSiteSettings = {
   socialLinks?: { label?: string; value?: string; href?: string }[];
 };
 
+export type CmsHomepageLayout = {
+  featureCards?: { title?: string; href?: string; photoId?: string }[];
+  landscapePhotoIds?: string[];
+  quietPhotoIds?: string[];
+  bannerOnePhotoId?: string;
+  cityPhotoIds?: string[];
+  plantsHeroPhotoId?: string;
+  plantsCarouselPhotoIds?: string[];
+  plantsFeaturePhotoId?: string;
+  plantsStackPhotoIds?: string[];
+  plantsSquarePhotoIds?: string[];
+};
+
 export type PortableTextBlock = {
   _type?: string;
   children?: { text?: string }[];
@@ -131,4 +144,21 @@ export const cmsSiteSettingsQuery = `*[_type == "siteSettings"][0] {
   aboutBio,
   gear,
   socialLinks
+}`;
+
+export const cmsHomepageLayoutQuery = `*[_type == "homepageLayout"][0] {
+  featureCards[]{
+    title,
+    href,
+    "photoId": photo->_id
+  },
+  "landscapePhotoIds": landscapePhotos[]->_id,
+  "quietPhotoIds": quietPhotos[]->_id,
+  "bannerOnePhotoId": bannerOnePhoto->_id,
+  "cityPhotoIds": cityPhotos[]->_id,
+  "plantsHeroPhotoId": plantsHeroPhoto->_id,
+  "plantsCarouselPhotoIds": plantsCarouselPhotos[]->_id,
+  "plantsFeaturePhotoId": plantsFeaturePhoto->_id,
+  "plantsStackPhotoIds": plantsStackPhotos[]->_id,
+  "plantsSquarePhotoIds": plantsSquarePhotos[]->_id
 }`;

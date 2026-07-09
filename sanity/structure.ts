@@ -34,6 +34,15 @@ export const structure: StructureResolver = (S) =>
             .title("Homepage")
             .items([
               S.listItem()
+                .title("Homepage Layout")
+                .schemaType("homepageLayout")
+                .child(
+                  S.document()
+                    .schemaType("homepageLayout")
+                    .documentId("homepageLayout-main")
+                    .title("Homepage Layout"),
+                ),
+              S.listItem()
                 .title("Site Settings / Hero")
                 .schemaType("siteSettings")
                 .child(S.document().schemaType("siteSettings").documentId("siteSettings-main").title("Site Settings / Hero")),

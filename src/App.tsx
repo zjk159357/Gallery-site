@@ -31,7 +31,7 @@ function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname.replace(/\/$/, "") || "/");
   const content = useGalleryContent();
-  const { photos, photoMeta, photoStories, aboutData } = content;
+  const { photos, photoMeta, photoStories, aboutData, homepageLayout } = content;
   const pathname = currentPath;
   const isBalconyPage = pathname === "/photobalcony";
   const isStoryPage = pathname === "/photostory";
@@ -181,7 +181,7 @@ function App() {
               ) : null}
             </section>
 
-            <GallerySections photos={photos} onOpen={openPhoto} />
+            <GallerySections photos={photos} homepageLayout={homepageLayout} onOpen={openPhoto} />
           </>
         ) : (photoRouteSlug || storyRouteSlug) && content.isLoading ? (
           <section className="detail-page detail-empty" aria-labelledby="detail-loading-title">
@@ -242,7 +242,7 @@ function App() {
               </a>
             )}
 
-            <GallerySections photos={photos} onOpen={openPhoto} />
+            <GallerySections photos={photos} homepageLayout={homepageLayout} onOpen={openPhoto} />
           </>
         )}
       </main>

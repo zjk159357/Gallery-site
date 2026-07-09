@@ -9,14 +9,17 @@ import {
   type PhotoStory,
 } from "../data/stories";
 import {
+  cmsHomepageLayoutQuery,
   cmsPhotosQuery,
   cmsSiteSettingsQuery,
   cmsStoriesQuery,
+  type CmsHomepageLayout,
   type CmsPhoto,
   type CmsSiteSettings,
   type CmsStory,
   type PortableTextBlock,
 } from "./cmsQueries";
+import type { HomepageLayout } from "./homepageLayout";
 import { getSanityClient, isSanityConfigured } from "./sanity";
 
 export type GalleryContent = {
@@ -25,6 +28,7 @@ export type GalleryContent = {
   photoStories: Record<string, PhotoStory[]>;
   aboutData: AboutData;
   heroPhoto?: Photo;
+  homepageLayout?: HomepageLayout;
   source: "static" | "cms";
   isLoading: boolean;
   error?: string;
@@ -167,6 +171,58 @@ function toAboutData(settings: CmsSiteSettings | null | undefined): AboutData {
   };
 }
 
+function photosById(photos: Photo[]) {
+  return new Map(photos.map((photo) => [photo.id, photo]));
+}
+
+function resolvePhotoIds(photoMap: Map<string, Photo>, ids: string[] | undefined) {
+  const resolved = ids?.flatMap((id) => {
+    const photo = photoMap.get(id);
+    return photo ? [photo] : [];
+  });
+
+  return resolved?.length ? resolved : undefined;
+}
+
+function resolvePhotoId(photoMap: Map<string, Photo>, id: string | undefined) {
+  return id ? photoMap.get(id) : undefined;
+}
+
+function toHomepageLayout(layout: CmsHomepageLayout | null | undefined, photos: Photo[]): HomepageLayout | undefined {
+  if (!layout) {
+    return undefined;
+  }
+
+  const photoMap = photosById(photos);
+  const featureCards = layout.featureCards
+    ?.flatMap((card) => {
+      const photo = resolvePhotoId(photoMap, card.photoId);
+      if (!card.title || !photo) return [];
+
+      return [
+        {
+          title: card.title,
+          href: card.href || undefined,
+          photo,
+        },
+      ];
+    })
+    .slice(0, 3);
+
+  return {
+    featureCards: featureCards?.length ? featureCards : undefined,
+    landscapePhotos: resolvePhotoIds(photoMap, layout.landscapePhotoIds),
+    quietPhotos: resolvePhotoIds(photoMap, layout.quietPhotoIds),
+    bannerOnePhoto: resolvePhotoId(photoMap, layout.bannerOnePhotoId),
+    cityPhotos: resolvePhotoIds(photoMap, layout.cityPhotoIds),
+    plantsHeroPhoto: resolvePhotoId(photoMap, layout.plantsHeroPhotoId),
+    plantsCarouselPhotos: resolvePhotoIds(photoMap, layout.plantsCarouselPhotoIds),
+    plantsFeaturePhoto: resolvePhotoId(photoMap, layout.plantsFeaturePhotoId),
+    plantsStackPhotos: resolvePhotoIds(photoMap, layout.plantsStackPhotoIds),
+    plantsSquarePhotos: resolvePhotoIds(photoMap, layout.plantsSquarePhotoIds),
+  };
+}
+
 async function loadCmsContent(): Promise<GalleryContent> {
   const client = getSanityClient();
 
@@ -174,10 +230,11 @@ async function loadCmsContent(): Promise<GalleryContent> {
     return staticContent;
   }
 
-  const [cmsPhotos, cmsStories, cmsSiteSettings] = await Promise.all([
+  const [cmsPhotos, cmsStories, cmsSiteSettings, cmsHomepageLayout] = await Promise.all([
     client.fetch<CmsPhoto[]>(cmsPhotosQuery),
     client.fetch<CmsStory[]>(cmsStoriesQuery),
     client.fetch<CmsSiteSettings | null>(cmsSiteSettingsQuery),
+    client.fetch<CmsHomepageLayout | null>(cmsHomepageLayoutQuery),
   ]);
 
   const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
@@ -196,6 +253,7 @@ async function loadCmsContent(): Promise<GalleryContent> {
     photoStories: toPhotoStories(cmsStories),
     aboutData: toAboutData(cmsSiteSettings),
     heroPhoto,
+    homepageLayout: toHomepageLayout(cmsHomepageLayout, photos),
     source: "cms",
     isLoading: false,
   };
