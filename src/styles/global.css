@@ -2018,7 +2018,8 @@ main {
   }
 
   .advanced-lightbox-layout {
-    padding: 78px 14px 28px;
+    gap: 16px;
+    padding: 68px 18px 32px;
   }
 
   .advanced-lightbox-media-column {
@@ -2026,13 +2027,26 @@ main {
   }
 
   .advanced-lightbox-photo {
-    min-height: 240px;
-    height: 46vh;
+    min-height: 0;
+    height: auto;
+    max-height: 54vh;
+    background: transparent;
   }
 
   .advanced-lightbox-meta,
   .advanced-lightbox-story {
-    padding: 18px;
+    border-color: rgba(232, 230, 230, 0.12);
+    background: transparent;
+    padding: 22px 52px 0 0;
+  }
+
+  .advanced-lightbox-story {
+    min-height: auto;
+    border-width: 1px 0 0;
+  }
+
+  .advanced-lightbox-meta {
+    border-width: 1px 0 0;
   }
 
   .advanced-lightbox-meta-list {
@@ -2048,9 +2062,12 @@ main {
   }
 
   .advanced-lightbox-nav {
-    top: calc(46vh + 78px);
-    width: 44px;
-    height: 62px;
+    display: none;
+    top: calc(68px + min(54vh, 360px) / 2);
+    width: 46px;
+    height: 64px;
+    border: 0;
+    background: transparent;
   }
 
   .advanced-lightbox-nav--prev {

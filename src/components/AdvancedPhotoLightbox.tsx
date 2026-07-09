@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Copy, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type TouchEvent } from "react";
 import type { Photo } from "../data/photos";
 import {
   photoMeta as staticPhotoMeta,
@@ -40,6 +40,7 @@ export function AdvancedPhotoLightbox({
   shareUrl: shareUrlOverride,
 }: AdvancedPhotoLightboxProps) {
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
   const photo = index >= 0 ? photos[index] : undefined;
   const meta = photo ? photoMeta[photo.filename] : undefined;
   const story = photo ? photoStories[photo.filename]?.[0] : undefined;
@@ -78,8 +79,38 @@ export function AdvancedPhotoLightbox({
     setCopyState("copied");
   };
 
+  const navigateByOffset = (offset: number) => {
+    if (!canNavigate) return;
+    onNavigate((index + offset + photos.length) % photos.length);
+  };
+
+  const handleTouchEnd = (event: TouchEvent<HTMLElement>) => {
+    if (!touchStart || event.changedTouches.length === 0) return;
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - touchStart.x;
+    const deltaY = touch.clientY - touchStart.y;
+
+    setTouchStart(null);
+
+    if (Math.abs(deltaX) < 72 || Math.abs(deltaX) < Math.abs(deltaY) * 1.35) return;
+    navigateByOffset(deltaX > 0 ? -1 : 1);
+  };
+
   return (
-    <section className="advanced-lightbox" aria-modal="true" role="dialog" aria-label={`${photo.title} details`}>
+    <section
+      className="advanced-lightbox"
+      aria-modal="true"
+      role="dialog"
+      aria-label={`${photo.title} details`}
+      onTouchStart={(event) => {
+        if (event.touches.length === 1) {
+          setTouchStart({ x: event.touches[0].clientX, y: event.touches[0].clientY });
+        }
+      }}
+      onTouchCancel={() => setTouchStart(null)}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="advanced-lightbox-frame">
         <button type="button" className="advanced-lightbox-close" onClick={onClose} aria-label="Close photo details">
           <X size={30} strokeWidth={1.8} />
@@ -90,7 +121,7 @@ export function AdvancedPhotoLightbox({
             <button
               type="button"
               className="advanced-lightbox-nav advanced-lightbox-nav--prev"
-              onClick={() => onNavigate((index - 1 + photos.length) % photos.length)}
+              onClick={() => navigateByOffset(-1)}
               aria-label="Previous photo"
             >
               <ChevronLeft size={36} strokeWidth={1.7} />
@@ -98,7 +129,7 @@ export function AdvancedPhotoLightbox({
             <button
               type="button"
               className="advanced-lightbox-nav advanced-lightbox-nav--next"
-              onClick={() => onNavigate((index + 1) % photos.length)}
+              onClick={() => navigateByOffset(1)}
               aria-label="Next photo"
             >
               <ChevronRight size={36} strokeWidth={1.7} />
