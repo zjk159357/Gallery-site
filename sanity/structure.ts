@@ -17,23 +17,28 @@ const photoList = (
 const storyList = (S: Parameters<StructureResolver>[0], title: string, filter: string) =>
   S.documentTypeList("story").title(title).filter(filter).defaultOrdering(storyOrdering);
 
+const slugify = (s: string) => s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "item";
+
 const categoryPhotoItem = (S: Parameters<StructureResolver>[0], title: string) =>
   S.listItem()
+    .id(`category-photos-${slugify(title)}`)
     .title(title)
     .schemaType("photo")
     .child(photoList(S, title, '_type == "photo" && category->title == $category', { category: title }));
+
+const li = (S: Parameters<StructureResolver>[0], id: string) => S.listItem().id(id);
 
 export const structure: StructureResolver = (S) =>
   S.list()
     .title("Gallery Studio")
     .items([
-      S.listItem()
+      li(S, "homepage")
         .title("Homepage")
         .child(
           S.list()
             .title("Homepage")
             .items([
-              S.listItem()
+              li(S, "homepage.layout")
                 .title("Homepage Layout")
                 .schemaType("homepageLayout")
                 .child(
@@ -42,35 +47,35 @@ export const structure: StructureResolver = (S) =>
                     .documentId("homepageLayout-main")
                     .title("Homepage Layout"),
                 ),
-              S.listItem()
+              li(S, "homepage.site-settings")
                 .title("Site Settings / Hero")
                 .schemaType("siteSettings")
                 .child(S.document().schemaType("siteSettings").documentId("siteSettings-main").title("Site Settings / Hero")),
-              S.listItem()
+              li(S, "homepage.hero-flagged")
                 .title("Hero Flagged Photos")
                 .schemaType("photo")
                 .child(photoList(S, "Hero Flagged Photos", '_type == "photo" && isHero == true')),
-              S.listItem()
+              li(S, "homepage.visible")
                 .title("Visible Homepage Photos")
                 .schemaType("photo")
                 .child(photoList(S, "Visible Homepage Photos", '_type == "photo" && isHidden != true')),
-              S.listItem()
+              li(S, "homepage.hidden")
                 .title("Hidden From Website")
                 .schemaType("photo")
                 .child(photoList(S, "Hidden From Website", '_type == "photo" && isHidden == true')),
             ]),
         ),
-      S.listItem()
+      li(S, "homepage-sections")
         .title("Homepage Sections")
         .child(
           S.list()
             .title("Homepage Sections")
             .items([
-              S.listItem()
+              li(S, "homepage-sections.all-categories")
                 .title("All Categories")
                 .schemaType("category")
                 .child(S.documentTypeList("category").title("All Categories").defaultOrdering(categoryOrdering)),
-              S.divider(),
+              S.divider().id("homepage-sections.divider"),
               categoryPhotoItem(S, "山野"),
               categoryPhotoItem(S, "建筑"),
               categoryPhotoItem(S, "日出日落"),
@@ -81,21 +86,21 @@ export const structure: StructureResolver = (S) =>
               categoryPhotoItem(S, "花朵"),
             ]),
         ),
-      S.listItem()
+      li(S, "journal")
         .title("Journal")
         .child(
           S.list()
             .title("Journal")
             .items([
-              S.listItem()
+              li(S, "journal.all-stories")
                 .title("All Stories")
                 .schemaType("story")
                 .child(storyList(S, "All Stories", '_type == "story"')),
-              S.listItem()
+              li(S, "journal.stories-missing-cover")
                 .title("Stories Missing Cover")
                 .schemaType("story")
                 .child(storyList(S, "Stories Missing Cover", '_type == "story" && !defined(coverPhoto._ref)')),
-              S.listItem()
+              li(S, "journal.photos-with-stories")
                 .title("Photos With Stories")
                 .schemaType("photo")
                 .child(
@@ -105,7 +110,7 @@ export const structure: StructureResolver = (S) =>
                     '_type == "photo" && count(*[_type == "story" && references(^._id)]) > 0',
                   ),
                 ),
-              S.listItem()
+              li(S, "journal.photos-without-stories")
                 .title("Photos Without Stories")
                 .schemaType("photo")
                 .child(
@@ -117,25 +122,25 @@ export const structure: StructureResolver = (S) =>
                 ),
             ]),
         ),
-      S.listItem()
+      li(S, "photo-safety")
         .title("Photo Safety")
         .child(
           S.list()
             .title("Photo Safety")
             .items([
-              S.listItem()
+              li(S, "photo-safety.all-photos")
                 .title("All Photos")
                 .schemaType("photo")
                 .child(S.documentTypeList("photo").title("All Photos").defaultOrdering(photoOrdering)),
-              S.listItem()
+              li(S, "photo-safety.visible-photos")
                 .title("Visible Photos")
                 .schemaType("photo")
                 .child(photoList(S, "Visible Photos", '_type == "photo" && isHidden != true')),
-              S.listItem()
+              li(S, "photo-safety.hidden-photos")
                 .title("Hidden Photos")
                 .schemaType("photo")
                 .child(photoList(S, "Hidden Photos", '_type == "photo" && isHidden == true')),
-              S.listItem()
+              li(S, "photo-safety.photos-referenced-by-stories")
                 .title("Photos Referenced By Stories")
                 .schemaType("photo")
                 .child(
