@@ -7,7 +7,7 @@ import {
   type PhotoMeta,
   type PhotoStory,
 } from "../data/stories";
-import { sizedImageUrl } from "../lib/imageUrl";
+import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 
 type AdvancedPhotoLightboxProps = {
   photos: Photo[];
@@ -111,6 +111,8 @@ export function AdvancedPhotoLightbox({
             <figure className="advanced-lightbox-photo">
               <img
                 src={sizedImageUrl(photo.src, 2200, 90)}
+                srcSet={imageSrcSet(photo.src, [1400, 2200, 3000], 90)}
+                sizes="100vw"
                 alt={`${photo.category} ${photo.title}`}
                 width={photo.width}
                 height={photo.height}

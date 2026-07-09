@@ -1,5 +1,6 @@
 import type { Photo } from "../data/photos";
 import type { PhotoMeta, PhotoStory } from "../data/stories";
+import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 import { storyPath } from "../lib/routes";
 
 type PhotoDetailProps = {
@@ -33,7 +34,17 @@ export function PhotoDetail({ photo, photoMeta = {}, photoStories = {} }: PhotoD
       </header>
 
       <figure className="photo-detail-image">
-        <img src={photo.src} alt={`${photo.category} ${photo.title}`} width={photo.width} height={photo.height} />
+        <img
+          src={sizedImageUrl(photo.src, 2200, 88)}
+          srcSet={imageSrcSet(photo.src, [1000, 1600, 2400], 88)}
+          sizes="100vw"
+          alt={`${photo.category} ${photo.title}`}
+          width={photo.width}
+          height={photo.height}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
       </figure>
 
       <section className="detail-grid" aria-label="Photo details">

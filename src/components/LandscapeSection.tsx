@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Photo } from "../data/photos";
+import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 
 const ARROW_PATH_NEXT = "m9 18 6-6-6-6";
 const ARROW_PATH_PREV = "m15 18-6-6 6-6";
@@ -143,15 +144,20 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
           {previous ? (
             <img
               className="landscape-image landscape-image--previous"
-              src={previous.src}
+              src={sizedImageUrl(previous.src, 1800, 84)}
+              srcSet={imageSrcSet(previous.src, [900, 1400, 2000], 84)}
+              sizes="100vw"
               alt=""
               decoding="async"
             />
           ) : null}
           <img
             className="landscape-image landscape-image--active"
-            src={active.src}
+            src={sizedImageUrl(active.src, 1800, 84)}
+            srcSet={imageSrcSet(active.src, [900, 1400, 2000], 84)}
+            sizes="100vw"
             alt={caption}
+            loading="lazy"
             decoding="async"
           />
           <span className="landscape-caption">{caption}</span>
@@ -195,7 +201,9 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
               onClick={() => changeActiveIndex(() => index)}
             >
               <img
-                src={photo.src}
+                src={sizedImageUrl(photo.src, 420, 76)}
+                srcSet={imageSrcSet(photo.src, [280, 420, 560], 76)}
+                sizes="140px"
                 alt=""
                 loading="lazy"
                 decoding="async"

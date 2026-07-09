@@ -10,6 +10,7 @@ import { Journal } from "./components/Journal";
 import { PhotoStory } from "./components/PhotoStory";
 import { StoryDetail } from "./components/StoryDetail";
 import { useGalleryContent } from "./lib/galleryContent";
+import { imageSrcSet, sizedImageUrl } from "./lib/imageUrl";
 import { matchesPhotoSlug, matchesStorySlug, photoPath } from "./lib/routes";
 
 const SITE_TITLE = "Queenstown.top | Photography";
@@ -168,7 +169,9 @@ function App() {
               {heroPhoto ? (
                 <img
                   className="hero-image"
-                  src={heroPhoto.src}
+                  src={sizedImageUrl(heroPhoto.src, 2400, 88)}
+                  srcSet={imageSrcSet(heroPhoto.src, [1400, 2000, 2800], 88)}
+                  sizes="100vw"
                   alt=""
                   aria-hidden="true"
                   loading="eager"
@@ -217,7 +220,9 @@ function App() {
               {heroPhoto ? (
                 <img
                   className="hero-image"
-                  src={heroPhoto.src}
+                  src={sizedImageUrl(heroPhoto.src, 2400, 88)}
+                  srcSet={imageSrcSet(heroPhoto.src, [1400, 2000, 2800], 88)}
+                  sizes="100vw"
                   alt=""
                   aria-hidden="true"
                   loading="eager"

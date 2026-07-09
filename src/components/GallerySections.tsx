@@ -1,4 +1,5 @@
 import type { Photo } from "../data/photos";
+import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 import { LandscapeSection } from "./LandscapeSection";
 
 type GallerySectionsProps = {
@@ -76,7 +77,14 @@ function GalleryRail({
             onClick={() => onOpen(photoIndex(allPhotos, photo))}
             aria-label={`Open ${group.title} ${photo.title}`}
           >
-            <img src={photo.src} alt={`${photo.category} ${photo.title}`} loading="lazy" decoding="async" />
+            <img
+              src={sizedImageUrl(photo.src, group.variant === "square" ? 720 : 980)}
+              srcSet={imageSrcSet(photo.src, group.variant === "square" ? [420, 720, 960] : [640, 980, 1320])}
+              sizes={group.variant === "square" ? "(max-width: 640px) 48vw, 25vw" : "(max-width: 640px) 82vw, 34vw"}
+              alt={`${photo.category} ${photo.title}`}
+              loading="lazy"
+              decoding="async"
+            />
           </button>
         ))}
       </div>
@@ -89,9 +97,22 @@ function BannerImage({ photo, allPhotos, onOpen }: { photo: Photo | undefined; a
 
   return (
     <button type="button" className="wide-banner" onClick={() => onOpen(photoIndex(allPhotos, photo))} aria-label={`Open ${photo.title}`}>
-      <img src={photo.src} alt={`${photo.category} ${photo.title}`} loading="lazy" decoding="async" />
+      <img
+        src={sizedImageUrl(photo.src, 1800, 84)}
+        srcSet={imageSrcSet(photo.src, [900, 1400, 2000], 84)}
+        sizes="100vw"
+        alt={`${photo.category} ${photo.title}`}
+        loading="lazy"
+        decoding="async"
+      />
     </button>
   );
+}
+
+function referenceImageWidth(className: string) {
+  if (className.includes("banner") || className.includes("full")) return 1800;
+  if (className.includes("feature")) return 1200;
+  return 820;
 }
 
 function ReferencePhoto({
@@ -107,6 +128,8 @@ function ReferencePhoto({
   className: string;
   loading?: "eager" | "lazy";
 }) {
+  const imageWidth = referenceImageWidth(className);
+
   return (
     <button
       type="button"
@@ -115,7 +138,9 @@ function ReferencePhoto({
       aria-label={`Open ${photo.category} ${photo.title}`}
     >
       <img
-        src={photo.src}
+        src={sizedImageUrl(photo.src, imageWidth)}
+        srcSet={imageSrcSet(photo.src, [Math.round(imageWidth * 0.55), imageWidth, Math.round(imageWidth * 1.3)])}
+        sizes={className.includes("banner") || className.includes("full") ? "100vw" : "(max-width: 640px) 100vw, 50vw"}
         alt={`${photo.category} ${photo.title}`}
         width={photo.width}
         height={photo.height}
@@ -270,7 +295,15 @@ export function GallerySections({ photos, onOpen }: GallerySectionsProps) {
         {featureCards.map(({ id, title, photo, href }) => {
           const cardContent = (
             <>
-              <img src={photo.src} alt={`${title} ${photo.title}`} loading="eager" decoding="async" />
+              <img
+                src={sizedImageUrl(photo.src, 900, 82)}
+                srcSet={imageSrcSet(photo.src, [520, 820, 1100], 82)}
+                sizes="(max-width: 640px) 100vw, 33vw"
+                alt={`${title} ${photo.title}`}
+                loading="eager"
+                fetchPriority="low"
+                decoding="async"
+              />
               <span>{title}</span>
             </>
           );

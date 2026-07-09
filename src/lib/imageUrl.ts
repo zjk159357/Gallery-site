@@ -14,3 +14,7 @@ export function sizedImageUrl(src: string, width: number, quality = 82) {
     return src;
   }
 }
+
+export function imageSrcSet(src: string, widths: number[], quality = 82) {
+  return widths.map((width) => `${sizedImageUrl(src, width, quality)} ${width}w`).join(", ");
+}

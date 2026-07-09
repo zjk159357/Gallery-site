@@ -1,5 +1,6 @@
 import type { Photo } from "../data/photos";
 import type { PhotoStory } from "../data/stories";
+import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 import { photoPath } from "../lib/routes";
 
 type StoryDetailProps = {
@@ -17,7 +18,17 @@ export function StoryDetail({ photo, story }: StoryDetailProps) {
       </header>
 
       <figure className="story-detail-cover">
-        <img src={photo.src} alt={`${photo.category} ${photo.title}`} width={photo.width} height={photo.height} />
+        <img
+          src={sizedImageUrl(photo.src, 2200, 88)}
+          srcSet={imageSrcSet(photo.src, [1000, 1600, 2400], 88)}
+          sizes="100vw"
+          alt={`${photo.category} ${photo.title}`}
+          width={photo.width}
+          height={photo.height}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
       </figure>
 
       <div className="story-detail-body">
