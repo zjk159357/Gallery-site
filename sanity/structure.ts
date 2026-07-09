@@ -17,7 +17,15 @@ const photoList = (
 const storyList = (S: Parameters<StructureResolver>[0], title: string, filter: string) =>
   S.documentTypeList("story").title(title).filter(filter).defaultOrdering(storyOrdering);
 
-const slugify = (s: string) => s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "item";
+const slugify = (s: string) => {
+  const ascii = s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+  if (ascii) return ascii;
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  }
+  return `c${(h >>> 0).toString(36)}`;
+};
 
 const categoryPhotoItem = (S: Parameters<StructureResolver>[0], title: string) =>
   S.listItem()
