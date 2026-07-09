@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { photos as staticPhotos, type Photo } from "../data/photos";
+import { initialHeroPhoto as staticHeroPhoto, photos as staticPhotos, type Photo } from "../data/photos";
 import {
   aboutData as staticAboutData,
   photoMeta as staticPhotoMeta,
@@ -35,6 +35,7 @@ const staticContent: GalleryContent = {
   photoMeta: staticPhotoMeta,
   photoStories: staticPhotoStories,
   aboutData: staticAboutData,
+  heroPhoto: staticHeroPhoto,
   source: "static",
   isLoading: false,
 };

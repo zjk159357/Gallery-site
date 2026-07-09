@@ -43,6 +43,7 @@ export function AdvancedPhotoLightbox({
   const photo = index >= 0 ? photos[index] : undefined;
   const meta = photo ? photoMeta[photo.filename] : undefined;
   const story = photo ? photoStories[photo.filename]?.[0] : undefined;
+  const hasStory = Boolean(story);
   const canNavigate = photos.length > 1;
 
   const shareUrl = shareUrlOverride ?? (typeof window === "undefined" ? "" : window.location.href);
@@ -105,7 +106,7 @@ export function AdvancedPhotoLightbox({
           </>
         ) : null}
 
-        <div className="advanced-lightbox-layout">
+        <div className={`advanced-lightbox-layout${hasStory ? "" : " advanced-lightbox-layout--no-story"}`}>
           <div className="advanced-lightbox-media-column">
             <figure className="advanced-lightbox-photo">
               <img
@@ -140,26 +141,22 @@ export function AdvancedPhotoLightbox({
             </section>
           </div>
 
-          <article className="advanced-lightbox-story" aria-labelledby="advanced-lightbox-story-title">
-            <div className="advanced-lightbox-section-head">
-              <p>{story ? "Journal Note" : "Photo Note"}</p>
-              <h2 id="advanced-lightbox-story-title">{story?.title ?? photo.title}</h2>
-            </div>
+          {story ? (
+            <article className="advanced-lightbox-story" aria-labelledby="advanced-lightbox-story-title">
+              <div className="advanced-lightbox-section-head">
+                <p>Journal Note</p>
+                <h2 id="advanced-lightbox-story-title">{story.title}</h2>
+              </div>
 
-            {story?.excerpt ? <p className="advanced-lightbox-story-excerpt">{story.excerpt}</p> : null}
+              {story.excerpt ? <p className="advanced-lightbox-story-excerpt">{story.excerpt}</p> : null}
 
-            {story?.body.length ? (
               <div className="advanced-lightbox-story-body">
                 {story.body.map((paragraph, paragraphIndex) => (
                   <p key={paragraphIndex}>{paragraph}</p>
                 ))}
               </div>
-            ) : (
-              <div className="advanced-lightbox-story-body">
-                <p>{meta?.location ? `${meta.location} / ${photo.filename}` : `${photo.category} / ${photo.filename}`}</p>
-              </div>
-            )}
-          </article>
+            </article>
+          ) : null}
         </div>
       </div>
     </section>

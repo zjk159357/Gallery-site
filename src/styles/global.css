@@ -1653,6 +1653,10 @@ main {
   padding: clamp(52px, 6vw, 84px) clamp(54px, 6vw, 92px) clamp(38px, 4vw, 58px);
 }
 
+.advanced-lightbox-layout--no-story {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .advanced-lightbox-media-column {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;

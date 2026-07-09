@@ -262,7 +262,7 @@ export const photos: Photo[] = [
     "filename": "DSC_5499.JPG",
     "width": 5924,
     "height": 3950,
-    "isHero": false
+    "isHero": true
   },
   {
     "id": "photo-023",
@@ -394,7 +394,7 @@ export const photos: Photo[] = [
     "filename": "DSC_0257.JPG",
     "width": 6048,
     "height": 4032,
-    "isHero": true
+    "isHero": false
   },
   {
     "id": "photo-035",
@@ -826,3 +826,15 @@ export const photos: Photo[] = [
     "isHero": false
   }
 ];
+
+export const initialHeroPhoto: Photo | undefined = {
+  "id": "photo-dsc_5499-b50343c4",
+  "src": "https://cdn.sanity.io/images/zj2ik922/production/43a7baf00676567783b8a358270b16b9dc51da28-5924x3950.jpg?w=2560&q=90&auto=format&fit=max",
+  "title": "DSC_5499",
+  "slug": "dsc_5499-b50343",
+  "category": "日出日落",
+  "filename": "DSC_5499.JPG",
+  "width": 5924,
+  "height": 3950,
+  "isHero": true
+};

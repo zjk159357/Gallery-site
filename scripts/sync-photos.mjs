@@ -1,4 +1,5 @@
-import { copyFile, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { imageSizeFromFile } from "image-size/fromFile";
@@ -13,6 +14,7 @@ const dataFile = path.join(projectRoot, "src", "data", "photos.ts");
 const categories = ["山野", "建筑", "日出日落", "森林", "河流", "海洋", "石塘度假区", "花朵"];
 
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
+const imageCdnParams = "?w=2560&q=90&auto=format&fit=max";
 
 const toPosix = (value) => value.split(path.sep).join("/");
 
@@ -26,6 +28,124 @@ function slugify(value) {
     .replace(/[^\p{L}\p{N}-]+/gu, "")
     .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+async function loadLocalEnv() {
+  for (const filename of [".env.local", ".env"]) {
+    const envPath = path.join(projectRoot, filename);
+
+    try {
+      const contents = await readFile(envPath, "utf8");
+      for (const line of contents.split(/\r?\n/)) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
+
+        const [key, ...valueParts] = trimmed.split("=");
+        if (process.env[key]) continue;
+
+        process.env[key] = valueParts.join("=").trim().replace(/^["']|["']$/g, "");
+      }
+    } catch {
+      // Optional local env files are not required in CI.
+    }
+  }
+}
+
+function withImageParams(src) {
+  if (!src || src.includes("?")) return src;
+  return `${src}${imageCdnParams}`;
+}
+
+function fetchJsonWithPowerShell(url) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      "powershell.exe",
+      [
+        "-NoProfile",
+        "-Command",
+        `[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; (Invoke-WebRequest -Uri '${url}' -UseBasicParsing -TimeoutSec 30).Content`,
+      ],
+      { windowsHide: true, maxBuffer: 1024 * 1024 * 4 },
+      (error, stdout) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        try {
+          resolve(JSON.parse(stdout));
+        } catch (parseError) {
+          reject(parseError);
+        }
+      },
+    );
+  });
+}
+
+async function fetchJson(url) {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Sanity responded ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (process.platform === "win32") {
+      return fetchJsonWithPowerShell(url);
+    }
+
+    throw error;
+  }
+}
+
+async function fetchCmsHeroPhoto() {
+  await loadLocalEnv();
+
+  const projectId = process.env.VITE_SANITY_PROJECT_ID ?? process.env.SANITY_STUDIO_PROJECT_ID;
+  const dataset = process.env.VITE_SANITY_DATASET ?? process.env.SANITY_STUDIO_DATASET ?? "production";
+
+  if (!projectId || !dataset) {
+    return { configured: false, photo: undefined };
+  }
+
+  const query = `{
+    "hero": coalesce(
+      *[_type == "photo" && isHidden != true && isHero == true][0]{
+        "id": _id,
+        "src": image.asset->url,
+        title,
+        "slug": slug.current,
+        "category": category->title,
+        "filename": sourceFilename,
+        "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
+        "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
+      },
+      *[_type == "siteSettings"][0].heroPhoto->{
+        "id": _id,
+        "src": image.asset->url,
+        title,
+        "slug": slug.current,
+        "category": category->title,
+        "filename": sourceFilename,
+        "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
+        "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
+      }
+    )
+  }`;
+
+  try {
+    const payload = await fetchJson(
+      `https://${projectId}.api.sanity.io/v2025-02-19/data/query/${dataset}?query=${encodeURIComponent(query)}`,
+    );
+    return { configured: true, photo: payload.result?.hero };
+  } catch (error) {
+    console.warn(
+      `Could not read Sanity hero for initial data: ${error instanceof Error ? error.message : "unknown error"}`,
+    );
+    return { configured: true, photo: undefined };
+  }
 }
 
 async function copyIfChanged(source, target) {
@@ -66,7 +186,7 @@ async function removeStaleFiles(root, expected) {
   }
 }
 
-async function collectPhotos() {
+async function collectPhotos(heroFilename) {
   const photos = [];
   const expectedFiles = new Set();
 
@@ -105,7 +225,7 @@ async function collectPhotos() {
         filename,
         width: shouldSwap ? rawHeight : rawWidth,
         height: shouldSwap ? rawWidth : rawHeight,
-        isHero: filename === "DSC_0257.JPG",
+        isHero: filename === heroFilename,
       });
     }
   }
@@ -115,7 +235,26 @@ async function collectPhotos() {
   return photos;
 }
 
-function serializeData(photos) {
+function toInitialHeroPhoto(cmsHeroPhoto, photos) {
+  if (!cmsHeroPhoto?.filename) return undefined;
+
+  const matchingPhoto = photos.find((photo) => photo.filename === cmsHeroPhoto.filename);
+  if (!matchingPhoto && !cmsHeroPhoto.src) return undefined;
+
+  return {
+    id: cmsHeroPhoto.id ?? matchingPhoto?.id ?? `hero-${slugify(cmsHeroPhoto.filename)}`,
+    src: withImageParams(cmsHeroPhoto.src) ?? matchingPhoto?.src,
+    title: cmsHeroPhoto.title ?? matchingPhoto?.title ?? titleFromFilename(cmsHeroPhoto.filename),
+    slug: cmsHeroPhoto.slug ?? matchingPhoto?.slug,
+    category: cmsHeroPhoto.category ?? matchingPhoto?.category ?? "",
+    filename: cmsHeroPhoto.filename,
+    width: cmsHeroPhoto.width || matchingPhoto?.width || 1,
+    height: cmsHeroPhoto.height || matchingPhoto?.height || 1,
+    isHero: true,
+  };
+}
+
+function serializeData(photos, initialHeroPhoto) {
   return `export type Photo = {
   id: string;
   src: string;
@@ -131,11 +270,17 @@ function serializeData(photos) {
 export const categories = ${JSON.stringify(categories, null, 2)} as const;
 
 export const photos: Photo[] = ${JSON.stringify(photos, null, 2)};
+
+export const initialHeroPhoto: Photo | undefined = ${JSON.stringify(initialHeroPhoto, null, 2)};
 `;
 }
 
-const photos = await collectPhotos();
+const cmsHero = await fetchCmsHeroPhoto();
+const heroFilename = cmsHero.photo?.filename ?? (cmsHero.configured ? undefined : "DSC_0257.JPG");
+const photos = await collectPhotos(heroFilename);
+const initialHeroPhoto = toInitialHeroPhoto(cmsHero.photo, photos);
+
 await mkdir(path.dirname(dataFile), { recursive: true });
-await writeFile(dataFile, serializeData(photos), "utf8");
+await writeFile(dataFile, serializeData(photos, initialHeroPhoto), "utf8");
 
 console.log(`Synced ${photos.length} photos into public/photos and generated src/data/photos.ts`);

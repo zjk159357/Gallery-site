@@ -42,11 +42,15 @@ function App() {
   const showPreview = new URLSearchParams(window.location.search).has("preview");
 
   const heroPhoto = useMemo(() => {
-    return photos.find((photo) => photo.isHero)
-      ?? content.heroPhoto
+    if (content.isLoading && content.source === "static") {
+      return content.heroPhoto;
+    }
+
+    return content.heroPhoto
+      ?? photos.find((photo) => photo.isHero)
       ?? photos.find((photo) => photo.filename === "DSC_0257.JPG")
       ?? photos[0];
-  }, [content.heroPhoto, photos]);
+  }, [content.heroPhoto, content.isLoading, content.source, photos]);
 
   const activePhoto = useMemo(() => {
     if (!photoRouteSlug) return undefined;
@@ -161,15 +165,17 @@ function App() {
             </section>
 
             <section className="hero" aria-label="Featured photograph">
-              <img
-                className="hero-image"
-                src={heroPhoto.src}
-                alt=""
-                aria-hidden="true"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-              />
+              {heroPhoto ? (
+                <img
+                  className="hero-image"
+                  src={heroPhoto.src}
+                  alt=""
+                  aria-hidden="true"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              ) : null}
             </section>
 
             <GallerySections photos={photos} onOpen={openPhoto} />
@@ -208,15 +214,17 @@ function App() {
             </section>
 
             <section className="hero" aria-label="Featured photograph">
-              <img
-                className="hero-image"
-                src={heroPhoto.src}
-                alt=""
-                aria-hidden="true"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-              />
+              {heroPhoto ? (
+                <img
+                  className="hero-image"
+                  src={heroPhoto.src}
+                  alt=""
+                  aria-hidden="true"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              ) : null}
             </section>
 
             {showPreview && (
