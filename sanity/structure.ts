@@ -75,7 +75,7 @@ export const structure: StructureResolver = (S) =>
                 .title("All Categories")
                 .schemaType("category")
                 .child(S.documentTypeList("category").title("All Categories").defaultOrdering(categoryOrdering)),
-              S.divider().id("homepage-sections.divider"),
+              S.divider(),
               categoryPhotoItem(S, "山野"),
               categoryPhotoItem(S, "建筑"),
               categoryPhotoItem(S, "日出日落"),
