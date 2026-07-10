@@ -66,44 +66,51 @@ async function listExistingWebhooks() {
 }
 
 const existing = await listExistingWebhooks();
-const match = existing.find((hook) => hook.name === webhookName);
+const matches = existing.filter((hook) => hook.name === webhookName);
 
 const body = {
   name: webhookName,
   description: webhookDescription,
   dataset,
   url: deployHookUrl,
-  filter: '_type in ["photo", "story", "siteSettings", "homepageLayout", "photobalconyLayout"]',
+  rule: {
+    on: ["create", "update", "delete"],
+    filter: '_type in ["photo", "story", "siteSettings", "homepageLayout", "photobalconyLayout"]',
+  },
   httpMethod: "POST",
   apiVersion: "v2025-02-19",
   type: "document",
 };
 
-let response;
-let mode;
-if (match) {
-  console.log(`Existing webhook "${webhookName}" found (id ${match.id}). Updating...`);
-  mode = "update";
-  response = await fetch(`${apiBase}/hooks/projects/${projectId}/${match.id}`, {
-    method: "PUT",
+for (const match of matches) {
+  console.log(`Existing webhook "${webhookName}" found (id ${match.id}). Deleting before recreate...`);
+  const deleteResponse = await fetch(`${apiBase}/hooks/projects/${projectId}/${match.id}`, {
+    method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
   });
-} else {
-  console.log(`No existing webhook named "${webhookName}". Creating...`);
-  mode = "create";
-  response = await fetch(`${apiBase}/hooks/projects/${projectId}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+
+  if (!deleteResponse.ok) {
+    console.error(`Sanity webhook delete failed (${deleteResponse.status} ${deleteResponse.statusText}):`);
+    console.error(await deleteResponse.text());
+    process.exit(1);
+  }
 }
+
+const mode = matches.length ? "recreate" : "create";
+if (!matches.length) {
+  console.log(`No existing webhook named "${webhookName}". Creating...`);
+}
+
+const response = await fetch(`${apiBase}/hooks/projects/${projectId}`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(body),
+});
 
 if (!response.ok) {
   console.error(`Sanity webhook ${mode} failed (${response.status} ${response.statusText}):`);
@@ -117,5 +124,5 @@ console.log(`  id: ${result.id}`);
 console.log(`  name: ${result.name}`);
 console.log(`  dataset: ${result.dataset}`);
 console.log(`  url: ${result.url}`);
-console.log(`  filter: ${result.filter}`);
+console.log(`  filter: ${result.rule?.filter}`);
 console.log("Verify deliveries at: https://www.sanity.io/manage/project/" + projectId + "/api/hooks");
