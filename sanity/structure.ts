@@ -25,11 +25,11 @@ const homepageReferenceFilter = `
 const slugify = (s: string) => {
   const ascii = s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
   if (ascii) return ascii;
-  let h = 0;
-  for (let i = 0; i < s.length; i++) {
-    h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  let hash = 0;
+  for (let index = 0; index < s.length; index += 1) {
+    hash = ((hash << 5) - hash + s.charCodeAt(index)) | 0;
   }
-  return `c${(h >>> 0).toString(36)}`;
+  return `c${(hash >>> 0).toString(36)}`;
 };
 
 const categoryPhotoItem = (S: Parameters<StructureResolver>[0], title: string) =>
@@ -89,14 +89,14 @@ export const structure: StructureResolver = (S) =>
                 .schemaType("category")
                 .child(S.documentTypeList("category").title("All Categories").defaultOrdering(categoryOrdering)),
               S.divider(),
-              categoryPhotoItem(S, "山野"),
-              categoryPhotoItem(S, "建筑"),
-              categoryPhotoItem(S, "日出日落"),
-              categoryPhotoItem(S, "森林"),
-              categoryPhotoItem(S, "河流"),
-              categoryPhotoItem(S, "海洋"),
-              categoryPhotoItem(S, "石塘度假区"),
-              categoryPhotoItem(S, "花朵"),
+              categoryPhotoItem(S, "\u5c71\u91ce"),
+              categoryPhotoItem(S, "\u5efa\u7b51"),
+              categoryPhotoItem(S, "\u65e5\u51fa\u65e5\u843d"),
+              categoryPhotoItem(S, "\u68ee\u6797"),
+              categoryPhotoItem(S, "\u6cb3\u6d41"),
+              categoryPhotoItem(S, "\u6d77\u6d0b"),
+              categoryPhotoItem(S, "\u77f3\u5858\u5ea6\u5047\u533a"),
+              categoryPhotoItem(S, "\u82b1\u6735"),
             ]),
         ),
       li(S, "journal")
@@ -170,13 +170,7 @@ export const structure: StructureResolver = (S) =>
               li(S, "photo-safety.hidden-homepage-photos")
                 .title("Hidden But Used On Homepage")
                 .schemaType("photo")
-                .child(
-                  photoList(
-                    S,
-                    "Hidden But Used On Homepage",
-                    `${homepageReferenceFilter} && isHidden == true`,
-                  ),
-                ),
+                .child(photoList(S, "Hidden But Used On Homepage", `${homepageReferenceFilter} && isHidden == true`)),
             ]),
         ),
     ]);

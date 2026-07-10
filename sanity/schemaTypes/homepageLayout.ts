@@ -17,17 +17,17 @@ export const homepageLayoutType = defineType({
   fieldsets: [
     {
       name: "feature",
-      title: "Top feature cards / 顶部三张卡片",
+      title: "Top feature cards",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "main",
-      title: "Main homepage sections / 首页主体",
+      title: "Main homepage sections",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "plants",
-      title: "Plants section / Plants 区块",
+      title: "Plants section",
       options: { collapsible: true, collapsed: false },
     },
   ],
@@ -45,7 +45,7 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "feature",
       description:
-        "Hero 下方的三张卡片。第 1 张通常保留 /photobalcony 链接；留空时继续使用旧的自动布局。",
+        "The three cards below the hero. Card 1 usually keeps /photobalcony. Empty modules keep the automatic fallback layout.",
       of: [
         defineArrayMember({
           type: "object",
@@ -61,13 +61,14 @@ export const homepageLayoutType = defineType({
               title: "Card Photo",
               type: "reference",
               to: [{ type: "photo" }],
+              options: { disableNew: true },
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: "href",
               title: "Optional Link",
               type: "string",
-              description: "例如 /photobalcony。不需要跳转时留空。",
+              description: "Example: /photobalcony. Leave blank when the card should not navigate.",
             }),
           ],
           preview: {
@@ -79,7 +80,7 @@ export const homepageLayoutType = defineType({
           },
         }),
       ],
-      validation: (Rule) => Rule.max(3).warning("首页目前只显示 3 张顶部卡片。"),
+      validation: (Rule) => Rule.max(3).warning("The homepage currently shows three feature cards."),
     }),
     defineField({
       name: "landscapePhotos",
@@ -87,8 +88,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "main",
       of: [photoReference],
-      description: "首页第一个 Landscape 横向轮播。建议 8-24 张；留空时按分类自动选择。",
-      validation: (Rule) => Rule.max(24).warning("Landscape 轮播建议不超过 24 张，太多会增加首页加载压力。"),
+      description: "First Landscape carousel. Recommended: 8-24 photos. Leave empty to use category fallback.",
+      validation: (Rule) => Rule.max(24).warning("Recommended maximum: 24 photos."),
     }),
     defineField({
       name: "quietPhotos",
@@ -96,8 +97,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "main",
       of: [photoReference],
-      description: "Landscape 后面的方图区域。建议 4-8 张；留空时使用当前方图兜底。",
-      validation: (Rule) => Rule.max(8).warning("Quiet Square 区域建议不超过 8 张。"),
+      description: "Square grid after Landscape. Recommended: 4-8 photos. Leave empty to use square-photo fallback.",
+      validation: (Rule) => Rule.max(8).warning("Recommended maximum: 8 photos."),
     }),
     defineField({
       name: "bannerOnePhoto",
@@ -106,7 +107,7 @@ export const homepageLayoutType = defineType({
       fieldset: "main",
       to: [{ type: "photo" }],
       options: { disableNew: true },
-      description: "方图区域和 City 轮播之间的第一张全宽横幅图。",
+      description: "Wide banner between the square grid and City carousel.",
     }),
     defineField({
       name: "cityPhotos",
@@ -114,8 +115,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "main",
       of: [photoReference],
-      description: "City 横向轮播。建议 8-22 张；留空时按石塘度假区/建筑分类自动选择。",
-      validation: (Rule) => Rule.max(22).warning("City 轮播建议不超过 22 张。"),
+      description: "City carousel. Recommended: 8-22 photos. Leave empty to use category fallback.",
+      validation: (Rule) => Rule.max(22).warning("Recommended maximum: 22 photos."),
     }),
     defineField({
       name: "plantsHeroPhoto",
@@ -124,7 +125,7 @@ export const homepageLayoutType = defineType({
       fieldset: "plants",
       to: [{ type: "photo" }],
       options: { disableNew: true },
-      description: "Plants 标题下面最先出现的全宽横幅图。",
+      description: "Wide banner at the start of the Plants section.",
     }),
     defineField({
       name: "plantsCarouselPhotos",
@@ -132,8 +133,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "plants",
       of: [photoReference],
-      description: "Plants 区块里的横向轮播。建议 8-18 张；留空时按花朵/森林分类自动选择。",
-      validation: (Rule) => Rule.max(18).warning("Plants 轮播建议不超过 18 张。"),
+      description: "Plants carousel. Recommended: 8-18 photos. Leave empty to use category fallback.",
+      validation: (Rule) => Rule.max(18).warning("Recommended maximum: 18 photos."),
     }),
     defineField({
       name: "plantsFeaturePhoto",
@@ -142,7 +143,7 @@ export const homepageLayoutType = defineType({
       fieldset: "plants",
       to: [{ type: "photo" }],
       options: { disableNew: true },
-      description: "Plants 区块里单独突出的 feature 图。可以留空。",
+      description: "Single featured photo inside the Plants section. Optional.",
     }),
     defineField({
       name: "plantsStackPhotos",
@@ -150,8 +151,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "plants",
       of: [photoReference],
-      description: "Plants 区块中一张接一张的大图。建议 3-6 张。",
-      validation: (Rule) => Rule.max(8).warning("Plants 大图堆叠建议不超过 8 张。"),
+      description: "Full-width photo stack inside Plants. Recommended: 3-6 photos.",
+      validation: (Rule) => Rule.max(8).warning("Recommended maximum: 8 photos."),
     }),
     defineField({
       name: "plantsSquarePhotos",
@@ -159,8 +160,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "plants",
       of: [photoReference],
-      description: "Plants 区块底部的方图组。建议 4-8 张。",
-      validation: (Rule) => Rule.max(8).warning("Plants 方图组建议不超过 8 张。"),
+      description: "Square group at the bottom of Plants. Recommended: 4-8 photos.",
+      validation: (Rule) => Rule.max(8).warning("Recommended maximum: 8 photos."),
     }),
   ],
   preview: {

@@ -1,4 +1,29 @@
 import { defineField, defineType } from "sanity";
+import { PhotoUsageInput } from "../components/PhotoUsageInput";
+
+const usageWarningQuery = `{
+  "homepageCount": count(*[
+    _type == "homepageLayout" &&
+    (references($publishedId) || references($draftId))
+  ]),
+  "siteHeroCount": count(*[
+    _type == "siteSettings" &&
+    (heroPhoto._ref == $publishedId || heroPhoto._ref == $draftId)
+  ]),
+  "visibleStoryCount": count(*[
+    _type == "story" &&
+    isHidden != true &&
+    (references($publishedId) || references($draftId))
+  ])
+}`;
+
+function documentIds(id: string | undefined) {
+  const publishedId = id?.replace(/^drafts\./, "");
+  return {
+    publishedId: publishedId ?? "",
+    draftId: publishedId ? `drafts.${publishedId}` : "",
+  };
+}
 
 export const photoType = defineType({
   name: "photo",
@@ -80,6 +105,23 @@ export const photoType = defineType({
       initialValue: false,
       description:
         "Hides this photo from the live website without deleting the document. This is the safer choice when a story may reference the photo.",
+      validation: (Rule) =>
+        Rule.custom(async (value, context) => {
+          if (!value) return true;
+          const client = context.getClient({ apiVersion: "2025-02-19" });
+          const usage = await client.fetch<{
+            homepageCount: number;
+            siteHeroCount: number;
+            visibleStoryCount: number;
+          }>(usageWarningQuery, documentIds(context.document?._id));
+          const warnings = [];
+          if (usage.siteHeroCount) warnings.push("Site Settings hero");
+          if (usage.homepageCount) warnings.push("Homepage Layout");
+          if (usage.visibleStoryCount) warnings.push(`${usage.visibleStoryCount} visible stories`);
+          if (!warnings.length) return true;
+
+          return `This photo is still used by ${warnings.join(", ")}. Hiding it may remove it from live pages or trigger fallback images.`;
+        }).warning(),
     }),
     defineField({
       name: "isHero",
@@ -167,6 +209,17 @@ export const photoType = defineType({
       title: "Focal Length",
       type: "string",
       fieldset: "metadata",
+    }),
+    defineField({
+      name: "usageSummary",
+      title: "Usage Summary",
+      type: "string",
+      fieldset: "safety",
+      readOnly: true,
+      description: "Read-only Studio helper. It is not stored as content.",
+      components: {
+        input: PhotoUsageInput,
+      },
     }),
     defineField({
       name: "sourceFilename",
