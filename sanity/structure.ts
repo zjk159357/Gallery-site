@@ -1,4 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
+import { PublishingChecklistDashboard } from "./components/PublishingChecklistDashboard";
 
 const photoOrdering = [{ field: "sortOrder", direction: "asc" as const }];
 const storyOrdering = [{ field: "publishedAt", direction: "desc" as const }];
@@ -78,6 +79,9 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title("Publishing Checklist")
             .items([
+              li(S, "publishing.overview")
+                .title("Overview")
+                .child(S.component(PublishingChecklistDashboard).id("publishing-checklist-overview").title("Overview")),
               li(S, "publishing.hidden-homepage-photos")
                 .title("Hidden But Used On Homepage")
                 .schemaType("photo")
