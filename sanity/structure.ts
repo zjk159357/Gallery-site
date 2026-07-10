@@ -22,6 +22,33 @@ const homepageReferenceFilter = `
   count(*[_type == "homepageLayout" && references(^._id)]) > 0
 `;
 
+const visibleStoryFilter = `
+  _type == "story" &&
+  isHidden != true &&
+  (!defined(publishedAt) || dateTime(publishedAt) <= dateTime(now()))
+`;
+
+const hiddenPhotoUsedByVisibleStoriesFilter = `
+  _type == "photo" &&
+  isHidden == true &&
+  count(*[${visibleStoryFilter} && references(^._id)]) > 0
+`;
+
+const homepageLayoutEmptyModulesFilter = `
+  _type == "homepageLayout" &&
+  (
+    !defined(featureCards[0]) ||
+    !defined(landscapePhotos[0]) ||
+    !defined(quietPhotos[0]) ||
+    !defined(bannerOnePhoto._ref) ||
+    !defined(cityPhotos[0]) ||
+    !defined(plantsHeroPhoto._ref) ||
+    !defined(plantsCarouselPhotos[0]) ||
+    !defined(plantsStackPhotos[0]) ||
+    !defined(plantsSquarePhotos[0])
+  )
+`;
+
 const slugify = (s: string) => {
   const ascii = s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
   if (ascii) return ascii;
@@ -45,6 +72,56 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Gallery Studio")
     .items([
+      li(S, "publishing-checklist")
+        .title("Publishing Checklist")
+        .child(
+          S.list()
+            .title("Publishing Checklist")
+            .items([
+              li(S, "publishing.hidden-homepage-photos")
+                .title("Hidden But Used On Homepage")
+                .schemaType("photo")
+                .child(photoList(S, "Hidden But Used On Homepage", `${homepageReferenceFilter} && isHidden == true`)),
+              li(S, "publishing.hidden-story-photos")
+                .title("Hidden But Used By Visible Stories")
+                .schemaType("photo")
+                .child(photoList(S, "Hidden But Used By Visible Stories", hiddenPhotoUsedByVisibleStoriesFilter)),
+              li(S, "publishing.stories-missing-cover")
+                .title("Visible Stories Missing Cover")
+                .schemaType("story")
+                .child(storyList(S, "Visible Stories Missing Cover", `${visibleStoryFilter} && !defined(coverPhoto._ref)`)),
+              li(S, "publishing.hidden-stories")
+                .title("Stories Hidden From Website")
+                .schemaType("story")
+                .child(storyList(S, "Stories Hidden From Website", '_type == "story" && isHidden == true')),
+              li(S, "publishing.photos-missing-image")
+                .title("Photos Missing Image Asset")
+                .schemaType("photo")
+                .child(photoList(S, "Photos Missing Image Asset", '_type == "photo" && !defined(image.asset._ref)')),
+              li(S, "publishing.photos-missing-category")
+                .title("Photos Missing Category")
+                .schemaType("photo")
+                .child(photoList(S, "Photos Missing Category", '_type == "photo" && !defined(category._ref)')),
+              li(S, "publishing.multiple-hero-flags")
+                .title("Multiple Hero Flag Photos")
+                .schemaType("photo")
+                .child(
+                  photoList(
+                    S,
+                    "Multiple Hero Flag Photos",
+                    '_type == "photo" && isHero == true && count(*[_type == "photo" && isHero == true]) > 1',
+                  ),
+                ),
+              li(S, "publishing.empty-homepage-modules")
+                .title("Homepage Layout Empty Modules")
+                .schemaType("homepageLayout")
+                .child(
+                  S.documentTypeList("homepageLayout")
+                    .title("Homepage Layout Empty Modules")
+                    .filter(homepageLayoutEmptyModulesFilter),
+                ),
+            ]),
+        ),
       li(S, "homepage")
         .title("Homepage")
         .child(

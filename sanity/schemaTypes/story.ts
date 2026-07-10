@@ -41,7 +41,8 @@ export const storyType = defineType({
       type: "slug",
       fieldset: "identity",
       options: { source: "title", maxLength: 96 },
-      description: "URL part for /stories/<slug>. The frontend currently routes both this slug and a fallback derived from the cover photo filename.",
+      description:
+        "URL part for /stories/<slug>. The frontend currently routes both this slug and a fallback derived from the cover photo filename.",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -49,7 +50,8 @@ export const storyType = defineType({
       title: "Published At",
       type: "datetime",
       fieldset: "identity",
-      description: "Used for ordering on /journal and the sitemap lastmod. Setting a future date will hide the story from listings until that time.",
+      description:
+        "Used for ordering on /journal and the sitemap lastmod. Setting a future date hides the story from listings until that time.",
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
@@ -58,7 +60,7 @@ export const storyType = defineType({
       type: "text",
       rows: 3,
       fieldset: "identity",
-      description: "Short summary shown on /journal cards and in the lightbox entry. Keep under ~140 characters.",
+      description: "Short summary shown on /journal cards and in the lightbox entry. Keep under about 140 characters.",
     }),
     defineField({
       name: "coverPhoto",
@@ -125,7 +127,7 @@ export const storyType = defineType({
       ],
     },
     {
-      title: "Title (A → Z)",
+      title: "Title A-Z",
       name: "titleAsc",
       by: [{ field: "title", direction: "asc" }],
     },
@@ -141,12 +143,11 @@ export const storyType = defineType({
     prepare({ title, excerpt, publishedAt, hidden, coverImage }) {
       const dateLabel = publishedAt ? new Date(publishedAt).toISOString().slice(0, 10) : "No date";
       const status = hidden ? "Hidden" : "Visible";
-      const subtitleParts = [dateLabel, status, excerpt ? `“${excerpt.slice(0, 60)}${excerpt.length > 60 ? "…" : ""}”` : null].filter(
-        Boolean,
-      );
+      const excerptLabel = excerpt ? `"${excerpt.slice(0, 60)}${excerpt.length > 60 ? "..." : ""}"` : null;
+
       return {
         title,
-        subtitle: subtitleParts.join(" · "),
+        subtitle: [dateLabel, status, excerptLabel].filter(Boolean).join(" / "),
         media: coverImage,
       };
     },
