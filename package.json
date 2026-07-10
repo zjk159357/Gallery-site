@@ -17,6 +17,7 @@
     "sync:photos": "node scripts/sync-photos.mjs",
     "deploy:trigger": "node scripts/trigger-vercel-deploy.mjs",
     "deploy:webhook": "node scripts/create-sanity-webhook.mjs",
+    "verify:production": "node scripts/verify-production.mjs",
     "predev": "npm run sync:photos",
     "dev": "vite",
     "prebuild": "npm run sync:photos && node scripts/generate-sitemap.mjs && npm run cms:build && node scripts/embed-studio.mjs",
