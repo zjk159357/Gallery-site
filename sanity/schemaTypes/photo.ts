@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { PhotoReadinessInput } from "../components/PhotoReadinessInput";
 import { PhotoUsageInput } from "../components/PhotoUsageInput";
 
 const usageWarningQuery = `{
@@ -215,6 +216,17 @@ export const photoType = defineType({
       title: "Focal Length",
       type: "string",
       fieldset: "metadata",
+    }),
+    defineField({
+      name: "readinessSummary",
+      title: "Photo Readiness",
+      type: "string",
+      fieldset: "safety",
+      readOnly: true,
+      description: "Read-only Studio helper. It is not stored as content.",
+      components: {
+        input: PhotoReadinessInput,
+      },
     }),
     defineField({
       name: "usageSummary",

@@ -68,6 +68,27 @@ const journalRelatedFilter = `
   count(*[_type == "story" && ^._id in relatedPhotos[]._ref]) > 0
 `;
 
+const anyPageOrStoryReferenceFilter = `
+  count(*[
+    _type in ["homepageLayout", "photobalconyLayout", "siteSettings", "story"] &&
+    references(^._id)
+  ]) > 0
+`;
+
+const photoInboxNeedsSetupFilter = `
+  _type == "photo" &&
+  (
+    !defined(image.asset._ref) ||
+    !defined(category._ref) ||
+    !defined(slug.current) ||
+    !defined(sortOrder) ||
+    (
+      isHidden != true &&
+      !(${anyPageOrStoryReferenceFilter})
+    )
+  )
+`;
+
 const visibleStoryFilter = `
   _type == "story" &&
   isHidden != true &&
@@ -200,6 +221,63 @@ export const structure: StructureResolver = (S) =>
                   S.documentTypeList("photobalconyLayout")
                     .title("Photobalcony Layout Empty Modules")
                     .filter(photobalconyLayoutEmptyModulesFilter),
+                ),
+            ]),
+        ),
+      li(S, "photos-inbox")
+        .title("Photos Inbox")
+        .child(
+          S.list()
+            .title("Photos Inbox")
+            .items([
+              li(S, "photos-inbox.needs-setup")
+                .title("Needs Setup")
+                .schemaType("photo")
+                .child(photoList(S, "Needs Setup", photoInboxNeedsSetupFilter)),
+              li(S, "photos-inbox.no-image")
+                .title("Missing Image Asset")
+                .schemaType("photo")
+                .child(photoList(S, "Missing Image Asset", '_type == "photo" && !defined(image.asset._ref)')),
+              li(S, "photos-inbox.no-category")
+                .title("Missing Category")
+                .schemaType("photo")
+                .child(photoList(S, "Missing Category", '_type == "photo" && !defined(category._ref)')),
+              li(S, "photos-inbox.no-slug")
+                .title("Missing Slug")
+                .schemaType("photo")
+                .child(photoList(S, "Missing Slug", '_type == "photo" && !defined(slug.current)')),
+              li(S, "photos-inbox.no-sort-order")
+                .title("Missing Sort Order")
+                .schemaType("photo")
+                .child(photoList(S, "Missing Sort Order", '_type == "photo" && !defined(sortOrder)')),
+              li(S, "photos-inbox.unplaced-visible")
+                .title("Visible But Not Placed")
+                .schemaType("photo")
+                .child(
+                  photoList(
+                    S,
+                    "Visible But Not Placed",
+                    `_type == "photo" && isHidden != true && !(${anyPageOrStoryReferenceFilter})`,
+                  ),
+                ),
+              li(S, "photos-inbox.without-stories")
+                .title("Without Stories")
+                .schemaType("photo")
+                .child(
+                  photoList(
+                    S,
+                    "Without Stories",
+                    '_type == "photo" && count(*[_type == "story" && references(^._id)]) == 0',
+                  ),
+                ),
+              li(S, "photos-inbox.recent")
+                .title("Recently Updated")
+                .schemaType("photo")
+                .child(
+                  S.documentTypeList("photo")
+                    .title("Recently Updated")
+                    .filter('_type == "photo"')
+                    .defaultOrdering([{ field: "_updatedAt", direction: "desc" }]),
                 ),
             ]),
         ),
