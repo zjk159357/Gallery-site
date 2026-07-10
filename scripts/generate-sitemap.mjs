@@ -75,20 +75,42 @@ async function fetchCmsEntries() {
   }
 
   const client = createClient({ projectId, dataset, apiVersion: "2025-02-19", useCdn: false });
-  const [photos, stories] = await Promise.all([
-    client.fetch(`*[_type == "photo" && isHidden != true]{
+  const photosQuery = `*[_type == "photo" && isHidden != true]{
       "slug": slug.current,
       "filename": sourceFilename,
       "updatedAt": _updatedAt,
       date
-    }`),
-    client.fetch(`*[_type == "story"]{
+    }`;
+  const storiesQuery = `*[
+      _type == "story" &&
+      isHidden != true &&
+      (!defined(publishedAt) || dateTime(publishedAt) <= dateTime(now()))
+    ]{
       title,
       "slug": slug.current,
       "updatedAt": _updatedAt,
       publishedAt
-    }`),
-  ]);
+    }`;
+
+  let photos;
+  try {
+    photos = await client.fetch(photosQuery);
+  } catch (error) {
+    throw new Error(
+      `Sitemap: Sanity photo query failed (${error instanceof Error ? error.message : "unknown error"}). ` +
+        `Refusing to fall back to static data so the build surfaces the problem instead of producing a misleading sitemap.`,
+    );
+  }
+
+  let stories;
+  try {
+    stories = await client.fetch(storiesQuery);
+  } catch (error) {
+    throw new Error(
+      `Sitemap: Sanity story query failed (${error instanceof Error ? error.message : "unknown error"}). ` +
+        `Refusing to fall back to static data so the build surfaces the problem instead of producing a misleading sitemap.`,
+    );
+  }
 
   return { photos, stories };
 }
@@ -117,7 +139,18 @@ function route(urlPath, lastmod, priority) {
   };
 }
 
-const entries = (await fetchCmsEntries().catch(() => null)) ?? (await loadStaticEntries());
+let entries;
+try {
+  entries = await fetchCmsEntries();
+} catch (error) {
+  if (error instanceof Error) throw error;
+  throw new Error(`Sitemap: unexpected error while fetching Sanity entries: ${String(error)}`);
+}
+
+if (!entries) {
+  console.warn("Sitemap: Sanity credentials not configured, falling back to src/data/*.ts");
+  entries = await loadStaticEntries();
+}
 const routes = [
   route("/", undefined, "1.0"),
   route("/journal", undefined, "0.7"),

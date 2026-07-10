@@ -17,6 +17,11 @@ const photoList = (
 const storyList = (S: Parameters<StructureResolver>[0], title: string, filter: string) =>
   S.documentTypeList("story").title(title).filter(filter).defaultOrdering(storyOrdering);
 
+const homepageReferenceFilter = `
+  _type == "photo" &&
+  count(*[_type == "homepageLayout" && references(^._id)]) > 0
+`;
+
 const slugify = (s: string) => {
   const ascii = s.replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
   if (ascii) return ascii;
@@ -156,6 +161,20 @@ export const structure: StructureResolver = (S) =>
                     S,
                     "Photos Referenced By Stories",
                     '_type == "photo" && count(*[_type == "story" && references(^._id)]) > 0',
+                  ),
+                ),
+              li(S, "photo-safety.photos-referenced-by-homepage")
+                .title("Photos Used On Homepage")
+                .schemaType("photo")
+                .child(photoList(S, "Photos Used On Homepage", homepageReferenceFilter)),
+              li(S, "photo-safety.hidden-homepage-photos")
+                .title("Hidden But Used On Homepage")
+                .schemaType("photo")
+                .child(
+                  photoList(
+                    S,
+                    "Hidden But Used On Homepage",
+                    `${homepageReferenceFilter} && isHidden == true`,
                   ),
                 ),
             ]),

@@ -89,6 +89,27 @@ export const photoType = defineType({
       initialValue: false,
       description:
         "Fallback hero marker. The main hero image is controlled in Homepage > Site Settings / Hero. Keep at most one flagged photo.",
+      validation: (Rule) =>
+        Rule.custom(async (value, context) => {
+          if (!value) return true;
+          const client = context.getClient({ apiVersion: "2025-02-19" });
+          const currentId = context.document?._id;
+          const publishedId = currentId?.replace(/^drafts\./, "");
+          const draftId = publishedId ? `drafts.${publishedId}` : undefined;
+          const others = await client.fetch(
+            `count(*[
+              _type == "photo" &&
+              isHero == true &&
+              _id != $publishedId &&
+              _id != $draftId
+            ])`,
+            { publishedId: publishedId ?? "", draftId: draftId ?? "" },
+          );
+          if (others > 0) {
+            return "Other photos already have the Hero Flag. Only one photo at a time should be marked as hero fallback.";
+          }
+          return true;
+        }),
     }),
     defineField({
       name: "isFeatured",
@@ -212,9 +233,24 @@ export const photoType = defineType({
       order: "sortOrder",
       media: "image",
     },
-    prepare({ title, filename, category, hidden, hero, order, media }) {
+    prepare({
+      title,
+      filename,
+      category,
+      hidden,
+      hero,
+      order,
+      media,
+    }) {
       const status = hidden ? "Hidden" : hero ? "Hero flag" : "Visible";
-      const details = [category, status, order != null ? `Order ${order}` : null, filename].filter(Boolean).join(" / ");
+      const details = [
+        category,
+        status,
+        order != null ? `Order ${order}` : null,
+        filename,
+      ]
+        .filter(Boolean)
+        .join(" / ");
 
       return {
         title,

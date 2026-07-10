@@ -33,6 +33,7 @@ export type CmsStory = {
 export type CmsSiteSettings = {
   siteTitle?: string;
   heroPhoto?: CmsStoryPhoto;
+  heroSubtitle?: string;
   aboutName?: string;
   aboutLocation?: string;
   aboutBio?: PortableTextBlock[];
@@ -63,6 +64,7 @@ type CmsStoryPhoto = {
   title?: string;
   slug?: string;
   src?: string;
+  isHidden?: boolean;
   legacyPublicPath?: string;
   filename?: string;
   width?: number;
@@ -98,7 +100,11 @@ export const cmsCategoriesQuery = `*[_type == "category" && isVisible != false] 
   "coverPhotoId": coverPhoto->_id
 }`;
 
-export const cmsStoriesQuery = `*[_type == "story"] | order(publishedAt desc) {
+export const cmsStoriesQuery = `*[
+  _type == "story" &&
+  isHidden != true &&
+  (!defined(publishedAt) || dateTime(publishedAt) <= dateTime(now()))
+] | order(publishedAt desc) {
   "id": _id,
   title,
   "slug": slug.current,
@@ -110,6 +116,7 @@ export const cmsStoriesQuery = `*[_type == "story"] | order(publishedAt desc) {
     title,
     "slug": slug.current,
     "src": image.asset->url,
+    isHidden,
     "legacyPublicPath": legacyPublicPath,
     "filename": sourceFilename,
     "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
@@ -134,11 +141,13 @@ export const cmsSiteSettingsQuery = `*[_type == "siteSettings"][0] {
     title,
     "slug": slug.current,
     "src": image.asset->url,
+    isHidden,
     "legacyPublicPath": legacyPublicPath,
     "filename": sourceFilename,
     "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
     "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
   },
+  heroSubtitle,
   aboutName,
   aboutLocation,
   aboutBio,

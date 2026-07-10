@@ -3,7 +3,12 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 const photoReference = defineArrayMember({
   type: "reference",
   to: [{ type: "photo" }],
+  options: {
+    disableNew: true,
+  },
 });
+
+const countItems = (items: unknown[] | undefined) => items?.length ?? 0;
 
 export const homepageLayoutType = defineType({
   name: "homepageLayout",
@@ -12,17 +17,17 @@ export const homepageLayoutType = defineType({
   fieldsets: [
     {
       name: "feature",
-      title: "Top feature cards",
+      title: "Top feature cards / 顶部三张卡片",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "main",
-      title: "Main homepage sections",
+      title: "Main homepage sections / 首页主体",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "plants",
-      title: "Plants section",
+      title: "Plants section / Plants 区块",
       options: { collapsible: true, collapsed: false },
     },
   ],
@@ -40,7 +45,7 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "feature",
       description:
-        "The three cards below the hero. Card 1 can keep /photobalcony as its link. Leave empty to use the current fallback layout.",
+        "Hero 下方的三张卡片。第 1 张通常保留 /photobalcony 链接；留空时继续使用旧的自动布局。",
       of: [
         defineArrayMember({
           type: "object",
@@ -62,7 +67,7 @@ export const homepageLayoutType = defineType({
               name: "href",
               title: "Optional Link",
               type: "string",
-              description: "Example: /photobalcony. Leave blank when the card should not navigate.",
+              description: "例如 /photobalcony。不需要跳转时留空。",
             }),
           ],
           preview: {
@@ -74,7 +79,7 @@ export const homepageLayoutType = defineType({
           },
         }),
       ],
-      validation: (Rule) => Rule.max(3).warning("The homepage currently shows three feature cards."),
+      validation: (Rule) => Rule.max(3).warning("首页目前只显示 3 张顶部卡片。"),
     }),
     defineField({
       name: "landscapePhotos",
@@ -82,7 +87,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "main",
       of: [photoReference],
-      description: "Photos for the first Landscape carousel. Leave empty to use category-based fallback.",
+      description: "首页第一个 Landscape 横向轮播。建议 8-24 张；留空时按分类自动选择。",
+      validation: (Rule) => Rule.max(24).warning("Landscape 轮播建议不超过 24 张，太多会增加首页加载压力。"),
     }),
     defineField({
       name: "quietPhotos",
@@ -90,7 +96,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "main",
       of: [photoReference],
-      description: "Square grid after Landscape. Leave empty to use the current square-photo fallback.",
+      description: "Landscape 后面的方图区域。建议 4-8 张；留空时使用当前方图兜底。",
+      validation: (Rule) => Rule.max(8).warning("Quiet Square 区域建议不超过 8 张。"),
     }),
     defineField({
       name: "bannerOnePhoto",
@@ -98,7 +105,8 @@ export const homepageLayoutType = defineType({
       type: "reference",
       fieldset: "main",
       to: [{ type: "photo" }],
-      description: "The wide image between the square grid and City section.",
+      options: { disableNew: true },
+      description: "方图区域和 City 轮播之间的第一张全宽横幅图。",
     }),
     defineField({
       name: "cityPhotos",
@@ -106,7 +114,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "main",
       of: [photoReference],
-      description: "Photos for the City carousel. Leave empty to use category-based fallback.",
+      description: "City 横向轮播。建议 8-22 张；留空时按石塘度假区/建筑分类自动选择。",
+      validation: (Rule) => Rule.max(22).warning("City 轮播建议不超过 22 张。"),
     }),
     defineField({
       name: "plantsHeroPhoto",
@@ -114,7 +123,8 @@ export const homepageLayoutType = defineType({
       type: "reference",
       fieldset: "plants",
       to: [{ type: "photo" }],
-      description: "The wide banner at the start of the Plants section.",
+      options: { disableNew: true },
+      description: "Plants 标题下面最先出现的全宽横幅图。",
     }),
     defineField({
       name: "plantsCarouselPhotos",
@@ -122,6 +132,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "plants",
       of: [photoReference],
+      description: "Plants 区块里的横向轮播。建议 8-18 张；留空时按花朵/森林分类自动选择。",
+      validation: (Rule) => Rule.max(18).warning("Plants 轮播建议不超过 18 张。"),
     }),
     defineField({
       name: "plantsFeaturePhoto",
@@ -129,6 +141,8 @@ export const homepageLayoutType = defineType({
       type: "reference",
       fieldset: "plants",
       to: [{ type: "photo" }],
+      options: { disableNew: true },
+      description: "Plants 区块里单独突出的 feature 图。可以留空。",
     }),
     defineField({
       name: "plantsStackPhotos",
@@ -136,6 +150,8 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "plants",
       of: [photoReference],
+      description: "Plants 区块中一张接一张的大图。建议 3-6 张。",
+      validation: (Rule) => Rule.max(8).warning("Plants 大图堆叠建议不超过 8 张。"),
     }),
     defineField({
       name: "plantsSquarePhotos",
@@ -143,16 +159,45 @@ export const homepageLayoutType = defineType({
       type: "array",
       fieldset: "plants",
       of: [photoReference],
+      description: "Plants 区块底部的方图组。建议 4-8 张。",
+      validation: (Rule) => Rule.max(8).warning("Plants 方图组建议不超过 8 张。"),
     }),
   ],
   preview: {
     select: {
       title: "title",
+      featureCards: "featureCards",
+      landscapePhotos: "landscapePhotos",
+      quietPhotos: "quietPhotos",
+      cityPhotos: "cityPhotos",
+      plantsCarouselPhotos: "plantsCarouselPhotos",
+      plantsStackPhotos: "plantsStackPhotos",
+      plantsSquarePhotos: "plantsSquarePhotos",
     },
-    prepare({ title }) {
+    prepare({
+      title,
+      featureCards,
+      landscapePhotos,
+      quietPhotos,
+      cityPhotos,
+      plantsCarouselPhotos,
+      plantsStackPhotos,
+      plantsSquarePhotos,
+    }) {
+      const configuredCount =
+        countItems(featureCards) +
+        countItems(landscapePhotos) +
+        countItems(quietPhotos) +
+        countItems(cityPhotos) +
+        countItems(plantsCarouselPhotos) +
+        countItems(plantsStackPhotos) +
+        countItems(plantsSquarePhotos);
+
       return {
         title: title || "Homepage Layout",
-        subtitle: "Controls the visible homepage photo modules",
+        subtitle: configuredCount
+          ? `${configuredCount} selected photos across homepage modules`
+          : "Empty modules use the automatic fallback layout",
       };
     },
   },

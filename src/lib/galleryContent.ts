@@ -117,7 +117,7 @@ function toPhotoMeta(photos: CmsPhoto[]) {
 
 function toReferencedPhoto(photo: CmsSiteSettings["heroPhoto"]): Photo | undefined {
   const src = resolvePhotoSrc(photo?.src, photo?.legacyPublicPath);
-  if (!photo?.id || !src || !photo.title || !photo.filename) {
+  if (photo?.isHidden || !photo?.id || !src || !photo.title || !photo.filename) {
     return undefined;
   }
 
@@ -239,9 +239,9 @@ async function loadCmsContent(): Promise<GalleryContent> {
 
   const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
   const heroPhoto =
-    photos.find((photo) => photo.isHero) ??
     photos.find((photo) => photo.id === cmsSiteSettings?.heroPhoto?.id) ??
-    toReferencedPhoto(cmsSiteSettings?.heroPhoto);
+    toReferencedPhoto(cmsSiteSettings?.heroPhoto) ??
+    photos.find((photo) => photo.isHero);
 
   if (photos.length === 0) {
     throw new Error("Sanity returned no publishable photos");
