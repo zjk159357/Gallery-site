@@ -9,7 +9,7 @@ const photoList = (
   S: Parameters<StructureResolver>[0],
   title: string,
   filter: string,
-  params?: Record<string, string>,
+  params?: Record<string, unknown>,
 ) => {
   const list = S.documentTypeList("photo").title(title).filter(filter).defaultOrdering(photoOrdering);
   return params ? list.params(params) : list;
@@ -21,6 +21,52 @@ const storyList = (S: Parameters<StructureResolver>[0], title: string, filter: s
 const homepageReferenceFilter = `
   _type == "photo" &&
   count(*[_type == "homepageLayout" && references(^._id)]) > 0
+`;
+
+const siteHeroReferenceFilter = `
+  _type == "photo" &&
+  count(*[_type == "siteSettings" && heroPhoto._ref == ^._id]) > 0
+`;
+
+const homepageFeatureCardFilter = `
+  _type == "photo" &&
+  count(*[_type == "homepageLayout" && ^._id in featureCards[].photo._ref]) > 0
+`;
+
+const homepageArrayReferenceFilter = (field: string) => `
+  _type == "photo" &&
+  count(*[_type == "homepageLayout" && ^._id in ${field}[]._ref]) > 0
+`;
+
+const homepageSingleReferenceFilter = (field: string) => `
+  _type == "photo" &&
+  count(*[_type == "homepageLayout" && ${field}._ref == ^._id]) > 0
+`;
+
+const photobalconyGroups = {
+  hero: ["DSC_0243.JPG"],
+  may: ["DSC_0257.JPG", "DSC_0518.JPG", "DSC_0521.JPG", "DSC_0522.JPG"],
+  marchPortraits: ["DSC_0264.JPG", "DSC_0335.JPG", "DSC_0396.JPG", "DSC_0470.JPG"],
+  marchWide: ["DSC_0534.JPG", "DSC_0555.JPG", "DSC_0566.JPG"],
+  february: ["DSC_0580.JPG", "DSC_0613.JPG", "DSC_0626.JPG", "DSC_0632.JPG"],
+  january: ["DSC_0513.JPG", "DSC_0514.JPG", "DSC_0520.JPG", "DSC_0538.JPG"],
+  winter: ["DSC_0546.JPG", "DSC_0551.JPG", "DSC_0552.JPG", "DSC_0571.JPG"],
+  summer: ["DSC_0638.JPG", "DSC_0648.JPG", "DSC_0917.JPG", "DSC_2196.JPG"],
+};
+
+const photobalconyAllFilenames = Object.values(photobalconyGroups).flat();
+
+const photosByFilename = (S: Parameters<StructureResolver>[0], title: string, filenames: string[]) =>
+  photoList(S, title, "_type == \"photo\" && sourceFilename in $filenames", { filenames });
+
+const journalCoverFilter = `
+  _type == "photo" &&
+  count(*[_type == "story" && coverPhoto._ref == ^._id]) > 0
+`;
+
+const journalRelatedFilter = `
+  _type == "photo" &&
+  count(*[_type == "story" && ^._id in relatedPhotos[]._ref]) > 0
 `;
 
 const visibleStoryFilter = `
@@ -123,6 +169,164 @@ export const structure: StructureResolver = (S) =>
                   S.documentTypeList("homepageLayout")
                     .title("Homepage Layout Empty Modules")
                     .filter(homepageLayoutEmptyModulesFilter),
+                ),
+            ]),
+        ),
+      li(S, "photo-placement")
+        .title("Photo Placement")
+        .child(
+          S.list()
+            .title("Photo Placement")
+            .items([
+              li(S, "photo-placement.all-visible")
+                .title("All Visible Website Photos")
+                .schemaType("photo")
+                .child(photoList(S, "All Visible Website Photos", '_type == "photo" && isHidden != true')),
+              li(S, "photo-placement.hidden")
+                .title("Hidden From Website")
+                .schemaType("photo")
+                .child(photoList(S, "Hidden From Website", '_type == "photo" && isHidden == true')),
+              S.divider(),
+              li(S, "photo-placement.homepage")
+                .title("Homepage")
+                .child(
+                  S.list()
+                    .title("Homepage")
+                    .items([
+                      li(S, "photo-placement.homepage.settings")
+                        .title("Hero Settings")
+                        .schemaType("siteSettings")
+                        .child(
+                          S.document()
+                            .schemaType("siteSettings")
+                            .documentId("siteSettings-main")
+                            .title("Hero Settings"),
+                        ),
+                      li(S, "photo-placement.homepage.hero-photo")
+                        .title("Current Hero Photo")
+                        .schemaType("photo")
+                        .child(photoList(S, "Current Hero Photo", siteHeroReferenceFilter)),
+                      li(S, "photo-placement.homepage.layout")
+                        .title("Homepage Layout Editor")
+                        .schemaType("homepageLayout")
+                        .child(
+                          S.document()
+                            .schemaType("homepageLayout")
+                            .documentId("homepageLayout-main")
+                            .title("Homepage Layout Editor"),
+                        ),
+                      S.divider(),
+                      li(S, "photo-placement.homepage.feature-cards")
+                        .title("Feature Cards")
+                        .schemaType("photo")
+                        .child(photoList(S, "Feature Cards", homepageFeatureCardFilter)),
+                      li(S, "photo-placement.homepage.landscape")
+                        .title("Landscape Carousel")
+                        .schemaType("photo")
+                        .child(photoList(S, "Landscape Carousel", homepageArrayReferenceFilter("landscapePhotos"))),
+                      li(S, "photo-placement.homepage.quiet")
+                        .title("Quiet Square Grid")
+                        .schemaType("photo")
+                        .child(photoList(S, "Quiet Square Grid", homepageArrayReferenceFilter("quietPhotos"))),
+                      li(S, "photo-placement.homepage.banner-one")
+                        .title("First Wide Banner")
+                        .schemaType("photo")
+                        .child(photoList(S, "First Wide Banner", homepageSingleReferenceFilter("bannerOnePhoto"))),
+                      li(S, "photo-placement.homepage.city")
+                        .title("City Carousel")
+                        .schemaType("photo")
+                        .child(photoList(S, "City Carousel", homepageArrayReferenceFilter("cityPhotos"))),
+                      li(S, "photo-placement.homepage.plants-banner")
+                        .title("Plants Banner")
+                        .schemaType("photo")
+                        .child(photoList(S, "Plants Banner", homepageSingleReferenceFilter("plantsHeroPhoto"))),
+                      li(S, "photo-placement.homepage.plants-carousel")
+                        .title("Plants Carousel")
+                        .schemaType("photo")
+                        .child(photoList(S, "Plants Carousel", homepageArrayReferenceFilter("plantsCarouselPhotos"))),
+                      li(S, "photo-placement.homepage.plants-feature")
+                        .title("Plants Feature")
+                        .schemaType("photo")
+                        .child(photoList(S, "Plants Feature", homepageSingleReferenceFilter("plantsFeaturePhoto"))),
+                      li(S, "photo-placement.homepage.plants-stack")
+                        .title("Plants Full-width Stack")
+                        .schemaType("photo")
+                        .child(photoList(S, "Plants Full-width Stack", homepageArrayReferenceFilter("plantsStackPhotos"))),
+                      li(S, "photo-placement.homepage.plants-squares")
+                        .title("Plants Square Group")
+                        .schemaType("photo")
+                        .child(photoList(S, "Plants Square Group", homepageArrayReferenceFilter("plantsSquarePhotos"))),
+                    ]),
+                ),
+              li(S, "photo-placement.photobalcony")
+                .title("Photobalcony")
+                .child(
+                  S.list()
+                    .title("Photobalcony")
+                    .items([
+                      li(S, "photo-placement.photobalcony.all")
+                        .title("All Photobalcony Photos")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "All Photobalcony Photos", photobalconyAllFilenames)),
+                      li(S, "photo-placement.photobalcony.hero")
+                        .title("Hero")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "Photobalcony Hero", photobalconyGroups.hero)),
+                      li(S, "photo-placement.photobalcony.may")
+                        .title("May 2025 Carousel")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "May 2025 Carousel", photobalconyGroups.may)),
+                      li(S, "photo-placement.photobalcony.march-portraits")
+                        .title("March 2025 Portrait Row")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "March 2025 Portrait Row", photobalconyGroups.marchPortraits)),
+                      li(S, "photo-placement.photobalcony.march-wide")
+                        .title("March 2025 Carousel")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "March 2025 Carousel", photobalconyGroups.marchWide)),
+                      li(S, "photo-placement.photobalcony.february")
+                        .title("Feb 2025 Carousel")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "Feb 2025 Carousel", photobalconyGroups.february)),
+                      li(S, "photo-placement.photobalcony.january")
+                        .title("Jan 2025 Grid")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "Jan 2025 Grid", photobalconyGroups.january)),
+                      li(S, "photo-placement.photobalcony.winter")
+                        .title("Nov - Dec 2024 Grid")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "Nov - Dec 2024 Grid", photobalconyGroups.winter)),
+                      li(S, "photo-placement.photobalcony.summer")
+                        .title("July - Aug 2024 Stack")
+                        .schemaType("photo")
+                        .child(photosByFilename(S, "July - Aug 2024 Stack", photobalconyGroups.summer)),
+                    ]),
+                ),
+              li(S, "photo-placement.journal")
+                .title("Journal")
+                .child(
+                  S.list()
+                    .title("Journal")
+                    .items([
+                      li(S, "photo-placement.journal.cover")
+                        .title("Story Cover Photos")
+                        .schemaType("photo")
+                        .child(photoList(S, "Story Cover Photos", journalCoverFilter)),
+                      li(S, "photo-placement.journal.related")
+                        .title("Story Related Photos")
+                        .schemaType("photo")
+                        .child(photoList(S, "Story Related Photos", journalRelatedFilter)),
+                      li(S, "photo-placement.journal.no-story")
+                        .title("Photos Without Stories")
+                        .schemaType("photo")
+                        .child(
+                          photoList(
+                            S,
+                            "Photos Without Stories",
+                            '_type == "photo" && count(*[_type == "story" && references(^._id)]) == 0',
+                          ),
+                        ),
+                    ]),
                 ),
             ]),
         ),

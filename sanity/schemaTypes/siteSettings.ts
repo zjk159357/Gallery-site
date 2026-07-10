@@ -48,13 +48,10 @@ export const siteSettingsType = defineType({
         Rule.custom(async (value, context) => {
           if (!value?._ref) return true;
           const client = context.getClient({ apiVersion: "2025-02-19" });
-          const doc = await client.fetch(
-            `*[_id == $id][0]{ isHidden, title }`,
-            { id: value._ref },
-          );
+          const doc = await client.fetch(`*[_id == $id][0]{ isHidden, title }`, { id: value._ref });
           if (!doc) return "Referenced photo no longer exists.";
           if (doc.isHidden) {
-            return `“${doc.title}” is currently hidden — the homepage will ignore it and fall back to the Hero Flag/default photo until you unhide it or pick another photo.`;
+            return `"${doc.title}" is currently hidden. The homepage will ignore it and fall back to the Hero Flag/default photo until you unhide it or pick another photo.`;
           }
           return true;
         }),
@@ -78,7 +75,7 @@ export const siteSettingsType = defineType({
       title: "About Location",
       type: "string",
       fieldset: "about",
-      description: "Short location line, e.g. “浙江台州 / 上海”.",
+      description: "Short location line, e.g. Zhejiang Taizhou / Shanghai.",
     }),
     defineField({
       name: "aboutBio",
@@ -101,14 +98,14 @@ export const siteSettingsType = defineType({
               name: "name",
               title: "Label",
               type: "string",
-              description: "Short label, e.g. “机身”.",
+              description: "Short label, e.g. Camera Body.",
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: "value",
               title: "Value",
               type: "string",
-              description: "Gear item, e.g. “Sony A7M4”.",
+              description: "Gear item, e.g. Sony A7M4.",
               validation: (Rule) => Rule.required(),
             }),
           ],
@@ -138,7 +135,7 @@ export const siteSettingsType = defineType({
               name: "value",
               title: "Display Value",
               type: "string",
-              description: "User-facing text, e.g. “@gallery”.",
+              description: "User-facing text, e.g. @gallery.",
             }),
             defineField({
               name: "href",
@@ -177,7 +174,7 @@ export const siteSettingsType = defineType({
       const subtitleParts = [heroLabel, subtitle].filter(Boolean);
       return {
         title: title || "Site Settings",
-        subtitle: subtitleParts.join(" · "),
+        subtitle: subtitleParts.join(" / "),
         media: heroImage,
       };
     },
