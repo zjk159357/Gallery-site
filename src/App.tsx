@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { About } from "./components/About";
 import { AdvancedPhotoLightbox } from "./components/AdvancedPhotoLightbox";
 import { BalconyView } from "./components/BalconyView";
@@ -264,6 +265,8 @@ function App() {
           photoStories={photoStories}
         />
       )}
+
+      <SpeedInsights />
     </>
   );
 }
