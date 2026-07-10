@@ -54,6 +54,17 @@ export type CmsHomepageLayout = {
   plantsSquarePhotoIds?: string[];
 };
 
+export type CmsPhotobalconyLayout = {
+  heroPhotoId?: string;
+  mayPhotoIds?: string[];
+  marchPortraitPhotoIds?: string[];
+  marchWidePhotoIds?: string[];
+  februaryPhotoIds?: string[];
+  januaryPhotoIds?: string[];
+  winterPhotoIds?: string[];
+  summerPhotoIds?: string[];
+};
+
 export type PortableTextBlock = {
   _type?: string;
   children?: { text?: string }[];
@@ -170,4 +181,15 @@ export const cmsHomepageLayoutQuery = `*[_type == "homepageLayout"][0] {
   "plantsFeaturePhotoId": plantsFeaturePhoto->_id,
   "plantsStackPhotoIds": plantsStackPhotos[]->_id,
   "plantsSquarePhotoIds": plantsSquarePhotos[]->_id
+}`;
+
+export const cmsPhotobalconyLayoutQuery = `*[_type == "photobalconyLayout"][0] {
+  "heroPhotoId": heroPhoto->_id,
+  "mayPhotoIds": mayPhotos[]->_id,
+  "marchPortraitPhotoIds": marchPortraitPhotos[]->_id,
+  "marchWidePhotoIds": marchWidePhotos[]->_id,
+  "februaryPhotoIds": februaryPhotos[]->_id,
+  "januaryPhotoIds": januaryPhotos[]->_id,
+  "winterPhotoIds": winterPhotos[]->_id,
+  "summerPhotoIds": summerPhotos[]->_id
 }`;

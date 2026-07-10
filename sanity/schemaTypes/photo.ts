@@ -10,6 +10,10 @@ const usageWarningQuery = `{
     _type == "siteSettings" &&
     (heroPhoto._ref == $publishedId || heroPhoto._ref == $draftId)
   ]),
+  "photobalconyCount": count(*[
+    _type == "photobalconyLayout" &&
+    (references($publishedId) || references($draftId))
+  ]),
   "visibleStoryCount": count(*[
     _type == "story" &&
     isHidden != true &&
@@ -112,11 +116,13 @@ export const photoType = defineType({
           const usage = await client.fetch<{
             homepageCount: number;
             siteHeroCount: number;
+            photobalconyCount: number;
             visibleStoryCount: number;
           }>(usageWarningQuery, documentIds(context.document?._id));
           const warnings = [];
           if (usage.siteHeroCount) warnings.push("Site Settings hero");
           if (usage.homepageCount) warnings.push("Homepage Layout");
+          if (usage.photobalconyCount) warnings.push("Photobalcony Layout");
           if (usage.visibleStoryCount) warnings.push(`${usage.visibleStoryCount} visible stories`);
           if (!warnings.length) return true;
 

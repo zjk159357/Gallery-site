@@ -3,11 +3,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
 import type { PhotoMeta, PhotoStory } from "../data/stories";
 import { sizedImageUrl } from "../lib/imageUrl";
+import type { PhotobalconyLayout } from "../lib/photobalconyLayout";
 import { photoPath } from "../lib/routes";
 import { AdvancedPhotoLightbox } from "./AdvancedPhotoLightbox";
 
 type BalconyViewProps = {
   photos: Photo[];
+  layout?: PhotobalconyLayout;
   photoMeta?: Record<string, PhotoMeta>;
   photoStories?: Record<string, PhotoStory[]>;
 };
@@ -31,6 +33,9 @@ const byFilenames = (photos: Photo[], filenames: string[]) =>
     return photo ? [photo] : [];
   });
 
+const configuredPhotos = (layout: PhotobalconyLayout | undefined, configured: Photo[] | undefined, fallback: Photo[]) =>
+  layout ? (configured ?? []) : fallback;
+
 function uniquePhotos(...groups: Photo[][]) {
   const seen = new Set<string>();
   return groups.flat().filter((photo) => {
@@ -42,12 +47,7 @@ function uniquePhotos(...groups: Photo[][]) {
 
 function PhotoButton({ photo, className, loading = "lazy", onOpen }: PhotoButtonProps) {
   return (
-    <button
-      type="button"
-      className={className}
-      onClick={() => onOpen(photo)}
-      aria-label={`Open ${photo.title}`}
-    >
+    <button type="button" className={className} onClick={() => onOpen(photo)} aria-label={`Open ${photo.title}`}>
       <img
         src={sizedImageUrl(photo.src, 900)}
         srcSet={`${sizedImageUrl(photo.src, 700)} 700w, ${sizedImageUrl(photo.src, 1100)} 1100w`}
@@ -120,25 +120,33 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
   );
 }
 
-export function BalconyView({ photos, photoMeta, photoStories }: BalconyViewProps) {
+export function BalconyView({ photos, layout, photoMeta, photoStories }: BalconyViewProps) {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
   const content = useMemo(() => {
-    const hero =
+    const fallbackHero =
       photos.find((photo) => photo.filename === "DSC_0243.JPG") ??
       photos.find((photo) => photo.category === "石塘度假区") ??
       photos[0];
 
-    const may = byFilenames(photos, ["DSC_0257.JPG", "DSC_0518.JPG", "DSC_0521.JPG", "DSC_0522.JPG"]);
-    const marchPortraits = byFilenames(photos, ["DSC_0264.JPG", "DSC_0335.JPG", "DSC_0396.JPG", "DSC_0470.JPG"]);
-    const marchWide = byFilenames(photos, ["DSC_0534.JPG", "DSC_0555.JPG", "DSC_0566.JPG"]);
-    const february = byFilenames(photos, ["DSC_0580.JPG", "DSC_0613.JPG", "DSC_0626.JPG", "DSC_0632.JPG"]);
-    const january = byFilenames(photos, ["DSC_0513.JPG", "DSC_0514.JPG", "DSC_0520.JPG", "DSC_0538.JPG"]);
-    const winter = byFilenames(photos, ["DSC_0546.JPG", "DSC_0551.JPG", "DSC_0552.JPG", "DSC_0571.JPG"]);
-    const summer = byFilenames(photos, ["DSC_0638.JPG", "DSC_0648.JPG", "DSC_0917.JPG", "DSC_2196.JPG"]);
+    const fallbackMay = byFilenames(photos, ["DSC_0257.JPG", "DSC_0518.JPG", "DSC_0521.JPG", "DSC_0522.JPG"]);
+    const fallbackMarchPortraits = byFilenames(photos, ["DSC_0264.JPG", "DSC_0335.JPG", "DSC_0396.JPG", "DSC_0470.JPG"]);
+    const fallbackMarchWide = byFilenames(photos, ["DSC_0534.JPG", "DSC_0555.JPG", "DSC_0566.JPG"]);
+    const fallbackFebruary = byFilenames(photos, ["DSC_0580.JPG", "DSC_0613.JPG", "DSC_0626.JPG", "DSC_0632.JPG"]);
+    const fallbackJanuary = byFilenames(photos, ["DSC_0513.JPG", "DSC_0514.JPG", "DSC_0520.JPG", "DSC_0538.JPG"]);
+    const fallbackWinter = byFilenames(photos, ["DSC_0546.JPG", "DSC_0551.JPG", "DSC_0552.JPG", "DSC_0571.JPG"]);
+    const fallbackSummer = byFilenames(photos, ["DSC_0638.JPG", "DSC_0648.JPG", "DSC_0917.JPG", "DSC_2196.JPG"]);
+
+    const may = configuredPhotos(layout, layout?.mayPhotos, fallbackMay);
+    const marchPortraits = configuredPhotos(layout, layout?.marchPortraitPhotos, fallbackMarchPortraits);
+    const marchWide = configuredPhotos(layout, layout?.marchWidePhotos, fallbackMarchWide);
+    const february = configuredPhotos(layout, layout?.februaryPhotos, fallbackFebruary);
+    const january = configuredPhotos(layout, layout?.januaryPhotos, fallbackJanuary);
+    const winter = configuredPhotos(layout, layout?.winterPhotos, fallbackWinter);
+    const summer = configuredPhotos(layout, layout?.summerPhotos, fallbackSummer);
 
     return {
-      hero,
+      hero: layout?.heroPhoto ?? fallbackHero,
       may,
       marchPortraits,
       marchWide,
@@ -148,7 +156,7 @@ export function BalconyView({ photos, photoMeta, photoStories }: BalconyViewProp
       summer,
       lightboxPhotos: uniquePhotos(may, marchPortraits, marchWide, february, january, winter, summer),
     };
-  }, [photos]);
+  }, [layout, photos]);
 
   if (!content.hero) return null;
 
@@ -185,12 +193,7 @@ export function BalconyView({ photos, photoMeta, photoStories }: BalconyViewProp
       <MonthTitle title="March 2025" />
       <section className="balcony-portrait-row" aria-label="March 2025 portrait photos">
         {content.marchPortraits.map((photo) => (
-          <PhotoButton
-            key={photo.id}
-            photo={photo}
-            className="balcony-portrait-photo"
-            onOpen={openPhoto}
-          />
+          <PhotoButton key={photo.id} photo={photo} className="balcony-portrait-photo" onOpen={openPhoto} />
         ))}
       </section>
       <BalconyCarousel title="March 2025" photos={content.marchWide} onOpen={openPhoto} />

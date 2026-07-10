@@ -14,6 +14,15 @@ type UsageResult = {
   plantsFeatureCount: number;
   plantsStackCount: number;
   plantsSquareCount: number;
+  photobalconyLayoutCount: number;
+  photobalconyHeroCount: number;
+  photobalconyMayCount: number;
+  photobalconyMarchPortraitCount: number;
+  photobalconyMarchWideCount: number;
+  photobalconyFebruaryCount: number;
+  photobalconyJanuaryCount: number;
+  photobalconyWinterCount: number;
+  photobalconySummerCount: number;
   storyCount: number;
   visibleStoryCount: number;
 };
@@ -67,6 +76,42 @@ const usageQuery = `{
     _type == "homepageLayout" &&
     ($publishedId in plantsSquarePhotos[]._ref || $draftId in plantsSquarePhotos[]._ref)
   ]),
+  "photobalconyLayoutCount": count(*[
+    _type == "photobalconyLayout" &&
+    (references($publishedId) || references($draftId))
+  ]),
+  "photobalconyHeroCount": count(*[
+    _type == "photobalconyLayout" &&
+    (heroPhoto._ref == $publishedId || heroPhoto._ref == $draftId)
+  ]),
+  "photobalconyMayCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in mayPhotos[]._ref || $draftId in mayPhotos[]._ref)
+  ]),
+  "photobalconyMarchPortraitCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in marchPortraitPhotos[]._ref || $draftId in marchPortraitPhotos[]._ref)
+  ]),
+  "photobalconyMarchWideCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in marchWidePhotos[]._ref || $draftId in marchWidePhotos[]._ref)
+  ]),
+  "photobalconyFebruaryCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in februaryPhotos[]._ref || $draftId in februaryPhotos[]._ref)
+  ]),
+  "photobalconyJanuaryCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in januaryPhotos[]._ref || $draftId in januaryPhotos[]._ref)
+  ]),
+  "photobalconyWinterCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in winterPhotos[]._ref || $draftId in winterPhotos[]._ref)
+  ]),
+  "photobalconySummerCount": count(*[
+    _type == "photobalconyLayout" &&
+    ($publishedId in summerPhotos[]._ref || $draftId in summerPhotos[]._ref)
+  ]),
   "storyCount": count(*[
     _type == "story" &&
     (references($publishedId) || references($draftId))
@@ -77,37 +122,6 @@ const usageQuery = `{
     (references($publishedId) || references($draftId))
   ])
 }`;
-
-const photobalconyPlacementsByFilename: Record<string, string[]> = {
-  "DSC_0243.JPG": ["Photobalcony hero"],
-  "DSC_0257.JPG": ["Photobalcony May 2025 carousel"],
-  "DSC_0518.JPG": ["Photobalcony May 2025 carousel"],
-  "DSC_0521.JPG": ["Photobalcony May 2025 carousel"],
-  "DSC_0522.JPG": ["Photobalcony May 2025 carousel"],
-  "DSC_0264.JPG": ["Photobalcony March 2025 portrait row"],
-  "DSC_0335.JPG": ["Photobalcony March 2025 portrait row"],
-  "DSC_0396.JPG": ["Photobalcony March 2025 portrait row"],
-  "DSC_0470.JPG": ["Photobalcony March 2025 portrait row"],
-  "DSC_0534.JPG": ["Photobalcony March 2025 carousel"],
-  "DSC_0555.JPG": ["Photobalcony March 2025 carousel"],
-  "DSC_0566.JPG": ["Photobalcony March 2025 carousel"],
-  "DSC_0580.JPG": ["Photobalcony Feb 2025 carousel"],
-  "DSC_0613.JPG": ["Photobalcony Feb 2025 carousel"],
-  "DSC_0626.JPG": ["Photobalcony Feb 2025 carousel"],
-  "DSC_0632.JPG": ["Photobalcony Feb 2025 carousel"],
-  "DSC_0513.JPG": ["Photobalcony Jan 2025 grid"],
-  "DSC_0514.JPG": ["Photobalcony Jan 2025 grid"],
-  "DSC_0520.JPG": ["Photobalcony Jan 2025 grid"],
-  "DSC_0538.JPG": ["Photobalcony Jan 2025 grid"],
-  "DSC_0546.JPG": ["Photobalcony Nov - Dec 2024 grid"],
-  "DSC_0551.JPG": ["Photobalcony Nov - Dec 2024 grid"],
-  "DSC_0552.JPG": ["Photobalcony Nov - Dec 2024 grid"],
-  "DSC_0571.JPG": ["Photobalcony Nov - Dec 2024 grid"],
-  "DSC_0638.JPG": ["Photobalcony July - Aug 2024 stack"],
-  "DSC_0648.JPG": ["Photobalcony July - Aug 2024 stack"],
-  "DSC_0917.JPG": ["Photobalcony July - Aug 2024 stack"],
-  "DSC_2196.JPG": ["Photobalcony July - Aug 2024 stack"],
-};
 
 function normalizeIds(id: unknown) {
   if (typeof id !== "string" || !id) {
@@ -121,12 +135,12 @@ function normalizeIds(id: unknown) {
   };
 }
 
-function usageTone(usage: UsageResult | undefined, photobalconyPlacements: string[]) {
+function usageTone(usage: UsageResult | undefined) {
   if (!usage) return "#5f6368";
   if (
     usage.siteHeroCount ||
     usage.homepageLayoutCount ||
-    photobalconyPlacements.length ||
+    usage.photobalconyLayoutCount ||
     usage.visibleStoryCount
   ) {
     return "#8a4b00";
@@ -150,17 +164,27 @@ function activeHomepageModules(usage: UsageResult) {
   ].filter(([, count]) => Number(count) > 0);
 }
 
+function activePhotobalconyModules(usage: UsageResult) {
+  return [
+    ["Hero", usage.photobalconyHeroCount],
+    ["May 2025 carousel", usage.photobalconyMayCount],
+    ["March 2025 portrait row", usage.photobalconyMarchPortraitCount],
+    ["March 2025 carousel", usage.photobalconyMarchWideCount],
+    ["Feb 2025 carousel", usage.photobalconyFebruaryCount],
+    ["Jan 2025 grid", usage.photobalconyJanuaryCount],
+    ["Nov - Dec 2024 grid", usage.photobalconyWinterCount],
+    ["July - Aug 2024 stack", usage.photobalconySummerCount],
+  ].filter(([, count]) => Number(count) > 0);
+}
+
 export function PhotoUsageInput() {
   const client = useClient({ apiVersion: "2025-02-19" });
   const documentId = useFormValue(["_id"]);
-  const sourceFilename = useFormValue(["sourceFilename"]);
   const [usage, setUsage] = useState<UsageResult>();
   const [error, setError] = useState<string>();
   const ids = useMemo(() => normalizeIds(documentId), [documentId]);
   const publishedId = ids?.publishedId;
   const draftId = ids?.draftId;
-  const photobalconyPlacements =
-    typeof sourceFilename === "string" ? photobalconyPlacementsByFilename[sourceFilename] ?? [] : [];
 
   useEffect(() => {
     if (!publishedId || !draftId) return;
@@ -186,8 +210,9 @@ export function PhotoUsageInput() {
     };
   }, [client, draftId, publishedId]);
 
-  const tone = usageTone(usage, photobalconyPlacements);
+  const tone = usageTone(usage);
   const homepageModules = usage ? activeHomepageModules(usage) : [];
+  const photobalconyModules = usage ? activePhotobalconyModules(usage) : [];
 
   return (
     <div
@@ -225,15 +250,18 @@ export function PhotoUsageInput() {
 
           <section>
             <strong style={{ display: "block", marginBottom: 4 }}>Photobalcony</strong>
-            {photobalconyPlacements.length ? (
-              <ul style={{ margin: 0, paddingLeft: 18 }}>
-                {photobalconyPlacements.map((placement) => (
-                  <li key={placement}>{placement}</li>
-                ))}
-              </ul>
-            ) : (
-              <p style={{ margin: 0 }}>No fixed Photobalcony position.</p>
-            )}
+            <ul style={{ margin: 0, paddingLeft: 18 }}>
+              <li>Total Photobalcony layout references: {usage.photobalconyLayoutCount}</li>
+              {photobalconyModules.length ? (
+                photobalconyModules.map(([label, count]) => (
+                  <li key={label}>
+                    {label}: {count}
+                  </li>
+                ))
+              ) : (
+                <li>No explicit Photobalcony layout reference.</li>
+              )}
+            </ul>
           </section>
 
           <section>

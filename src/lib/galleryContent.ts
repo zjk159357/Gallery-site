@@ -10,16 +10,19 @@ import {
 } from "../data/stories";
 import {
   cmsHomepageLayoutQuery,
+  cmsPhotobalconyLayoutQuery,
   cmsPhotosQuery,
   cmsSiteSettingsQuery,
   cmsStoriesQuery,
   type CmsHomepageLayout,
+  type CmsPhotobalconyLayout,
   type CmsPhoto,
   type CmsSiteSettings,
   type CmsStory,
   type PortableTextBlock,
 } from "./cmsQueries";
 import type { HomepageLayout } from "./homepageLayout";
+import type { PhotobalconyLayout } from "./photobalconyLayout";
 import { getSanityClient, isSanityConfigured } from "./sanity";
 
 export type GalleryContent = {
@@ -29,6 +32,7 @@ export type GalleryContent = {
   aboutData: AboutData;
   heroPhoto?: Photo;
   homepageLayout?: HomepageLayout;
+  photobalconyLayout?: PhotobalconyLayout;
   source: "static" | "cms";
   isLoading: boolean;
   error?: string;
@@ -223,6 +227,28 @@ function toHomepageLayout(layout: CmsHomepageLayout | null | undefined, photos: 
   };
 }
 
+function toPhotobalconyLayout(
+  layout: CmsPhotobalconyLayout | null | undefined,
+  photos: Photo[],
+): PhotobalconyLayout | undefined {
+  if (!layout) {
+    return undefined;
+  }
+
+  const photoMap = photosById(photos);
+
+  return {
+    heroPhoto: resolvePhotoId(photoMap, layout.heroPhotoId),
+    mayPhotos: resolvePhotoIds(photoMap, layout.mayPhotoIds) ?? [],
+    marchPortraitPhotos: resolvePhotoIds(photoMap, layout.marchPortraitPhotoIds) ?? [],
+    marchWidePhotos: resolvePhotoIds(photoMap, layout.marchWidePhotoIds) ?? [],
+    februaryPhotos: resolvePhotoIds(photoMap, layout.februaryPhotoIds) ?? [],
+    januaryPhotos: resolvePhotoIds(photoMap, layout.januaryPhotoIds) ?? [],
+    winterPhotos: resolvePhotoIds(photoMap, layout.winterPhotoIds) ?? [],
+    summerPhotos: resolvePhotoIds(photoMap, layout.summerPhotoIds) ?? [],
+  };
+}
+
 async function loadCmsContent(): Promise<GalleryContent> {
   const client = getSanityClient();
 
@@ -230,11 +256,12 @@ async function loadCmsContent(): Promise<GalleryContent> {
     return staticContent;
   }
 
-  const [cmsPhotos, cmsStories, cmsSiteSettings, cmsHomepageLayout] = await Promise.all([
+  const [cmsPhotos, cmsStories, cmsSiteSettings, cmsHomepageLayout, cmsPhotobalconyLayout] = await Promise.all([
     client.fetch<CmsPhoto[]>(cmsPhotosQuery),
     client.fetch<CmsStory[]>(cmsStoriesQuery),
     client.fetch<CmsSiteSettings | null>(cmsSiteSettingsQuery),
     client.fetch<CmsHomepageLayout | null>(cmsHomepageLayoutQuery),
+    client.fetch<CmsPhotobalconyLayout | null>(cmsPhotobalconyLayoutQuery),
   ]);
 
   const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
@@ -254,6 +281,7 @@ async function loadCmsContent(): Promise<GalleryContent> {
     aboutData: toAboutData(cmsSiteSettings),
     heroPhoto,
     homepageLayout: toHomepageLayout(cmsHomepageLayout, photos),
+    photobalconyLayout: toPhotobalconyLayout(cmsPhotobalconyLayout, photos),
     source: "cms",
     isLoading: false,
   };

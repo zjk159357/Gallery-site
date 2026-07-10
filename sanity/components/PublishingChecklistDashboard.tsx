@@ -3,13 +3,15 @@ import { useClient } from "sanity";
 
 type ChecklistKey =
   | "hiddenHomepagePhotos"
+  | "hiddenPhotobalconyPhotos"
   | "hiddenStoryPhotos"
   | "visibleStoriesMissingCover"
   | "hiddenStories"
   | "photosMissingImage"
   | "photosMissingCategory"
   | "multipleHeroFlags"
-  | "emptyHomepageModules";
+  | "emptyHomepageModules"
+  | "emptyPhotobalconyModules";
 
 type ChecklistCounts = Record<ChecklistKey, number>;
 
@@ -26,6 +28,12 @@ const checklistItems: ChecklistItem[] = [
     title: "Hidden photos used on homepage",
     severity: "blocking",
     listTitle: "Hidden But Used On Homepage",
+  },
+  {
+    key: "hiddenPhotobalconyPhotos",
+    title: "Hidden photos used on Photobalcony",
+    severity: "blocking",
+    listTitle: "Hidden But Used On Photobalcony",
   },
   {
     key: "hiddenStoryPhotos",
@@ -69,6 +77,12 @@ const checklistItems: ChecklistItem[] = [
     severity: "warning",
     listTitle: "Homepage Layout Empty Modules",
   },
+  {
+    key: "emptyPhotobalconyModules",
+    title: "Photobalcony layout empty modules",
+    severity: "warning",
+    listTitle: "Photobalcony Layout Empty Modules",
+  },
 ];
 
 const checklistQuery = `{
@@ -76,6 +90,11 @@ const checklistQuery = `{
     _type == "photo" &&
     isHidden == true &&
     count(*[_type == "homepageLayout" && references(^._id)]) > 0
+  ]),
+  "hiddenPhotobalconyPhotos": count(*[
+    _type == "photo" &&
+    isHidden == true &&
+    count(*[_type == "photobalconyLayout" && references(^._id)]) > 0
   ]),
   "hiddenStoryPhotos": count(*[
     _type == "photo" &&
@@ -113,11 +132,25 @@ const checklistQuery = `{
       !defined(plantsStackPhotos[0]) ||
       !defined(plantsSquarePhotos[0])
     )
+  ]),
+  "emptyPhotobalconyModules": count(*[
+    _type == "photobalconyLayout" &&
+    (
+      !defined(heroPhoto._ref) ||
+      !defined(mayPhotos[0]) ||
+      !defined(marchPortraitPhotos[0]) ||
+      !defined(marchWidePhotos[0]) ||
+      !defined(februaryPhotos[0]) ||
+      !defined(januaryPhotos[0]) ||
+      !defined(winterPhotos[0]) ||
+      !defined(summerPhotos[0])
+    )
   ])
 }`;
 
 const emptyCounts: ChecklistCounts = {
   hiddenHomepagePhotos: 0,
+  hiddenPhotobalconyPhotos: 0,
   hiddenStoryPhotos: 0,
   visibleStoriesMissingCover: 0,
   hiddenStories: 0,
@@ -125,6 +158,7 @@ const emptyCounts: ChecklistCounts = {
   photosMissingCategory: 0,
   multipleHeroFlags: 0,
   emptyHomepageModules: 0,
+  emptyPhotobalconyModules: 0,
 };
 
 function countSeverity(counts: ChecklistCounts, severity: ChecklistItem["severity"]) {

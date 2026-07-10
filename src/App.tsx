@@ -31,7 +31,7 @@ function App() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname.replace(/\/$/, "") || "/");
   const content = useGalleryContent();
-  const { photos, photoMeta, photoStories, aboutData, homepageLayout } = content;
+  const { photos, photoMeta, photoStories, aboutData, homepageLayout, photobalconyLayout } = content;
   const pathname = currentPath;
   const isBalconyPage = pathname === "/photobalcony";
   const isStoryPage = pathname === "/photostory";
@@ -198,7 +198,12 @@ function App() {
             </a>
           </section>
         ) : isBalconyPage ? (
-          <BalconyView photos={photos} photoMeta={photoMeta} photoStories={photoStories} />
+          <BalconyView
+            photos={photos}
+            layout={photobalconyLayout}
+            photoMeta={photoMeta}
+            photoStories={photoStories}
+          />
         ) : isStoryPage ? (
           <PhotoStory photos={photos} photoMeta={photoMeta} photoStories={photoStories} aboutData={aboutData} />
         ) : isAboutPage ? (

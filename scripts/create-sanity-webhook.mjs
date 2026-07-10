@@ -38,7 +38,7 @@ const deployHookUrl = process.env.VERCEL_DEPLOY_HOOK_URL;
 
 const webhookName = "Vercel production rebuild";
 const webhookDescription =
-  "Triggers a Vercel production rebuild whenever a photo, story, or siteSettings document is created, updated, or deleted. Refreshing sitemap.xml / static fallback data only.";
+  "Triggers a Vercel production rebuild whenever public site content documents are created, updated, or deleted. Refreshing sitemap.xml / static fallback data only.";
 
 if (!projectId) {
   console.error("SANITY_STUDIO_PROJECT_ID (or VITE_SANITY_PROJECT_ID) is not set.");
@@ -73,7 +73,7 @@ const body = {
   description: webhookDescription,
   dataset,
   url: deployHookUrl,
-  filter: '_type in ["photo", "story", "siteSettings"]',
+  filter: '_type in ["photo", "story", "siteSettings", "homepageLayout", "photobalconyLayout"]',
   httpMethod: "POST",
   apiVersion: "v2025-02-19",
   type: "document",

@@ -43,21 +43,20 @@ const homepageSingleReferenceFilter = (field: string) => `
   count(*[_type == "homepageLayout" && ${field}._ref == ^._id]) > 0
 `;
 
-const photobalconyGroups = {
-  hero: ["DSC_0243.JPG"],
-  may: ["DSC_0257.JPG", "DSC_0518.JPG", "DSC_0521.JPG", "DSC_0522.JPG"],
-  marchPortraits: ["DSC_0264.JPG", "DSC_0335.JPG", "DSC_0396.JPG", "DSC_0470.JPG"],
-  marchWide: ["DSC_0534.JPG", "DSC_0555.JPG", "DSC_0566.JPG"],
-  february: ["DSC_0580.JPG", "DSC_0613.JPG", "DSC_0626.JPG", "DSC_0632.JPG"],
-  january: ["DSC_0513.JPG", "DSC_0514.JPG", "DSC_0520.JPG", "DSC_0538.JPG"],
-  winter: ["DSC_0546.JPG", "DSC_0551.JPG", "DSC_0552.JPG", "DSC_0571.JPG"],
-  summer: ["DSC_0638.JPG", "DSC_0648.JPG", "DSC_0917.JPG", "DSC_2196.JPG"],
-};
+const photobalconyReferenceFilter = `
+  _type == "photo" &&
+  count(*[_type == "photobalconyLayout" && references(^._id)]) > 0
+`;
 
-const photobalconyAllFilenames = Object.values(photobalconyGroups).flat();
+const photobalconyArrayReferenceFilter = (field: string) => `
+  _type == "photo" &&
+  count(*[_type == "photobalconyLayout" && ^._id in ${field}[]._ref]) > 0
+`;
 
-const photosByFilename = (S: Parameters<StructureResolver>[0], title: string, filenames: string[]) =>
-  photoList(S, title, "_type == \"photo\" && sourceFilename in $filenames", { filenames });
+const photobalconySingleReferenceFilter = (field: string) => `
+  _type == "photo" &&
+  count(*[_type == "photobalconyLayout" && ${field}._ref == ^._id]) > 0
+`;
 
 const journalCoverFilter = `
   _type == "photo" &&
@@ -81,6 +80,12 @@ const hiddenPhotoUsedByVisibleStoriesFilter = `
   count(*[${visibleStoryFilter} && references(^._id)]) > 0
 `;
 
+const hiddenPhotoUsedByPhotobalconyFilter = `
+  _type == "photo" &&
+  isHidden == true &&
+  count(*[_type == "photobalconyLayout" && references(^._id)]) > 0
+`;
+
 const homepageLayoutEmptyModulesFilter = `
   _type == "homepageLayout" &&
   (
@@ -93,6 +98,20 @@ const homepageLayoutEmptyModulesFilter = `
     !defined(plantsCarouselPhotos[0]) ||
     !defined(plantsStackPhotos[0]) ||
     !defined(plantsSquarePhotos[0])
+  )
+`;
+
+const photobalconyLayoutEmptyModulesFilter = `
+  _type == "photobalconyLayout" &&
+  (
+    !defined(heroPhoto._ref) ||
+    !defined(mayPhotos[0]) ||
+    !defined(marchPortraitPhotos[0]) ||
+    !defined(marchWidePhotos[0]) ||
+    !defined(februaryPhotos[0]) ||
+    !defined(januaryPhotos[0]) ||
+    !defined(winterPhotos[0]) ||
+    !defined(summerPhotos[0])
   )
 `;
 
@@ -132,6 +151,10 @@ export const structure: StructureResolver = (S) =>
                 .title("Hidden But Used On Homepage")
                 .schemaType("photo")
                 .child(photoList(S, "Hidden But Used On Homepage", `${homepageReferenceFilter} && isHidden == true`)),
+              li(S, "publishing.hidden-photobalcony-photos")
+                .title("Hidden But Used On Photobalcony")
+                .schemaType("photo")
+                .child(photoList(S, "Hidden But Used On Photobalcony", hiddenPhotoUsedByPhotobalconyFilter)),
               li(S, "publishing.hidden-story-photos")
                 .title("Hidden But Used By Visible Stories")
                 .schemaType("photo")
@@ -169,6 +192,14 @@ export const structure: StructureResolver = (S) =>
                   S.documentTypeList("homepageLayout")
                     .title("Homepage Layout Empty Modules")
                     .filter(homepageLayoutEmptyModulesFilter),
+                ),
+              li(S, "publishing.empty-photobalcony-modules")
+                .title("Photobalcony Layout Empty Modules")
+                .schemaType("photobalconyLayout")
+                .child(
+                  S.documentTypeList("photobalconyLayout")
+                    .title("Photobalcony Layout Empty Modules")
+                    .filter(photobalconyLayoutEmptyModulesFilter),
                 ),
             ]),
         ),
@@ -264,42 +295,58 @@ export const structure: StructureResolver = (S) =>
                   S.list()
                     .title("Photobalcony")
                     .items([
+                      li(S, "photo-placement.photobalcony.layout")
+                        .title("Photobalcony Layout Editor")
+                        .schemaType("photobalconyLayout")
+                        .child(
+                          S.document()
+                            .schemaType("photobalconyLayout")
+                            .documentId("photobalconyLayout-main")
+                            .title("Photobalcony Layout Editor"),
+                        ),
+                      S.divider(),
                       li(S, "photo-placement.photobalcony.all")
                         .title("All Photobalcony Photos")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "All Photobalcony Photos", photobalconyAllFilenames)),
+                        .child(photoList(S, "All Photobalcony Photos", photobalconyReferenceFilter)),
                       li(S, "photo-placement.photobalcony.hero")
                         .title("Hero")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "Photobalcony Hero", photobalconyGroups.hero)),
+                        .child(photoList(S, "Photobalcony Hero", photobalconySingleReferenceFilter("heroPhoto"))),
                       li(S, "photo-placement.photobalcony.may")
                         .title("May 2025 Carousel")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "May 2025 Carousel", photobalconyGroups.may)),
+                        .child(photoList(S, "May 2025 Carousel", photobalconyArrayReferenceFilter("mayPhotos"))),
                       li(S, "photo-placement.photobalcony.march-portraits")
                         .title("March 2025 Portrait Row")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "March 2025 Portrait Row", photobalconyGroups.marchPortraits)),
+                        .child(
+                          photoList(
+                            S,
+                            "March 2025 Portrait Row",
+                            photobalconyArrayReferenceFilter("marchPortraitPhotos"),
+                          ),
+                        ),
                       li(S, "photo-placement.photobalcony.march-wide")
                         .title("March 2025 Carousel")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "March 2025 Carousel", photobalconyGroups.marchWide)),
+                        .child(photoList(S, "March 2025 Carousel", photobalconyArrayReferenceFilter("marchWidePhotos"))),
                       li(S, "photo-placement.photobalcony.february")
                         .title("Feb 2025 Carousel")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "Feb 2025 Carousel", photobalconyGroups.february)),
+                        .child(photoList(S, "Feb 2025 Carousel", photobalconyArrayReferenceFilter("februaryPhotos"))),
                       li(S, "photo-placement.photobalcony.january")
                         .title("Jan 2025 Grid")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "Jan 2025 Grid", photobalconyGroups.january)),
+                        .child(photoList(S, "Jan 2025 Grid", photobalconyArrayReferenceFilter("januaryPhotos"))),
                       li(S, "photo-placement.photobalcony.winter")
                         .title("Nov - Dec 2024 Grid")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "Nov - Dec 2024 Grid", photobalconyGroups.winter)),
+                        .child(photoList(S, "Nov - Dec 2024 Grid", photobalconyArrayReferenceFilter("winterPhotos"))),
                       li(S, "photo-placement.photobalcony.summer")
                         .title("July - Aug 2024 Stack")
                         .schemaType("photo")
-                        .child(photosByFilename(S, "July - Aug 2024 Stack", photobalconyGroups.summer)),
+                        .child(photoList(S, "July - Aug 2024 Stack", photobalconyArrayReferenceFilter("summerPhotos"))),
                     ]),
                 ),
               li(S, "photo-placement.journal")
