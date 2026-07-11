@@ -2229,11 +2229,6 @@ main {
     height: 330px;
   }
 
-  .yarl__toolbar {
-    padding-top: max(8px, env(safe-area-inset-top));
-    padding-right: max(8px, env(safe-area-inset-right));
-  }
-
   .yarl__button {
     padding: 14px;
   }
