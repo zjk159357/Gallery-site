@@ -48,6 +48,8 @@ const staticContent: GalleryContent = {
   isLoading: false,
 };
 
+const CMS_CONTENT_CACHE_KEY = "queenstown.cmsContent.v1";
+
 function blockToText(block: PortableTextBlock) {
   return block.children?.map((child) => child.text ?? "").join("") ?? "";
 }
@@ -287,9 +289,55 @@ async function loadCmsContent(): Promise<GalleryContent> {
   };
 }
 
+function readCachedCmsContent(): GalleryContent | undefined {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  try {
+    const cached = window.localStorage.getItem(CMS_CONTENT_CACHE_KEY);
+    if (!cached) {
+      return undefined;
+    }
+
+    const content = JSON.parse(cached) as GalleryContent;
+    if (content.source !== "cms" || content.photos.length === 0) {
+      return undefined;
+    }
+
+    return {
+      ...content,
+      isLoading: true,
+      error: undefined,
+    };
+  } catch {
+    window.localStorage.removeItem(CMS_CONTENT_CACHE_KEY);
+    return undefined;
+  }
+}
+
+function writeCachedCmsContent(content: GalleryContent) {
+  if (typeof window === "undefined" || content.source !== "cms") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(
+      CMS_CONTENT_CACHE_KEY,
+      JSON.stringify({
+        ...content,
+        isLoading: false,
+        error: undefined,
+      }),
+    );
+  } catch {
+    window.localStorage.removeItem(CMS_CONTENT_CACHE_KEY);
+  }
+}
+
 export function useGalleryContent() {
   const [content, setContent] = useState<GalleryContent>(() => ({
-    ...staticContent,
+    ...(isSanityConfigured() ? (readCachedCmsContent() ?? staticContent) : staticContent),
     isLoading: isSanityConfigured(),
   }));
 
@@ -303,15 +351,18 @@ export function useGalleryContent() {
     loadCmsContent()
       .then((cmsContent) => {
         if (isMounted) {
+          writeCachedCmsContent(cmsContent);
           setContent(cmsContent);
         }
       })
       .catch((error: unknown) => {
         if (isMounted) {
-          setContent({
-            ...staticContent,
-            error: error instanceof Error ? error.message : "Failed to load Sanity content",
-          });
+          const message = error instanceof Error ? error.message : "Failed to load Sanity content";
+          setContent((currentContent) => ({
+            ...(currentContent.source === "cms" ? currentContent : staticContent),
+            isLoading: false,
+            error: message,
+          }));
         }
       });
 
