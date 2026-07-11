@@ -13,6 +13,8 @@
     "cms:status": "node scripts/check-sanity-status.mjs",
     "cms:sync": "node scripts/sync-sanity-content.mjs",
     "cms:upload-assets": "node scripts/upload-sanity-assets.mjs",
+    "cms:upload-photos": "node scripts/upload-photos.mjs",
+    "cms:backfill-dimensions": "node scripts/backfill-photo-dimensions.mjs",
     "cms:photobalcony-layout": "node scripts/create-photobalcony-layout.mjs",
     "sync:photos": "node scripts/sync-photos.mjs",
     "deploy:trigger": "node scripts/trigger-vercel-deploy.mjs",
