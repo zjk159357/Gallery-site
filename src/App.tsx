@@ -94,6 +94,10 @@ function App() {
     setCurrentPath(path.replace(/\/$/, "") || "/");
   };
 
+  const setLightboxPath = (path: string, mode: "push" | "replace") => {
+    window.history[mode === "push" ? "pushState" : "replaceState"]({}, "", path);
+  };
+
   useEffect(() => {
     if (!photoRouteSlug || !activePhoto) return;
 
@@ -111,7 +115,7 @@ function App() {
     if (lightboxIndex < 0) return;
 
     setLightboxState({ photos: lightboxPhotos, index: lightboxIndex });
-    setBrowserPath(photoPath(photo), "push");
+    setLightboxPath(photoPath(photo), "push");
   };
 
   const navigatePhoto = (index: number) => {
@@ -120,13 +124,18 @@ function App() {
     if (!photo) return;
 
     setLightboxState({ photos: activeLightbox.photos, index });
-    setBrowserPath(photoPath(photo), "replace");
+    setLightboxPath(photoPath(photo), "replace");
   };
 
   const closePhoto = () => {
     setLightboxState(null);
-    if (photoRouteSlug) {
-      setBrowserPath("/", "replace");
+    const browserPath = window.location.pathname.replace(/\/$/, "") || "/";
+    if (browserPath.startsWith("/photos/")) {
+      const returnPath = currentPath.startsWith("/photos/") ? "/" : currentPath;
+      window.history.replaceState({}, "", returnPath || "/");
+      if (currentPath.startsWith("/photos/")) {
+        setCurrentPath("/");
+      }
     }
   };
 
