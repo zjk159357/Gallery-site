@@ -2229,40 +2229,71 @@ main {
     height: 330px;
   }
 
-.lightbox-meta {
+  .yarl__toolbar {
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+
+  .yarl__button {
+    padding: 14px;
+  }
+
+  .yarl__navigation_prev,
+  .yarl__navigation_next {
+    display: none;
+  }
+
+  .lightbox-meta {
     right: 10px;
-    bottom: 10px;
+    bottom: max(10px, env(safe-area-inset-bottom));
     left: 10px;
     display: grid;
-    gap: 10px;
+    gap: 8px;
     max-width: calc(100vw - 20px);
-    padding: 12px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    font-size: 11.5px;
   }
 
   .yarl__slide:has(.lightbox-meta) {
-    padding-bottom: clamp(180px, 32vh, 260px);
+    padding-bottom: clamp(120px, 22vh, 180px);
   }
 
   .lightbox-meta p {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .lightbox-meta-list {
     display: grid;
-    gap: 4px;
+    gap: 2px;
+    margin-top: 6px !important;
   }
 
   .lightbox-meta-list div {
     display: grid;
     grid-template-columns: 36px minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .lightbox-meta-list dt {
+    font-size: 11px;
   }
 
   .lightbox-meta-list dd {
     overflow-wrap: anywhere;
+    font-size: 11.5px;
   }
 
   .lightbox-count {
     justify-self: end;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    opacity: 0.86;
+  }
+
+  .lightbox-story-link {
+    margin-top: 6px;
+    font-size: 11.5px;
   }
 
   .plants-reference-banner {
