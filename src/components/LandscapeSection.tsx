@@ -14,9 +14,18 @@ type LandscapeSectionProps = {
   onOpen: (photo: Photo) => void;
   className?: string;
   showTitle?: boolean;
+  filterLandscape?: boolean;
 };
 
-export function LandscapeSection({ id, title, photos, onOpen, className, showTitle = true }: LandscapeSectionProps) {
+export function LandscapeSection({
+  id,
+  title,
+  photos,
+  onOpen,
+  className,
+  showTitle = true,
+  filterLandscape = true,
+}: LandscapeSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -24,8 +33,8 @@ export function LandscapeSection({ id, title, photos, onOpen, className, showTit
   const trackRef = useRef<HTMLDivElement>(null);
 
   const landscapePhotos = useMemo(
-    () => photos.filter((photo) => photo.width > photo.height),
-    [photos],
+    () => (filterLandscape ? photos.filter((photo) => photo.width > photo.height) : photos),
+    [filterLandscape, photos],
   );
 
   const total = landscapePhotos.length;

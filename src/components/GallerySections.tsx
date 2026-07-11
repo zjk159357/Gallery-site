@@ -377,6 +377,7 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
         id={groups[2].id}
         title={groups[2].title}
         photos={groups[2].photos}
+        filterLandscape={false}
         onOpen={(photo) => onOpen(photoIndex(photos, photo))}
       />
       <div className="section-title-row section-title-row--compact">
