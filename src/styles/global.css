@@ -2025,9 +2025,9 @@ main {
   }
 
   .advanced-lightbox-photo {
-    min-height: 0;
-    height: auto;
-    max-height: 54vh;
+    min-height: 260px;
+    height: min(54vh, 420px);
+    max-height: none;
     background: transparent;
   }
 
@@ -2238,6 +2238,11 @@ main {
 
   .yarl__button {
     padding: 14px;
+  }
+
+  .yarl__slide {
+    align-items: flex-start;
+    padding-top: 0;
   }
 
   .yarl__navigation_prev,
