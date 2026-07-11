@@ -157,12 +157,14 @@ const li = (S: Parameters<StructureResolver>[0], id: string) => S.listItem().id(
 
 export const structure: StructureResolver = (S) =>
   S.list()
+    .id("gallery")
     .title("Gallery 内容管理")
     .items([
       li(S, "publishing-checklist")
         .title("发布检查")
         .child(
           S.list()
+            .id("publishing-checklist-list")
             .title("发布检查")
             .items([
               li(S, "publishing.overview")
@@ -228,6 +230,7 @@ export const structure: StructureResolver = (S) =>
         .title("照片收件箱")
         .child(
           S.list()
+            .id("photos-inbox-list")
             .title("照片收件箱")
             .items([
               li(S, "photos-inbox.needs-setup")
@@ -285,6 +288,7 @@ export const structure: StructureResolver = (S) =>
         .title("照片位置")
         .child(
           S.list()
+            .id("photo-placement-list")
             .title("照片位置")
             .items([
               li(S, "photo-placement.all-visible")
@@ -300,6 +304,7 @@ export const structure: StructureResolver = (S) =>
                 .title("首页")
                 .child(
                   S.list()
+                    .id("photo-placement-homepage-list")
                     .title("首页")
                     .items([
                       li(S, "photo-placement.homepage.settings")
@@ -371,6 +376,7 @@ export const structure: StructureResolver = (S) =>
                 .title("影像阳台")
                 .child(
                   S.list()
+                    .id("photo-placement-photobalcony-list")
                     .title("影像阳台")
                     .items([
                       li(S, "photo-placement.photobalcony.layout")
@@ -431,6 +437,7 @@ export const structure: StructureResolver = (S) =>
                 .title("日志")
                 .child(
                   S.list()
+                    .id("photo-placement-journal-list")
                     .title("日志")
                     .items([
                       li(S, "photo-placement.journal.cover")
@@ -459,6 +466,7 @@ export const structure: StructureResolver = (S) =>
         .title("首页")
         .child(
           S.list()
+            .id("homepage-list")
             .title("首页")
             .items([
               li(S, "homepage.layout")
@@ -492,6 +500,7 @@ export const structure: StructureResolver = (S) =>
         .title("首页模块")
         .child(
           S.list()
+            .id("homepage-sections-list")
             .title("首页模块")
             .items([
               li(S, "homepage-sections.all-categories")
@@ -513,6 +522,7 @@ export const structure: StructureResolver = (S) =>
         .title("日志")
         .child(
           S.list()
+            .id("journal-list")
             .title("日志")
             .items([
               li(S, "journal.all-stories")
@@ -549,6 +559,7 @@ export const structure: StructureResolver = (S) =>
         .title("照片安全检查")
         .child(
           S.list()
+            .id("photo-safety-list")
             .title("照片安全检查")
             .items([
               li(S, "photo-safety.all-photos")
