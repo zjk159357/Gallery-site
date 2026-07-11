@@ -2080,33 +2080,34 @@ main {
     right: 0;
     left: 0;
     width: 100vw;
-    padding-right: 20px;
-    padding-left: 20px;
+    height: 98px;
+    padding: 28px 20px 0;
+    align-items: flex-start;
   }
 
   .brand-mark {
-    width: 58px;
-    height: 58px;
+    width: 54px;
+    height: 54px;
     border-width: 1.5px;
   }
 
   .brand-word {
-    margin-left: 12px;
-    max-width: calc(100vw - 188px);
+    margin-left: 10px;
+    max-width: calc(100vw - 176px);
     gap: 5px;
-    font-size: 21px;
+    font-size: 20px;
   }
 
   .menu-toggle {
     position: fixed;
-    top: calc((var(--header-h) - 60px) / 2);
-    right: clamp(20px, calc(100vw - 370px), 130px);
+    top: 34px;
+    right: 22px;
     z-index: 50;
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
     gap: 8px;
-    padding: 0 17px;
+    padding: 0 15px;
   }
 
   .menu-toggle span {
@@ -2129,7 +2130,7 @@ main {
   }
 
   .menu-panel {
-    top: calc((var(--header-h) - 60px) / 2 + 70px);
+    top: 96px;
     right: 20px;
     flex-direction: column;
     align-items: stretch;
@@ -2165,19 +2166,30 @@ main {
   }
 
   .page-title-band {
-    place-items: center;
+    position: absolute;
+    top: 82px;
+    right: 0;
+    left: 0;
+    z-index: 24;
+    height: auto;
+    margin-top: 0;
+    place-items: start center;
+    pointer-events: none;
   }
 
   .page-title-band h1 {
-    font-size: 40px;
+    font-size: 38px;
   }
 
   .hero {
+    margin-top: 0;
     min-height: 300px;
+    overflow: hidden;
   }
 
   .hero-image {
-    top: calc((var(--header-h) + var(--title-h)) * -1 - 24px);
+    top: 0;
+    height: 100%;
     width: 100%;
     min-height: 520px;
     object-position: center top;
