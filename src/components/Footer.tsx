@@ -165,13 +165,13 @@ export function Footer({ aboutData, showPreview = false, variant = "default" }: 
         </div>
 
         <div className="footer-bottom">
-          <p className="footer-copy">(c) {year} Queenstown.top / All rights reserved</p>
+          <p className="footer-copy">© {year} Queenstown.top · All rights reserved</p>
 
           <div className="footer-colophon">
 
             <div className="footer-colophon__meta">
               <span>Built with React + Vite</span>
-              <span>Last update / {lastUpdate}</span>
+              <span>Last update · {lastUpdate}</span>
             </div>
           </div>
         </div>
