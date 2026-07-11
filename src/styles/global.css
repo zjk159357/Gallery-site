@@ -2455,6 +2455,11 @@ main {
   gap: clamp(64px, 9vw, 120px);
 }
 
+/* The header overlays the main content; reserve its height on the standalone About page. */
+.about-page {
+  padding-top: calc(var(--header-h) + clamp(40px, 6vw, 80px));
+}
+
 .story-banner {
   display: grid;
   grid-template-columns: auto 1fr;

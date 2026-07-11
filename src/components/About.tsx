@@ -3,7 +3,7 @@ import { AboutSection } from "./PhotoStory";
 
 export function About({ aboutData }: { aboutData?: AboutData }) {
   return (
-    <article className="story-page">
+    <article className="story-page about-page">
       <AboutSection aboutData={aboutData} />
     </article>
   );
