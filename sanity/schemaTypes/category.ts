@@ -2,56 +2,56 @@ import { defineField, defineType } from "sanity";
 
 export const categoryType = defineType({
   name: "category",
-  title: "Category",
+  title: "分类",
   type: "document",
   fields: [
     defineField({
       name: "title",
-      title: "Title",
+      title: "名称",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "slug",
-      title: "Slug",
+      title: "URL 标识",
       type: "slug",
       options: { source: "title", maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "description",
-      title: "Description",
+      title: "简介",
       type: "text",
       rows: 3,
-      description: "Short paragraph shown on the section card. Plain text only — keep under ~200 characters.",
+      description: "显示在栏目卡片上的简短介绍，仅支持纯文本，建议控制在 200 个字符以内。",
     }),
     defineField({
       name: "coverPhoto",
-      title: "Cover Photo",
+      title: "封面照片",
       type: "reference",
       to: [{ type: "photo" }],
       description:
-        "Hero image for the category section card. Hidden photos still surface here, so prefer a visible photo unless you are staging a new section.",
+        "分类卡片的主图。隐藏照片仍会在这里显示；除非正在准备新栏目，否则请优先使用可见照片。",
       options: { disableNew: true },
     }),
     defineField({
       name: "sortOrder",
-      title: "Sort Order",
+      title: "排序",
       type: "number",
       initialValue: 100,
-      description: "Lower numbers appear earlier in the category sidebar and homepage sections.",
+      description: "数值越小，分类在侧栏和首页中的显示位置越靠前。",
     }),
     defineField({
       name: "isVisible",
-      title: "Visible",
+      title: "显示在网站上",
       type: "boolean",
       initialValue: true,
-      description: "When off, the section is hidden from the homepage and category navigation, but the document is kept.",
+      description: "关闭后，该分类会从首页和分类导航中隐藏，但不会删除此内容。",
     }),
   ],
   orderings: [
     {
-      title: "Sort order",
+      title: "按排序值",
       name: "sortOrderAsc",
       by: [{ field: "sortOrder", direction: "asc" }],
     },

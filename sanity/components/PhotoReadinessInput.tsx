@@ -67,31 +67,31 @@ function statusStyle(tone: "ready" | "warning" | "blocked") {
 
 function buildReadiness(result: ReadinessResult) {
   const blocking = [
-    !result.hasImage ? "Missing image asset" : undefined,
-    !result.hasCategory ? "Missing category" : undefined,
-    !result.hasSlug ? "Missing slug" : undefined,
+    !result.hasImage ? "缺少图片资源" : undefined,
+    !result.hasCategory ? "未设置分类" : undefined,
+    !result.hasSlug ? "缺少 URL 标识" : undefined,
   ].filter(Boolean);
 
   const warnings = [
-    !result.hasSortOrder ? "Missing sort order" : undefined,
-    result.isHidden ? "Hidden from website" : undefined,
+    !result.hasSortOrder ? "未设置排序" : undefined,
+    result.isHidden ? "已从网站隐藏" : undefined,
     result.homepageLayoutCount === 0 &&
     result.siteHeroCount === 0 &&
     result.photobalconyLayoutCount === 0 &&
     result.storyCount === 0
-      ? "Not referenced by Homepage, Photobalcony, or Journal"
+      ? "未被首页、影像阳台或日志引用"
       : undefined,
   ].filter(Boolean);
 
   if (blocking.length) {
-    return { label: "Blocked", tone: "blocked" as const, blocking, warnings };
+    return { label: "无法发布", tone: "blocked" as const, blocking, warnings };
   }
 
   if (warnings.length) {
-    return { label: "Needs review", tone: "warning" as const, blocking, warnings };
+    return { label: "需要检查", tone: "warning" as const, blocking, warnings };
   }
 
-  return { label: "Ready", tone: "ready" as const, blocking, warnings };
+  return { label: "准备就绪", tone: "ready" as const, blocking, warnings };
 }
 
 export function PhotoReadinessInput() {
@@ -116,7 +116,7 @@ export function PhotoReadinessInput() {
       })
       .catch((reason: unknown) => {
         if (!cancelled) {
-          setError(reason instanceof Error ? reason.message : "Could not load readiness data.");
+          setError(reason instanceof Error ? reason.message : "无法加载照片就绪状态。");
         }
       });
 
@@ -128,7 +128,7 @@ export function PhotoReadinessInput() {
   if (!ids) {
     return (
       <div style={{ border: "1px solid #d1d5db", borderRadius: 6, padding: 12 }}>
-        Save this photo before readiness can be checked.
+        请先保存照片，再检查就绪状态。
       </div>
     );
   }
@@ -136,13 +136,13 @@ export function PhotoReadinessInput() {
   if (error) {
     return (
       <div style={{ border: "1px solid #f2b8b5", borderRadius: 6, padding: 12, color: "#a5281b" }}>
-        Could not load readiness data: {error}
+        无法加载照片就绪状态：{error}
       </div>
     );
   }
 
   if (!readiness) {
-    return <div style={{ border: "1px solid #d1d5db", borderRadius: 6, padding: 12 }}>Loading readiness...</div>;
+    return <div style={{ border: "1px solid #d1d5db", borderRadius: 6, padding: 12 }}>正在加载就绪状态…</div>;
   }
 
   const summary = buildReadiness(readiness);
@@ -158,11 +158,11 @@ export function PhotoReadinessInput() {
         color: style.color,
       }}
     >
-      <strong style={{ display: "block", marginBottom: 8 }}>Photo Readiness: {summary.label}</strong>
+      <strong style={{ display: "block", marginBottom: 8 }}>照片就绪状态：{summary.label}</strong>
 
       {summary.blocking.length ? (
         <section style={{ marginBottom: 8 }}>
-          <strong style={{ display: "block", marginBottom: 4 }}>Must fix</strong>
+          <strong style={{ display: "block", marginBottom: 4 }}>必须修复</strong>
           <ul style={{ margin: 0, paddingLeft: 18 }}>
             {summary.blocking.map((item) => (
               <li key={item}>{item}</li>
@@ -173,7 +173,7 @@ export function PhotoReadinessInput() {
 
       {summary.warnings.length ? (
         <section style={{ marginBottom: 8 }}>
-          <strong style={{ display: "block", marginBottom: 4 }}>Review</strong>
+          <strong style={{ display: "block", marginBottom: 4 }}>请检查</strong>
           <ul style={{ margin: 0, paddingLeft: 18 }}>
             {summary.warnings.map((item) => (
               <li key={item}>{item}</li>
@@ -183,12 +183,12 @@ export function PhotoReadinessInput() {
       ) : null}
 
       <section>
-        <strong style={{ display: "block", marginBottom: 4 }}>Current placement</strong>
+        <strong style={{ display: "block", marginBottom: 4 }}>当前使用位置</strong>
         <ul style={{ margin: 0, paddingLeft: 18 }}>
-          <li>Homepage references: {readiness.homepageLayoutCount + readiness.siteHeroCount}</li>
-          <li>Photobalcony references: {readiness.photobalconyLayoutCount}</li>
-          <li>Visible story references: {readiness.visibleStoryCount}</li>
-          <li>Total story references: {readiness.storyCount}</li>
+          <li>首页引用：{readiness.homepageLayoutCount + readiness.siteHeroCount}</li>
+          <li>影像阳台引用：{readiness.photobalconyLayoutCount}</li>
+          <li>可见文章引用：{readiness.visibleStoryCount}</li>
+          <li>文章引用总数：{readiness.storyCount}</li>
         </ul>
       </section>
     </div>

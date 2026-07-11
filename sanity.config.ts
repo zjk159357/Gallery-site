@@ -9,7 +9,7 @@ const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
 
 export default defineConfig({
   name: "default",
-  title: "Queenstown.top CMS",
+  title: "Queenstown.top 内容管理",
   projectId,
   dataset,
   basePath: "/studio",

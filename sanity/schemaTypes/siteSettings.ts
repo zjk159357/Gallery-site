@@ -2,92 +2,92 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const siteSettingsType = defineType({
   name: "siteSettings",
-  title: "Site Settings",
+  title: "站点设置",
   type: "document",
   fieldsets: [
     {
       name: "identity",
-      title: "Site identity",
+      title: "站点信息",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "hero",
-      title: "Homepage hero",
+      title: "首页主视觉",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "about",
-      title: "About page",
+      title: "关于页",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "social",
-      title: "Social & contact",
+      title: "联系方式",
       options: { collapsible: true, collapsed: true },
     },
   ],
   fields: [
     defineField({
       name: "siteTitle",
-      title: "Site Title",
+      title: "网站标题",
       type: "string",
       fieldset: "identity",
-      description: "Used in browser tab and the homepage <title>. Also exposed as the document title in the Studio list.",
+      description: "用于浏览器标签页以及首页 <title>，同时作为 Studio 列表中的文档标题。",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "heroPhoto",
-      title: "Homepage Hero Photo",
+      title: "首页主视觉照片",
       type: "reference",
       to: [{ type: "photo" }],
       fieldset: "hero",
       description:
-        "Primary photo shown above the fold. Takes precedence over any photo with the Hero Flag. Hidden photos will surface a validation warning but can still be saved.",
+        "首页首屏显示的主图，优先级高于任何「主视觉备选」标记。引用已被隐藏的照片时会显示校验提示，但仍可保存。",
       options: { disableNew: true },
       validation: (Rule) =>
         Rule.custom(async (value, context) => {
           if (!value?._ref) return true;
           const client = context.getClient({ apiVersion: "2025-02-19" });
           const doc = await client.fetch(`*[_id == $id][0]{ isHidden, title }`, { id: value._ref });
-          if (!doc) return "Referenced photo no longer exists.";
+          if (!doc) return "引用的照片已不存在。";
           if (doc.isHidden) {
-            return `"${doc.title}" is currently hidden. The homepage will ignore it and fall back to the Hero Flag/default photo until you unhide it or pick another photo.`;
+            return `"${doc.title}" 当前处于隐藏状态。首页会忽略该照片，回退到主视觉备选或默认照片，直到你取消隐藏或重新选择其他照片。`;
           }
           return true;
         }),
     }),
     defineField({
       name: "heroSubtitle",
-      title: "Hero Subtitle",
+      title: "主视觉副标题",
       type: "string",
       fieldset: "hero",
-      description: "Reserved hero copy field. The current homepage hero is image-only and does not display this text yet.",
+      description: "预留的主视觉文案字段。当前首页主视觉仅展示图片，尚未使用此字段。",
     }),
     defineField({
       name: "aboutName",
-      title: "About Name",
+      title: "关于页作者姓名",
       type: "string",
       fieldset: "about",
-      description: "Name shown at the top of /about. Falls back to the author name in the static fallback.",
+      description: "显示在 /about 顶部的姓名。未填写时会回退到静态兜底中的作者名。",
     }),
     defineField({
       name: "aboutLocation",
-      title: "About Location",
+      title: "关于页地点",
       type: "string",
       fieldset: "about",
-      description: "Short location line, e.g. Zhejiang Taizhou / Shanghai.",
+      description: "简短的所在地说明，例如「浙江台州 / 上海」。",
     }),
     defineField({
       name: "aboutBio",
-      title: "About Bio",
+      title: "关于页自我介绍",
       type: "array",
       fieldset: "about",
       of: [defineArrayMember({ type: "block" })],
-      description: "Body text for /about. Paragraphs render as separate blocks.",
+      description: "/about 页的正文，多个段落会按顺序渲染。",
     }),
     defineField({
       name: "gear",
-      title: "Gear",
+      title: "器材清单",
       type: "array",
       fieldset: "about",
       of: [
@@ -96,16 +96,16 @@ export const siteSettingsType = defineType({
           fields: [
             defineField({
               name: "name",
-              title: "Label",
+              title: "名称",
               type: "string",
-              description: "Short label, e.g. Camera Body.",
+              description: "简短的分类标签，例如「机身」。",
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: "value",
-              title: "Value",
+              title: "内容",
               type: "string",
-              description: "Gear item, e.g. Sony A7M4.",
+              description: "对应的器材，例如「Sony A7M4」。",
               validation: (Rule) => Rule.required(),
             }),
           ],
@@ -114,11 +114,11 @@ export const siteSettingsType = defineType({
           },
         }),
       ],
-      description: "Camera / gear list shown on /about.",
+      description: "在 /about 页中展示的相机 / 器材列表。",
     }),
     defineField({
       name: "socialLinks",
-      title: "Social Links",
+      title: "社交链接",
       type: "array",
       fieldset: "social",
       of: [
@@ -127,21 +127,21 @@ export const siteSettingsType = defineType({
           fields: [
             defineField({
               name: "label",
-              title: "Label",
+              title: "名称",
               type: "string",
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: "value",
-              title: "Display Value",
+              title: "显示文本",
               type: "string",
-              description: "User-facing text, e.g. @gallery.",
+              description: "面向用户的展示文案，例如「@gallery」。",
             }),
             defineField({
               name: "href",
-              title: "URL",
+              title: "网址",
               type: "url",
-              description: "Full URL including protocol.",
+              description: "包含协议头的完整网址。",
               validation: (Rule) =>
                 Rule.uri({
                   scheme: ["http", "https", "mailto", "tel"],
@@ -154,7 +154,7 @@ export const siteSettingsType = defineType({
           },
         }),
       ],
-      description: "Shown on /about and as footer icons. The first link is treated as the primary contact.",
+      description: "在 /about 页以及页脚图标中展示。第一条链接会被视作主要联系方式。",
     }),
   ],
   preview: {
@@ -168,12 +168,12 @@ export const siteSettingsType = defineType({
     prepare({ title, heroTitle, heroImage, hiddenHero, subtitle }) {
       const heroLabel = heroTitle
         ? hiddenHero
-          ? `Hero: ${heroTitle} (hidden)`
-          : `Hero: ${heroTitle}`
-        : "Hero not set";
+          ? `主视觉：${heroTitle}（已隐藏）`
+          : `主视觉：${heroTitle}`
+        : "尚未设置主视觉";
       const subtitleParts = [heroLabel, subtitle].filter(Boolean);
       return {
-        title: title || "Site Settings",
+        title: title || "站点设置",
         subtitle: subtitleParts.join(" / "),
         media: heroImage,
       };

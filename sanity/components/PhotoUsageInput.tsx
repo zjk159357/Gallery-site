@@ -151,29 +151,29 @@ function usageTone(usage: UsageResult | undefined) {
 
 function activeHomepageModules(usage: UsageResult) {
   return [
-    ["Feature cards", usage.featureCardCount],
-    ["Landscape carousel", usage.landscapeCount],
-    ["Quiet square grid", usage.quietCount],
-    ["First wide banner", usage.bannerOneCount],
-    ["City carousel", usage.cityCount],
-    ["Plants banner", usage.plantsHeroCount],
-    ["Plants carousel", usage.plantsCarouselCount],
-    ["Plants feature", usage.plantsFeatureCount],
-    ["Plants full-width stack", usage.plantsStackCount],
-    ["Plants square group", usage.plantsSquareCount],
+    ["特色卡片", usage.featureCardCount],
+    ["山野轮播", usage.landscapeCount],
+    ["静谧方格", usage.quietCount],
+    ["第一张宽幅横图", usage.bannerOneCount],
+    ["城市轮播", usage.cityCount],
+    ["植物横幅", usage.plantsHeroCount],
+    ["植物轮播", usage.plantsCarouselCount],
+    ["植物特色图", usage.plantsFeatureCount],
+    ["植物全宽堆叠", usage.plantsStackCount],
+    ["植物方格组", usage.plantsSquareCount],
   ].filter(([, count]) => Number(count) > 0);
 }
 
 function activePhotobalconyModules(usage: UsageResult) {
   return [
-    ["Hero", usage.photobalconyHeroCount],
-    ["May 2025 carousel", usage.photobalconyMayCount],
-    ["March 2025 portrait row", usage.photobalconyMarchPortraitCount],
-    ["March 2025 carousel", usage.photobalconyMarchWideCount],
-    ["Feb 2025 carousel", usage.photobalconyFebruaryCount],
-    ["Jan 2025 grid", usage.photobalconyJanuaryCount],
-    ["Nov - Dec 2024 grid", usage.photobalconyWinterCount],
-    ["July - Aug 2024 stack", usage.photobalconySummerCount],
+    ["主视觉", usage.photobalconyHeroCount],
+    ["2025 年 5 月轮播", usage.photobalconyMayCount],
+    ["2025 年 3 月竖幅照片行", usage.photobalconyMarchPortraitCount],
+    ["2025 年 3 月轮播", usage.photobalconyMarchWideCount],
+    ["2025 年 2 月轮播", usage.photobalconyFebruaryCount],
+    ["2025 年 1 月网格", usage.photobalconyJanuaryCount],
+    ["2024 年 11–12 月网格", usage.photobalconyWinterCount],
+    ["2024 年 7–8 月堆叠", usage.photobalconySummerCount],
   ].filter(([, count]) => Number(count) > 0);
 }
 
@@ -201,7 +201,7 @@ export function PhotoUsageInput() {
       })
       .catch((reason: unknown) => {
         if (!cancelled) {
-          setError(reason instanceof Error ? reason.message : "Could not load usage data.");
+          setError(reason instanceof Error ? reason.message : "无法加载使用情况。");
         }
       });
 
@@ -224,18 +224,18 @@ export function PhotoUsageInput() {
         color: "inherit",
       }}
     >
-      <strong style={{ display: "block", marginBottom: 8 }}>Usage Summary</strong>
+      <strong style={{ display: "block", marginBottom: 8 }}>使用情况</strong>
       {!ids ? (
-        <p style={{ margin: 0 }}>Save this photo before usage can be checked.</p>
+        <p style={{ margin: 0 }}>请先保存照片，再检查使用情况。</p>
       ) : error ? (
-        <p style={{ margin: 0 }}>Could not load usage data: {error}</p>
+        <p style={{ margin: 0 }}>无法加载使用情况：{error}</p>
       ) : usage ? (
         <div style={{ display: "grid", gap: 10 }}>
           <section>
-            <strong style={{ display: "block", marginBottom: 4 }}>Homepage</strong>
+            <strong style={{ display: "block", marginBottom: 4 }}>首页</strong>
             <ul style={{ margin: 0, paddingLeft: 18 }}>
-              <li>Hero setting references: {usage.siteHeroCount}</li>
-              <li>Total homepage layout references: {usage.homepageLayoutCount}</li>
+              <li>主视觉设置引用：{usage.siteHeroCount}</li>
+              <li>首页布局引用总数：{usage.homepageLayoutCount}</li>
               {homepageModules.length ? (
                 homepageModules.map(([label, count]) => (
                   <li key={label}>
@@ -243,15 +243,15 @@ export function PhotoUsageInput() {
                   </li>
                 ))
               ) : (
-                <li>No explicit homepage module reference.</li>
+                <li>未被任何首页模块直接引用。</li>
               )}
             </ul>
           </section>
 
           <section>
-            <strong style={{ display: "block", marginBottom: 4 }}>Photobalcony</strong>
+            <strong style={{ display: "block", marginBottom: 4 }}>影像阳台</strong>
             <ul style={{ margin: 0, paddingLeft: 18 }}>
-              <li>Total Photobalcony layout references: {usage.photobalconyLayoutCount}</li>
+              <li>影像阳台布局引用总数：{usage.photobalconyLayoutCount}</li>
               {photobalconyModules.length ? (
                 photobalconyModules.map(([label, count]) => (
                   <li key={label}>
@@ -259,21 +259,21 @@ export function PhotoUsageInput() {
                   </li>
                 ))
               ) : (
-                <li>No explicit Photobalcony layout reference.</li>
+                <li>未被影像阳台布局直接引用。</li>
               )}
             </ul>
           </section>
 
           <section>
-            <strong style={{ display: "block", marginBottom: 4 }}>Journal</strong>
+            <strong style={{ display: "block", marginBottom: 4 }}>日志</strong>
             <ul style={{ margin: 0, paddingLeft: 18 }}>
-              <li>Visible story references: {usage.visibleStoryCount}</li>
-              <li>Total story references: {usage.storyCount}</li>
+              <li>可见文章引用：{usage.visibleStoryCount}</li>
+              <li>文章引用总数：{usage.storyCount}</li>
             </ul>
           </section>
         </div>
       ) : (
-        <p style={{ margin: 0 }}>Loading usage data...</p>
+        <p style={{ margin: 0 }}>正在加载使用情况…</p>
       )}
     </div>
   );

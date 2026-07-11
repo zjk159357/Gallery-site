@@ -2,79 +2,79 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const storyType = defineType({
   name: "story",
-  title: "Story",
+  title: "手记",
   type: "document",
   fieldsets: [
     {
       name: "identity",
-      title: "Story identity",
+      title: "手记信息",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "cover",
-      title: "Cover & related photos",
+      title: "封面与关联照片",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "body",
-      title: "Body",
+      title: "正文",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "safety",
-      title: "Safety",
+      title: "显示设置",
       options: { collapsible: true, collapsed: true },
     },
   ],
   fields: [
     defineField({
       name: "title",
-      title: "Title",
+      title: "标题",
       type: "string",
       fieldset: "identity",
-      description: "Story headline. Also used to generate the slug.",
+      description: "手记的主标题，同时用于生成 URL 标识。",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "slug",
-      title: "Slug",
+      title: "URL 标识",
       type: "slug",
       fieldset: "identity",
       options: { source: "title", maxLength: 96 },
       description:
-        "URL part for /stories/<slug>. The frontend currently routes both this slug and a fallback derived from the cover photo filename.",
+        "用于 /journal/<slug> 的 URL 地址段。当前前端同时支持使用此标识，以及根据封面照片文件名推导出的回退值。",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "publishedAt",
-      title: "Published At",
+      title: "发布时间",
       type: "datetime",
       fieldset: "identity",
       description:
-        "Used for ordering on /journal and the sitemap lastmod. Setting a future date hides the story from listings until that time.",
+        "用于 /journal 的排序与站点地图 lastmod。设置为未来时间时，手记会在该时间之前从列表中隐藏。",
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: "excerpt",
-      title: "Excerpt",
+      title: "摘要",
       type: "text",
       rows: 3,
       fieldset: "identity",
-      description: "Short summary shown on /journal cards and in the lightbox entry. Keep under about 140 characters.",
+      description: "在 /journal 卡片以及灯箱入口中显示的简短简介，建议控制在 140 字以内。",
     }),
     defineField({
       name: "coverPhoto",
-      title: "Cover Photo",
+      title: "封面照片",
       type: "reference",
       to: [{ type: "photo" }],
       fieldset: "cover",
       description:
-        "Primary photo shown on /journal and as the story header. Stories missing a cover are listed separately in Journal > Stories Missing Cover.",
+        "在 /journal 中作为主图以及手记页的头图。尚未设置封面的手记会单独列在「Journal → 缺少封面」中。",
       options: { disableNew: true },
     }),
     defineField({
       name: "relatedPhotos",
-      title: "Related Photos",
+      title: "关联照片",
       type: "array",
       fieldset: "cover",
       of: [
@@ -84,11 +84,11 @@ export const storyType = defineType({
           options: { disableNew: true },
         }),
       ],
-      description: "Optional gallery that appears at the bottom of the story. Hidden photos still appear here when referenced.",
+      description: "可选的相册，会出现在手记底部。已被隐藏的照片被引用时仍会显示在这里。",
     }),
     defineField({
       name: "body",
-      title: "Body",
+      title: "正文",
       type: "array",
       fieldset: "body",
       of: [
@@ -99,27 +99,27 @@ export const storyType = defineType({
           fields: [
             defineField({
               name: "alt",
-              title: "Alt Text",
+              title: "替代文本",
               type: "string",
-              description: "Required for accessibility when this image is inline in the story body.",
+              description: "图片内嵌于手记正文中时，建议填写以满足无障碍要求。",
             }),
           ],
         }),
       ],
-      description: "Rich text body. Inline images are uploaded here and do not need to exist as separate photo documents.",
+      description: "富文本正文。行内图片直接在这里上传，不必另外建立照片文档。",
     }),
     defineField({
       name: "isHidden",
-      title: "Hide From Website",
+      title: "从网站隐藏",
       type: "boolean",
       fieldset: "safety",
       initialValue: false,
-      description: "Hide this story from /journal, the sitemap and any cross-references without deleting the document.",
+      description: "在不删除文档的前提下，让此手记从 /journal、站点地图以及所有交叉引用中隐藏。",
     }),
   ],
   orderings: [
     {
-      title: "Newest first",
+      title: "最新优先",
       name: "publishedAtDesc",
       by: [
         { field: "isHidden", direction: "asc" },
@@ -127,7 +127,7 @@ export const storyType = defineType({
       ],
     },
     {
-      title: "Title A-Z",
+      title: "标题 A-Z",
       name: "titleAsc",
       by: [{ field: "title", direction: "asc" }],
     },
@@ -141,9 +141,9 @@ export const storyType = defineType({
       coverImage: "coverPhoto.image",
     },
     prepare({ title, excerpt, publishedAt, hidden, coverImage }) {
-      const dateLabel = publishedAt ? new Date(publishedAt).toISOString().slice(0, 10) : "No date";
-      const status = hidden ? "Hidden" : "Visible";
-      const excerptLabel = excerpt ? `"${excerpt.slice(0, 60)}${excerpt.length > 60 ? "..." : ""}"` : null;
+      const dateLabel = publishedAt ? new Date(publishedAt).toISOString().slice(0, 10) : "未设置日期";
+      const status = hidden ? "已隐藏" : "正常显示";
+      const excerptLabel = excerpt ? `"${excerpt.slice(0, 60)}${excerpt.length > 60 ? "…" : ""}"` : null;
 
       return {
         title,

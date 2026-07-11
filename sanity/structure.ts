@@ -157,297 +157,297 @@ const li = (S: Parameters<StructureResolver>[0], id: string) => S.listItem().id(
 
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title("Gallery Studio")
+    .title("Gallery 内容管理")
     .items([
       li(S, "publishing-checklist")
-        .title("Publishing Checklist")
+        .title("发布检查")
         .child(
           S.list()
-            .title("Publishing Checklist")
+            .title("发布检查")
             .items([
               li(S, "publishing.overview")
-                .title("Overview")
-                .child(S.component(PublishingChecklistDashboard).id("publishing-checklist-overview").title("Overview")),
+                .title("概览")
+                .child(S.component(PublishingChecklistDashboard).id("publishing-checklist-overview").title("概览")),
               li(S, "publishing.hidden-homepage-photos")
-                .title("Hidden But Used On Homepage")
+                .title("首页在用但已隐藏的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden But Used On Homepage", `${homepageReferenceFilter} && isHidden == true`)),
+                .child(photoList(S, "首页在用但已隐藏的照片", `${homepageReferenceFilter} && isHidden == true`)),
               li(S, "publishing.hidden-photobalcony-photos")
-                .title("Hidden But Used On Photobalcony")
+                .title("影像阳台在用但已隐藏的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden But Used On Photobalcony", hiddenPhotoUsedByPhotobalconyFilter)),
+                .child(photoList(S, "影像阳台在用但已隐藏的照片", hiddenPhotoUsedByPhotobalconyFilter)),
               li(S, "publishing.hidden-story-photos")
-                .title("Hidden But Used By Visible Stories")
+                .title("可见手记在用但已隐藏的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden But Used By Visible Stories", hiddenPhotoUsedByVisibleStoriesFilter)),
+                .child(photoList(S, "可见手记在用但已隐藏的照片", hiddenPhotoUsedByVisibleStoriesFilter)),
               li(S, "publishing.stories-missing-cover")
-                .title("Visible Stories Missing Cover")
+                .title("缺少封面的可见手记")
                 .schemaType("story")
-                .child(storyList(S, "Visible Stories Missing Cover", `${visibleStoryFilter} && !defined(coverPhoto._ref)`)),
+                .child(storyList(S, "缺少封面的可见手记", `${visibleStoryFilter} && !defined(coverPhoto._ref)`)),
               li(S, "publishing.hidden-stories")
-                .title("Stories Hidden From Website")
+                .title("从网站隐藏的手记")
                 .schemaType("story")
-                .child(storyList(S, "Stories Hidden From Website", '_type == "story" && isHidden == true')),
+                .child(storyList(S, "从网站隐藏的手记", '_type == "story" && isHidden == true')),
               li(S, "publishing.photos-missing-image")
-                .title("Photos Missing Image Asset")
+                .title("缺少图片资源的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Photos Missing Image Asset", '_type == "photo" && !defined(image.asset._ref)')),
+                .child(photoList(S, "缺少图片资源的照片", '_type == "photo" && !defined(image.asset._ref)')),
               li(S, "publishing.photos-missing-category")
-                .title("Photos Missing Category")
+                .title("缺少分类的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Photos Missing Category", '_type == "photo" && !defined(category._ref)')),
+                .child(photoList(S, "缺少分类的照片", '_type == "photo" && !defined(category._ref)')),
               li(S, "publishing.multiple-hero-flags")
-                .title("Multiple Hero Flag Photos")
+                .title("被标记多个主视觉备选的照片")
                 .schemaType("photo")
                 .child(
                   photoList(
                     S,
-                    "Multiple Hero Flag Photos",
+                    "被标记多个主视觉备选的照片",
                     '_type == "photo" && isHero == true && count(*[_type == "photo" && isHero == true]) > 1',
                   ),
                 ),
               li(S, "publishing.empty-homepage-modules")
-                .title("Homepage Layout Empty Modules")
+                .title("首页布局未配置的模块")
                 .schemaType("homepageLayout")
                 .child(
                   S.documentTypeList("homepageLayout")
-                    .title("Homepage Layout Empty Modules")
+                    .title("首页布局未配置的模块")
                     .filter(homepageLayoutEmptyModulesFilter),
                 ),
               li(S, "publishing.empty-photobalcony-modules")
-                .title("Photobalcony Layout Empty Modules")
+                .title("影像阳台布局未配置的模块")
                 .schemaType("photobalconyLayout")
                 .child(
                   S.documentTypeList("photobalconyLayout")
-                    .title("Photobalcony Layout Empty Modules")
+                    .title("影像阳台布局未配置的模块")
                     .filter(photobalconyLayoutEmptyModulesFilter),
                 ),
             ]),
         ),
       li(S, "photos-inbox")
-        .title("Photos Inbox")
+        .title("照片收件箱")
         .child(
           S.list()
-            .title("Photos Inbox")
+            .title("照片收件箱")
             .items([
               li(S, "photos-inbox.needs-setup")
-                .title("Needs Setup")
+                .title("需要补全信息")
                 .schemaType("photo")
-                .child(photoList(S, "Needs Setup", photoInboxNeedsSetupFilter)),
+                .child(photoList(S, "需要补全信息", photoInboxNeedsSetupFilter)),
               li(S, "photos-inbox.no-image")
-                .title("Missing Image Asset")
+                .title("缺少图片资源")
                 .schemaType("photo")
-                .child(photoList(S, "Missing Image Asset", '_type == "photo" && !defined(image.asset._ref)')),
+                .child(photoList(S, "缺少图片资源", '_type == "photo" && !defined(image.asset._ref)')),
               li(S, "photos-inbox.no-category")
-                .title("Missing Category")
+                .title("缺少分类")
                 .schemaType("photo")
-                .child(photoList(S, "Missing Category", '_type == "photo" && !defined(category._ref)')),
+                .child(photoList(S, "缺少分类", '_type == "photo" && !defined(category._ref)')),
               li(S, "photos-inbox.no-slug")
-                .title("Missing Slug")
+                .title("缺少 URL 标识")
                 .schemaType("photo")
-                .child(photoList(S, "Missing Slug", '_type == "photo" && !defined(slug.current)')),
+                .child(photoList(S, "缺少 URL 标识", '_type == "photo" && !defined(slug.current)')),
               li(S, "photos-inbox.no-sort-order")
-                .title("Missing Sort Order")
+                .title("缺少排序值")
                 .schemaType("photo")
-                .child(photoList(S, "Missing Sort Order", '_type == "photo" && !defined(sortOrder)')),
+                .child(photoList(S, "缺少排序值", '_type == "photo" && !defined(sortOrder)')),
               li(S, "photos-inbox.unplaced-visible")
-                .title("Visible But Not Placed")
+                .title("可见但尚未被使用")
                 .schemaType("photo")
                 .child(
                   photoList(
                     S,
-                    "Visible But Not Placed",
+                    "可见但尚未被使用",
                     `_type == "photo" && isHidden != true && !(${anyPageOrStoryReferenceFilter})`,
                   ),
                 ),
               li(S, "photos-inbox.without-stories")
-                .title("Without Stories")
+                .title("未关联手记")
                 .schemaType("photo")
                 .child(
                   photoList(
                     S,
-                    "Without Stories",
+                    "未关联手记",
                     '_type == "photo" && count(*[_type == "story" && references(^._id)]) == 0',
                   ),
                 ),
               li(S, "photos-inbox.recent")
-                .title("Recently Updated")
+                .title("最近修改")
                 .schemaType("photo")
                 .child(
                   S.documentTypeList("photo")
-                    .title("Recently Updated")
+                    .title("最近修改")
                     .filter('_type == "photo"')
                     .defaultOrdering([{ field: "_updatedAt", direction: "desc" }]),
                 ),
             ]),
         ),
       li(S, "photo-placement")
-        .title("Photo Placement")
+        .title("照片位置")
         .child(
           S.list()
-            .title("Photo Placement")
+            .title("照片位置")
             .items([
               li(S, "photo-placement.all-visible")
-                .title("All Visible Website Photos")
+                .title("网站中所有可见照片")
                 .schemaType("photo")
-                .child(photoList(S, "All Visible Website Photos", '_type == "photo" && isHidden != true')),
+                .child(photoList(S, "网站中所有可见照片", '_type == "photo" && isHidden != true')),
               li(S, "photo-placement.hidden")
-                .title("Hidden From Website")
+                .title("从网站隐藏的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden From Website", '_type == "photo" && isHidden == true')),
+                .child(photoList(S, "从网站隐藏的照片", '_type == "photo" && isHidden == true')),
               S.divider(),
               li(S, "photo-placement.homepage")
-                .title("Homepage")
+                .title("首页")
                 .child(
                   S.list()
-                    .title("Homepage")
+                    .title("首页")
                     .items([
                       li(S, "photo-placement.homepage.settings")
-                        .title("Hero Settings")
+                        .title("主视觉设置")
                         .schemaType("siteSettings")
                         .child(
                           S.document()
                             .schemaType("siteSettings")
                             .documentId("siteSettings-main")
-                            .title("Hero Settings"),
+                            .title("主视觉设置"),
                         ),
                       li(S, "photo-placement.homepage.hero-photo")
-                        .title("Current Hero Photo")
+                        .title("当前主视觉照片")
                         .schemaType("photo")
-                        .child(photoList(S, "Current Hero Photo", siteHeroReferenceFilter)),
+                        .child(photoList(S, "当前主视觉照片", siteHeroReferenceFilter)),
                       li(S, "photo-placement.homepage.layout")
-                        .title("Homepage Layout Editor")
+                        .title("首页布局编辑器")
                         .schemaType("homepageLayout")
                         .child(
                           S.document()
                             .schemaType("homepageLayout")
                             .documentId("homepageLayout-main")
-                            .title("Homepage Layout Editor"),
+                            .title("首页布局编辑器"),
                         ),
                       S.divider(),
                       li(S, "photo-placement.homepage.feature-cards")
-                        .title("Feature Cards")
+                        .title("顶部特色卡片")
                         .schemaType("photo")
-                        .child(photoList(S, "Feature Cards", homepageFeatureCardFilter)),
+                        .child(photoList(S, "顶部特色卡片", homepageFeatureCardFilter)),
                       li(S, "photo-placement.homepage.landscape")
-                        .title("Landscape Carousel")
+                        .title("山野轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "Landscape Carousel", homepageArrayReferenceFilter("landscapePhotos"))),
+                        .child(photoList(S, "山野轮播", homepageArrayReferenceFilter("landscapePhotos"))),
                       li(S, "photo-placement.homepage.quiet")
-                        .title("Quiet Square Grid")
+                        .title("静谧方格")
                         .schemaType("photo")
-                        .child(photoList(S, "Quiet Square Grid", homepageArrayReferenceFilter("quietPhotos"))),
+                        .child(photoList(S, "静谧方格", homepageArrayReferenceFilter("quietPhotos"))),
                       li(S, "photo-placement.homepage.banner-one")
-                        .title("First Wide Banner")
+                        .title("第一张宽幅横图")
                         .schemaType("photo")
-                        .child(photoList(S, "First Wide Banner", homepageSingleReferenceFilter("bannerOnePhoto"))),
+                        .child(photoList(S, "第一张宽幅横图", homepageSingleReferenceFilter("bannerOnePhoto"))),
                       li(S, "photo-placement.homepage.city")
-                        .title("City Carousel")
+                        .title("城市轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "City Carousel", homepageArrayReferenceFilter("cityPhotos"))),
+                        .child(photoList(S, "城市轮播", homepageArrayReferenceFilter("cityPhotos"))),
                       li(S, "photo-placement.homepage.plants-banner")
-                        .title("Plants Banner")
+                        .title("植物横幅")
                         .schemaType("photo")
-                        .child(photoList(S, "Plants Banner", homepageSingleReferenceFilter("plantsHeroPhoto"))),
+                        .child(photoList(S, "植物横幅", homepageSingleReferenceFilter("plantsHeroPhoto"))),
                       li(S, "photo-placement.homepage.plants-carousel")
-                        .title("Plants Carousel")
+                        .title("植物轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "Plants Carousel", homepageArrayReferenceFilter("plantsCarouselPhotos"))),
+                        .child(photoList(S, "植物轮播", homepageArrayReferenceFilter("plantsCarouselPhotos"))),
                       li(S, "photo-placement.homepage.plants-feature")
-                        .title("Plants Feature")
+                        .title("植物特色图")
                         .schemaType("photo")
-                        .child(photoList(S, "Plants Feature", homepageSingleReferenceFilter("plantsFeaturePhoto"))),
+                        .child(photoList(S, "植物特色图", homepageSingleReferenceFilter("plantsFeaturePhoto"))),
                       li(S, "photo-placement.homepage.plants-stack")
-                        .title("Plants Full-width Stack")
+                        .title("植物全宽堆叠")
                         .schemaType("photo")
-                        .child(photoList(S, "Plants Full-width Stack", homepageArrayReferenceFilter("plantsStackPhotos"))),
+                        .child(photoList(S, "植物全宽堆叠", homepageArrayReferenceFilter("plantsStackPhotos"))),
                       li(S, "photo-placement.homepage.plants-squares")
-                        .title("Plants Square Group")
+                        .title("植物方格组")
                         .schemaType("photo")
-                        .child(photoList(S, "Plants Square Group", homepageArrayReferenceFilter("plantsSquarePhotos"))),
+                        .child(photoList(S, "植物方格组", homepageArrayReferenceFilter("plantsSquarePhotos"))),
                     ]),
                 ),
               li(S, "photo-placement.photobalcony")
-                .title("Photobalcony")
+                .title("影像阳台")
                 .child(
                   S.list()
-                    .title("Photobalcony")
+                    .title("影像阳台")
                     .items([
                       li(S, "photo-placement.photobalcony.layout")
-                        .title("Photobalcony Layout Editor")
+                        .title("影像阳台布局编辑器")
                         .schemaType("photobalconyLayout")
                         .child(
                           S.document()
                             .schemaType("photobalconyLayout")
                             .documentId("photobalconyLayout-main")
-                            .title("Photobalcony Layout Editor"),
+                            .title("影像阳台布局编辑器"),
                         ),
                       S.divider(),
                       li(S, "photo-placement.photobalcony.all")
-                        .title("All Photobalcony Photos")
+                        .title("影像阳台全部照片")
                         .schemaType("photo")
-                        .child(photoList(S, "All Photobalcony Photos", photobalconyReferenceFilter)),
+                        .child(photoList(S, "影像阳台全部照片", photobalconyReferenceFilter)),
                       li(S, "photo-placement.photobalcony.hero")
-                        .title("Hero")
+                        .title("主视觉")
                         .schemaType("photo")
-                        .child(photoList(S, "Photobalcony Hero", photobalconySingleReferenceFilter("heroPhoto"))),
+                        .child(photoList(S, "影像阳台主视觉", photobalconySingleReferenceFilter("heroPhoto"))),
                       li(S, "photo-placement.photobalcony.may")
-                        .title("May 2025 Carousel")
+                        .title("2025 年 5 月轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "May 2025 Carousel", photobalconyArrayReferenceFilter("mayPhotos"))),
+                        .child(photoList(S, "2025 年 5 月轮播", photobalconyArrayReferenceFilter("mayPhotos"))),
                       li(S, "photo-placement.photobalcony.march-portraits")
-                        .title("March 2025 Portrait Row")
+                        .title("2025 年 3 月竖幅照片行")
                         .schemaType("photo")
                         .child(
                           photoList(
                             S,
-                            "March 2025 Portrait Row",
+                            "2025 年 3 月竖幅照片行",
                             photobalconyArrayReferenceFilter("marchPortraitPhotos"),
                           ),
                         ),
                       li(S, "photo-placement.photobalcony.march-wide")
-                        .title("March 2025 Carousel")
+                        .title("2025 年 3 月轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "March 2025 Carousel", photobalconyArrayReferenceFilter("marchWidePhotos"))),
+                        .child(photoList(S, "2025 年 3 月轮播", photobalconyArrayReferenceFilter("marchWidePhotos"))),
                       li(S, "photo-placement.photobalcony.february")
-                        .title("Feb 2025 Carousel")
+                        .title("2025 年 2 月轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "Feb 2025 Carousel", photobalconyArrayReferenceFilter("februaryPhotos"))),
+                        .child(photoList(S, "2025 年 2 月轮播", photobalconyArrayReferenceFilter("februaryPhotos"))),
                       li(S, "photo-placement.photobalcony.january")
-                        .title("Jan 2025 Grid")
+                        .title("2025 年 1 月网格")
                         .schemaType("photo")
-                        .child(photoList(S, "Jan 2025 Grid", photobalconyArrayReferenceFilter("januaryPhotos"))),
+                        .child(photoList(S, "2025 年 1 月网格", photobalconyArrayReferenceFilter("januaryPhotos"))),
                       li(S, "photo-placement.photobalcony.winter")
-                        .title("Nov - Dec 2024 Grid")
+                        .title("2024 年 11–12 月网格")
                         .schemaType("photo")
-                        .child(photoList(S, "Nov - Dec 2024 Grid", photobalconyArrayReferenceFilter("winterPhotos"))),
+                        .child(photoList(S, "2024 年 11–12 月网格", photobalconyArrayReferenceFilter("winterPhotos"))),
                       li(S, "photo-placement.photobalcony.summer")
-                        .title("July - Aug 2024 Stack")
+                        .title("2024 年 7–8 月堆叠")
                         .schemaType("photo")
-                        .child(photoList(S, "July - Aug 2024 Stack", photobalconyArrayReferenceFilter("summerPhotos"))),
+                        .child(photoList(S, "2024 年 7–8 月堆叠", photobalconyArrayReferenceFilter("summerPhotos"))),
                     ]),
                 ),
               li(S, "photo-placement.journal")
-                .title("Journal")
+                .title("日志")
                 .child(
                   S.list()
-                    .title("Journal")
+                    .title("日志")
                     .items([
                       li(S, "photo-placement.journal.cover")
-                        .title("Story Cover Photos")
+                        .title("手记封面照片")
                         .schemaType("photo")
-                        .child(photoList(S, "Story Cover Photos", journalCoverFilter)),
+                        .child(photoList(S, "手记封面照片", journalCoverFilter)),
                       li(S, "photo-placement.journal.related")
-                        .title("Story Related Photos")
+                        .title("手记关联照片")
                         .schemaType("photo")
-                        .child(photoList(S, "Story Related Photos", journalRelatedFilter)),
+                        .child(photoList(S, "手记关联照片", journalRelatedFilter)),
                       li(S, "photo-placement.journal.no-story")
-                        .title("Photos Without Stories")
+                        .title("未关联手记的照片")
                         .schemaType("photo")
                         .child(
                           photoList(
                             S,
-                            "Photos Without Stories",
+                            "未关联手记的照片",
                             '_type == "photo" && count(*[_type == "story" && references(^._id)]) == 0',
                           ),
                         ),
@@ -456,131 +456,131 @@ export const structure: StructureResolver = (S) =>
             ]),
         ),
       li(S, "homepage")
-        .title("Homepage")
+        .title("首页")
         .child(
           S.list()
-            .title("Homepage")
+            .title("首页")
             .items([
               li(S, "homepage.layout")
-                .title("Homepage Layout")
+                .title("首页布局")
                 .schemaType("homepageLayout")
                 .child(
                   S.document()
                     .schemaType("homepageLayout")
                     .documentId("homepageLayout-main")
-                    .title("Homepage Layout"),
+                    .title("首页布局"),
                 ),
               li(S, "homepage.site-settings")
-                .title("Site Settings / Hero")
+                .title("站点设置 / 主视觉")
                 .schemaType("siteSettings")
-                .child(S.document().schemaType("siteSettings").documentId("siteSettings-main").title("Site Settings / Hero")),
+                .child(S.document().schemaType("siteSettings").documentId("siteSettings-main").title("站点设置 / 主视觉")),
               li(S, "homepage.hero-flagged")
-                .title("Hero Flagged Photos")
+                .title("主视觉备选标记的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hero Flagged Photos", '_type == "photo" && isHero == true')),
+                .child(photoList(S, "主视觉备选标记的照片", '_type == "photo" && isHero == true')),
               li(S, "homepage.visible")
-                .title("Visible Homepage Photos")
+                .title("首页可见照片")
                 .schemaType("photo")
-                .child(photoList(S, "Visible Homepage Photos", '_type == "photo" && isHidden != true')),
+                .child(photoList(S, "首页可见照片", '_type == "photo" && isHidden != true')),
               li(S, "homepage.hidden")
-                .title("Hidden From Website")
+                .title("首页隐藏照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden From Website", '_type == "photo" && isHidden == true')),
+                .child(photoList(S, "首页隐藏照片", '_type == "photo" && isHidden == true')),
             ]),
         ),
       li(S, "homepage-sections")
-        .title("Homepage Sections")
+        .title("首页模块")
         .child(
           S.list()
-            .title("Homepage Sections")
+            .title("首页模块")
             .items([
               li(S, "homepage-sections.all-categories")
-                .title("All Categories")
+                .title("全部分类")
                 .schemaType("category")
-                .child(S.documentTypeList("category").title("All Categories").defaultOrdering(categoryOrdering)),
+                .child(S.documentTypeList("category").title("全部分类").defaultOrdering(categoryOrdering)),
               S.divider(),
-              categoryPhotoItem(S, "\u5c71\u91ce"),
-              categoryPhotoItem(S, "\u5efa\u7b51"),
-              categoryPhotoItem(S, "\u65e5\u51fa\u65e5\u843d"),
-              categoryPhotoItem(S, "\u68ee\u6797"),
-              categoryPhotoItem(S, "\u6cb3\u6d41"),
-              categoryPhotoItem(S, "\u6d77\u6d0b"),
-              categoryPhotoItem(S, "\u77f3\u5858\u5ea6\u5047\u533a"),
-              categoryPhotoItem(S, "\u82b1\u6735"),
+              categoryPhotoItem(S, "山野"),
+              categoryPhotoItem(S, "建筑"),
+              categoryPhotoItem(S, "日出日落"),
+              categoryPhotoItem(S, "森林"),
+              categoryPhotoItem(S, "河流"),
+              categoryPhotoItem(S, "海洋"),
+              categoryPhotoItem(S, "石塘度假区"),
+              categoryPhotoItem(S, "花朵"),
             ]),
         ),
       li(S, "journal")
-        .title("Journal")
+        .title("日志")
         .child(
           S.list()
-            .title("Journal")
+            .title("日志")
             .items([
               li(S, "journal.all-stories")
-                .title("All Stories")
+                .title("全部手记")
                 .schemaType("story")
-                .child(storyList(S, "All Stories", '_type == "story"')),
+                .child(storyList(S, "全部手记", '_type == "story"')),
               li(S, "journal.stories-missing-cover")
-                .title("Stories Missing Cover")
+                .title("缺少封面的手记")
                 .schemaType("story")
-                .child(storyList(S, "Stories Missing Cover", '_type == "story" && !defined(coverPhoto._ref)')),
+                .child(storyList(S, "缺少封面的手记", '_type == "story" && !defined(coverPhoto._ref)')),
               li(S, "journal.photos-with-stories")
-                .title("Photos With Stories")
+                .title("已关联手记的照片")
                 .schemaType("photo")
                 .child(
                   photoList(
                     S,
-                    "Photos With Stories",
+                    "已关联手记的照片",
                     '_type == "photo" && count(*[_type == "story" && references(^._id)]) > 0',
                   ),
                 ),
               li(S, "journal.photos-without-stories")
-                .title("Photos Without Stories")
+                .title("未关联手记的照片")
                 .schemaType("photo")
                 .child(
                   photoList(
                     S,
-                    "Photos Without Stories",
+                    "未关联手记的照片",
                     '_type == "photo" && count(*[_type == "story" && references(^._id)]) == 0',
                   ),
                 ),
             ]),
         ),
       li(S, "photo-safety")
-        .title("Photo Safety")
+        .title("照片安全检查")
         .child(
           S.list()
-            .title("Photo Safety")
+            .title("照片安全检查")
             .items([
               li(S, "photo-safety.all-photos")
-                .title("All Photos")
+                .title("全部照片")
                 .schemaType("photo")
-                .child(S.documentTypeList("photo").title("All Photos").defaultOrdering(photoOrdering)),
+                .child(S.documentTypeList("photo").title("全部照片").defaultOrdering(photoOrdering)),
               li(S, "photo-safety.visible-photos")
-                .title("Visible Photos")
+                .title("可见的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Visible Photos", '_type == "photo" && isHidden != true')),
+                .child(photoList(S, "可见的照片", '_type == "photo" && isHidden != true')),
               li(S, "photo-safety.hidden-photos")
-                .title("Hidden Photos")
+                .title("已隐藏的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden Photos", '_type == "photo" && isHidden == true')),
+                .child(photoList(S, "已隐藏的照片", '_type == "photo" && isHidden == true')),
               li(S, "photo-safety.photos-referenced-by-stories")
-                .title("Photos Referenced By Stories")
+                .title("被手记引用的照片")
                 .schemaType("photo")
                 .child(
                   photoList(
                     S,
-                    "Photos Referenced By Stories",
+                    "被手记引用的照片",
                     '_type == "photo" && count(*[_type == "story" && references(^._id)]) > 0',
                   ),
                 ),
               li(S, "photo-safety.photos-referenced-by-homepage")
-                .title("Photos Used On Homepage")
+                .title("在首页中使用的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Photos Used On Homepage", homepageReferenceFilter)),
+                .child(photoList(S, "在首页中使用的照片", homepageReferenceFilter)),
               li(S, "photo-safety.hidden-homepage-photos")
-                .title("Hidden But Used On Homepage")
+                .title("首页在用但已隐藏的照片")
                 .schemaType("photo")
-                .child(photoList(S, "Hidden But Used On Homepage", `${homepageReferenceFilter} && isHidden == true`)),
+                .child(photoList(S, "首页在用但已隐藏的照片", `${homepageReferenceFilter} && isHidden == true`)),
             ]),
         ),
     ]);

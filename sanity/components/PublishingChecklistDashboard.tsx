@@ -25,63 +25,63 @@ type ChecklistItem = {
 const checklistItems: ChecklistItem[] = [
   {
     key: "hiddenHomepagePhotos",
-    title: "Hidden photos used on homepage",
+    title: "首页正在使用的隐藏照片",
     severity: "blocking",
-    listTitle: "Hidden But Used On Homepage",
+    listTitle: "首页正在使用的隐藏照片",
   },
   {
     key: "hiddenPhotobalconyPhotos",
-    title: "Hidden photos used on Photobalcony",
+    title: "影像阳台正在使用的隐藏照片",
     severity: "blocking",
-    listTitle: "Hidden But Used On Photobalcony",
+    listTitle: "影像阳台正在使用的隐藏照片",
   },
   {
     key: "hiddenStoryPhotos",
-    title: "Hidden photos used by visible stories",
+    title: "可见文章正在使用的隐藏照片",
     severity: "blocking",
-    listTitle: "Hidden But Used By Visible Stories",
+    listTitle: "可见文章正在使用的隐藏照片",
   },
   {
     key: "visibleStoriesMissingCover",
-    title: "Visible stories missing cover",
+    title: "缺少封面图的可见文章",
     severity: "blocking",
-    listTitle: "Visible Stories Missing Cover",
+    listTitle: "缺少封面图的可见文章",
   },
   {
     key: "hiddenStories",
-    title: "Stories hidden from website",
+    title: "从网站隐藏的文章",
     severity: "warning",
-    listTitle: "Stories Hidden From Website",
+    listTitle: "从网站隐藏的文章",
   },
   {
     key: "photosMissingImage",
-    title: "Photos missing image asset",
+    title: "缺少图片资源的照片",
     severity: "blocking",
-    listTitle: "Photos Missing Image Asset",
+    listTitle: "缺少图片资源的照片",
   },
   {
     key: "photosMissingCategory",
-    title: "Photos missing category",
+    title: "未设置分类的照片",
     severity: "blocking",
-    listTitle: "Photos Missing Category",
+    listTitle: "未设置分类的照片",
   },
   {
     key: "multipleHeroFlags",
-    title: "Multiple hero flag photos",
+    title: "设置了多个首页主视觉标记的照片",
     severity: "blocking",
-    listTitle: "Multiple Hero Flag Photos",
+    listTitle: "设置了多个首页主视觉标记的照片",
   },
   {
     key: "emptyHomepageModules",
-    title: "Homepage layout empty modules",
+    title: "首页布局中未配置的模块",
     severity: "warning",
-    listTitle: "Homepage Layout Empty Modules",
+    listTitle: "首页布局中未配置的模块",
   },
   {
     key: "emptyPhotobalconyModules",
-    title: "Photobalcony layout empty modules",
+    title: "影像阳台布局中未配置的模块",
     severity: "warning",
-    listTitle: "Photobalcony Layout Empty Modules",
+    listTitle: "影像阳台布局中未配置的模块",
   },
 ];
 
@@ -188,7 +188,7 @@ export function PublishingChecklistDashboard() {
         setError(undefined);
       })
       .catch((reason: unknown) => {
-        setError(reason instanceof Error ? reason.message : "Could not load checklist counts.");
+        setError(reason instanceof Error ? reason.message : "无法加载发布检查统计数据。");
       })
       .finally(() => setIsLoading(false));
   }, [client]);
@@ -203,21 +203,21 @@ export function PublishingChecklistDashboard() {
   return (
     <main style={{ padding: 24, maxWidth: 960 }}>
       <header style={{ marginBottom: 24 }}>
-        <p style={{ margin: "0 0 6px", color: "#6b7280", fontSize: 13, fontWeight: 600 }}>Publishing Checklist</p>
-        <h1 style={{ margin: 0, fontSize: 28, lineHeight: 1.2 }}>Overview</h1>
+        <p style={{ margin: "0 0 6px", color: "#6b7280", fontSize: 13, fontWeight: 600 }}>发布检查</p>
+        <h1 style={{ margin: 0, fontSize: 28, lineHeight: 1.2 }}>概览</h1>
         <p style={{ margin: "10px 0 0", color: "#4b5563", lineHeight: 1.5 }}>
-          Review these counts before publishing. Open the matching list below this Overview to inspect the affected documents.
+          发布前请检查以下统计。打开下方对应列表即可查看受影响的内容。
         </p>
       </header>
 
       <section style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 20 }}>
         <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 16, minWidth: 160 }}>
           <strong style={{ display: "block", fontSize: 28, color: blockingCount ? "#a5281b" : "#136c3a" }}>{blockingCount}</strong>
-          <span style={{ color: "#4b5563" }}>Blocking issues</span>
+          <span style={{ color: "#4b5563" }}>阻断问题</span>
         </div>
         <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, padding: 16, minWidth: 160 }}>
           <strong style={{ display: "block", fontSize: 28, color: warningCount ? "#8a4b00" : "#136c3a" }}>{warningCount}</strong>
-          <span style={{ color: "#4b5563" }}>Warnings</span>
+          <span style={{ color: "#4b5563" }}>警告</span>
         </div>
         <button
           type="button"
@@ -233,7 +233,7 @@ export function PublishingChecklistDashboard() {
             cursor: isLoading ? "default" : "pointer",
           }}
         >
-          {isLoading ? "Refreshing..." : "Refresh"}
+          {isLoading ? "正在刷新…" : "刷新"}
         </button>
       </section>
 
@@ -262,7 +262,7 @@ export function PublishingChecklistDashboard() {
             >
               <div>
                 <h2 style={{ margin: 0, fontSize: 16 }}>{item.title}</h2>
-                <p style={{ margin: "5px 0 0", color: "#6b7280", fontSize: 13 }}>List: {item.listTitle}</p>
+                <p style={{ margin: "5px 0 0", color: "#6b7280", fontSize: 13 }}>列表：{item.listTitle}</p>
               </div>
               <span
                 style={{
