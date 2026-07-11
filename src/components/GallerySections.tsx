@@ -6,7 +6,7 @@ import { LandscapeSection } from "./LandscapeSection";
 type GallerySectionsProps = {
   photos: Photo[];
   homepageLayout?: HomepageLayout;
-  onOpen: (index: number) => void;
+  onOpen: (index: number, lightboxPhotos?: Photo[]) => void;
 };
 
 type PhotoGroup = {
@@ -56,7 +56,7 @@ function GalleryRail({
 }: {
   group: PhotoGroup;
   allPhotos: Photo[];
-  onOpen: (index: number) => void;
+  onOpen: (index: number, lightboxPhotos?: Photo[]) => void;
   showTitle?: boolean;
 }) {
   return (
@@ -103,7 +103,7 @@ function BannerImage({
 }: {
   photo: Photo | undefined;
   allPhotos: Photo[];
-  onOpen: (index: number) => void;
+  onOpen: (index: number, lightboxPhotos?: Photo[]) => void;
 }) {
   if (!photo) return null;
 
@@ -182,7 +182,7 @@ function PlantsReferenceLayout({
   stackPhotos: Photo[];
   squarePhotos: Photo[];
   allPhotos: Photo[];
-  onOpen: (index: number) => void;
+  onOpen: (index: number, lightboxPhotos?: Photo[]) => void;
 }) {
   return (
     <section className="plants-reference" id={id} aria-label={`${title} gallery`}>
@@ -196,11 +196,11 @@ function PlantsReferenceLayout({
 
       <LandscapeSection
         id={`${id}-carousel`}
-        title={title}
+        title={`${title} carousel`}
         photos={carouselPhotos}
         showTitle={false}
         className="plants-reference-carousel"
-        onOpen={(photo) => onOpen(photoIndex(allPhotos, photo))}
+        onOpen={(photo, carouselPhotos) => onOpen(photoIndex(allPhotos, photo), carouselPhotos)}
       />
 
       {featurePhoto ? (
@@ -298,7 +298,7 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
     },
     {
       id: "quiet",
-      title: "",
+      title: "Quiet moments",
       photos: configuredPhotos(homepageLayout?.quietPhotos, squareSet.length ? squareSet : plants.slice(0, 8)),
       variant: "square",
     },
@@ -369,16 +369,16 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
         id={groups[0].id}
         title={groups[0].title}
         photos={groups[0].photos}
-        onOpen={(photo) => onOpen(photoIndex(photos, photo))}
+        onOpen={(photo, carouselPhotos) => onOpen(photoIndex(photos, photo), carouselPhotos)}
       />
-      <GalleryRail group={groups[1]} allPhotos={photos} onOpen={onOpen} />
+      <GalleryRail group={groups[1]} allPhotos={photos} onOpen={onOpen} showTitle={false} />
       <BannerImage photo={bannerOne} allPhotos={photos} onOpen={onOpen} />
       <LandscapeSection
         id={groups[2].id}
         title={groups[2].title}
         photos={groups[2].photos}
         filterLandscape={false}
-        onOpen={(photo) => onOpen(photoIndex(photos, photo))}
+        onOpen={(photo, carouselPhotos) => onOpen(photoIndex(photos, photo), carouselPhotos)}
       />
       <div className="section-title-row section-title-row--compact">
         <h2>Plants</h2>

@@ -9,6 +9,7 @@ import { Header } from "./components/Header";
 import { Journal } from "./components/Journal";
 import { PhotoStory } from "./components/PhotoStory";
 import { StoryDetail } from "./components/StoryDetail";
+import type { Photo } from "./data/photos";
 import { useGalleryContent } from "./lib/galleryContent";
 import { imageSrcSet, sizedImageUrl } from "./lib/imageUrl";
 import { matchesPhotoSlug, matchesStorySlug, photoPath } from "./lib/routes";
@@ -28,7 +29,7 @@ function setMeta(name: string, content: string, attribute: "name" | "property" =
 }
 
 function App() {
-  const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [lightboxState, setLightboxState] = useState<{ photos: Photo[]; index: number } | null>(null);
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname.replace(/\/$/, "") || "/");
   const content = useGalleryContent();
   const { photos, photoMeta, photoStories, aboutData, homepageLayout, photobalconyLayout } = content;
@@ -79,7 +80,9 @@ function App() {
     return undefined;
   }, [photoStories, photos, storyRouteSlug]);
 
-  const advancedLightboxIndex = activePhotoIndex >= 0 ? activePhotoIndex : lightboxIndex;
+  const activeLightbox =
+    lightboxState ??
+    (activePhotoIndex >= 0 ? { photos, index: activePhotoIndex } : null);
 
   const setBrowserPath = (path: string, mode: "push" | "replace" = "push") => {
     if (window.location.pathname === path) {
@@ -100,24 +103,28 @@ function App() {
     }
   }, [activePhoto, photoRouteSlug, pathname]);
 
-  const openPhoto = (index: number) => {
+  const openPhoto = (index: number, lightboxPhotos = photos) => {
     const photo = photos[index];
     if (!photo) return;
 
-    setLightboxIndex(index);
+    const lightboxIndex = lightboxPhotos.findIndex((item) => item.id === photo.id);
+    if (lightboxIndex < 0) return;
+
+    setLightboxState({ photos: lightboxPhotos, index: lightboxIndex });
     setBrowserPath(photoPath(photo), "push");
   };
 
   const navigatePhoto = (index: number) => {
-    const photo = photos[index];
+    if (!activeLightbox) return;
+    const photo = activeLightbox.photos[index];
     if (!photo) return;
 
-    setLightboxIndex(index);
+    setLightboxState({ photos: activeLightbox.photos, index });
     setBrowserPath(photoPath(photo), "replace");
   };
 
   const closePhoto = () => {
-    setLightboxIndex(-1);
+    setLightboxState(null);
     if (photoRouteSlug) {
       setBrowserPath("/", "replace");
     }
@@ -128,13 +135,17 @@ function App() {
       const nextPath = window.location.pathname.replace(/\/$/, "") || "/";
       setCurrentPath(nextPath);
       if (!nextPath.startsWith("/photos/")) {
-        setLightboxIndex(-1);
+        setLightboxState(null);
+      } else {
+        const slug = decodeURIComponent(nextPath.slice("/photos/".length));
+        const index = photos.findIndex((photo) => matchesPhotoSlug(photo, slug));
+        setLightboxState(index >= 0 ? { photos, index } : null);
       }
     };
 
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
-  }, []);
+  }, [photos]);
 
   useEffect(() => {
     const title = activePhoto?.title ?? activeStory?.story.title;
@@ -254,10 +265,10 @@ function App() {
 
       <Footer aboutData={aboutData} showPreview={showPreview} variant="photo" />
 
-      {advancedLightboxIndex >= 0 && (
+      {activeLightbox && (
         <AdvancedPhotoLightbox
-          photos={photos}
-          index={advancedLightboxIndex}
+          photos={activeLightbox.photos}
+          index={activeLightbox.index}
           onClose={closePhoto}
           onNavigate={navigatePhoto}
           photoMeta={photoMeta}

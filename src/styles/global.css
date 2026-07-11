@@ -465,7 +465,8 @@ main {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #050505;
   pointer-events: none;
   transform: translateZ(0);
 }
@@ -696,6 +697,12 @@ main {
   .landscape-main {
     width: 100%;
     aspect-ratio: 16 / 9;
+  }
+
+  .landscape-main--portrait {
+    width: auto;
+    max-width: calc(100vw - 32px);
+    height: min(62vh, 620px);
   }
 
   .landscape-arrow {
@@ -1623,6 +1630,12 @@ main {
   overflow: hidden;
 }
 
+.landscape-main--portrait {
+  width: auto;
+  max-width: min(76.25vw, 620px);
+  height: min(62vh, 700px);
+}
+
 .advanced-lightbox {
   position: fixed;
   z-index: 120;
@@ -2165,6 +2178,11 @@ main {
     overflow-wrap: anywhere;
   }
 
+  .footer-top-btn {
+    align-self: flex-end;
+    margin-left: auto;
+  }
+
   .page-title-band {
     position: absolute;
     top: 82px;
@@ -2187,12 +2205,16 @@ main {
     overflow: hidden;
   }
 
+  .hero::after {
+    top: 0;
+  }
+
   .hero-image {
     top: 0;
     height: 100%;
     width: 100%;
-    min-height: 520px;
-    object-position: center top;
+    min-height: 0;
+    object-position: center 62%;
   }
 
   .feature-grid {
@@ -2202,8 +2224,9 @@ main {
   }
 
   .feature-card {
-    height: 60vw;
-    min-height: 280px;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 5 / 6;
   }
 
   .feature-card span {

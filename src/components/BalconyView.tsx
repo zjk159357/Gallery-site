@@ -121,7 +121,7 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
 }
 
 export function BalconyView({ photos, layout, photoMeta, photoStories }: BalconyViewProps) {
-  const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [lightboxState, setLightboxState] = useState<{ photos: Photo[]; index: number } | null>(null);
 
   const content = useMemo(() => {
     const fallbackHero =
@@ -160,10 +160,10 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
 
   if (!content.hero) return null;
 
-  const openPhoto = (photo: Photo) => {
-    const index = content.lightboxPhotos.findIndex((item) => item.src === photo.src);
+  const openPhoto = (photo: Photo, lightboxPhotos: Photo[]) => {
+    const index = lightboxPhotos.findIndex((item) => item.src === photo.src);
     if (index >= 0) {
-      setLightboxIndex(index);
+      setLightboxState({ photos: lightboxPhotos, index });
     }
   };
 
@@ -188,30 +188,30 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
       </section>
 
       <MonthTitle title="May 2025" />
-      <BalconyCarousel title="May 2025" photos={content.may} onOpen={openPhoto} />
+      <BalconyCarousel title="May 2025" photos={content.may} onOpen={(photo) => openPhoto(photo, content.may)} />
 
       <MonthTitle title="March 2025" />
       <section className="balcony-portrait-row" aria-label="March 2025 portrait photos">
         {content.marchPortraits.map((photo) => (
-          <PhotoButton key={photo.id} photo={photo} className="balcony-portrait-photo" onOpen={openPhoto} />
+          <PhotoButton key={photo.id} photo={photo} className="balcony-portrait-photo" onOpen={(item) => openPhoto(item, content.marchPortraits)} />
         ))}
       </section>
-      <BalconyCarousel title="March 2025" photos={content.marchWide} onOpen={openPhoto} />
+      <BalconyCarousel title="March 2025" photos={content.marchWide} onOpen={(photo) => openPhoto(photo, content.marchWide)} />
 
       <MonthTitle title="Feb 2025" />
-      <BalconyCarousel title="Feb 2025" photos={content.february} onOpen={openPhoto} />
+      <BalconyCarousel title="Feb 2025" photos={content.february} onOpen={(photo) => openPhoto(photo, content.february)} />
 
       <MonthTitle title="Jan 2025" />
       <section className="balcony-grid" aria-label="Jan 2025 photo grid">
         {content.january.map((photo) => (
-          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={openPhoto} />
+          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={(item) => openPhoto(item, content.january)} />
         ))}
       </section>
 
       <MonthTitle title="Nov - Dec 2024" />
       <section className="balcony-grid balcony-grid--wide" aria-label="Nov - Dec 2024 photo grid">
         {content.winter.map((photo) => (
-          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={openPhoto} />
+          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={(item) => openPhoto(item, content.winter)} />
         ))}
       </section>
 
@@ -222,21 +222,24 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
             key={photo.id}
             photo={photo}
             className={index === 0 ? "balcony-final-photo balcony-final-photo--large" : "balcony-final-photo"}
-            onOpen={openPhoto}
+            onOpen={(item) => openPhoto(item, content.summer)}
           />
         ))}
       </section>
 
       <AdvancedPhotoLightbox
-        photos={content.lightboxPhotos}
-        index={lightboxIndex}
-        onClose={() => setLightboxIndex(-1)}
-        onNavigate={setLightboxIndex}
+        photos={lightboxState?.photos ?? []}
+        index={lightboxState?.index ?? -1}
+        onClose={() => setLightboxState(null)}
+        onNavigate={(index) => {
+          if (!lightboxState) return;
+          setLightboxState({ photos: lightboxState.photos, index });
+        }}
         photoMeta={photoMeta}
         photoStories={photoStories}
         shareUrl={
-          lightboxIndex >= 0
-            ? `${window.location.origin}${photoPath(content.lightboxPhotos[lightboxIndex])}`
+          lightboxState
+            ? `${window.location.origin}${photoPath(lightboxState.photos[lightboxState.index])}`
             : undefined
         }
       />

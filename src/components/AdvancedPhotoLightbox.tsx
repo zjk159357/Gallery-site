@@ -45,7 +45,8 @@ export function AdvancedPhotoLightbox({
   const meta = photo ? photoMeta[photo.filename] : undefined;
   const story = photo ? photoStories[photo.filename]?.[0] : undefined;
   const hasStory = Boolean(story);
-  const canNavigate = photos.length > 1;
+  const canGoPrev = index > 0;
+  const canGoNext = index < photos.length - 1;
 
   const shareUrl = shareUrlOverride ?? (typeof window === "undefined" ? "" : window.location.href);
 
@@ -54,8 +55,8 @@ export function AdvancedPhotoLightbox({
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
-      if (event.key === "ArrowLeft" && canNavigate) onNavigate((index - 1 + photos.length) % photos.length);
-      if (event.key === "ArrowRight" && canNavigate) onNavigate((index + 1) % photos.length);
+      if (event.key === "ArrowLeft" && canGoPrev) onNavigate(index - 1);
+      if (event.key === "ArrowRight" && canGoNext) onNavigate(index + 1);
     };
 
     document.body.classList.add("advanced-lightbox-is-open");
@@ -65,7 +66,7 @@ export function AdvancedPhotoLightbox({
       document.body.classList.remove("advanced-lightbox-is-open");
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [canNavigate, index, onClose, onNavigate, photo, photos.length]);
+  }, [canGoNext, canGoPrev, index, onClose, onNavigate, photo]);
 
   useEffect(() => {
     setCopyState("idle");
@@ -80,8 +81,9 @@ export function AdvancedPhotoLightbox({
   };
 
   const navigateByOffset = (offset: number) => {
-    if (!canNavigate) return;
-    onNavigate((index + offset + photos.length) % photos.length);
+    const nextIndex = index + offset;
+    if (nextIndex < 0 || nextIndex >= photos.length) return;
+    onNavigate(nextIndex);
   };
 
   const handleTouchEnd = (event: TouchEvent<HTMLElement>) => {
@@ -116,8 +118,7 @@ export function AdvancedPhotoLightbox({
           <X size={30} strokeWidth={1.8} />
         </button>
 
-        {canNavigate ? (
-          <>
+        {canGoPrev ? (
             <button
               type="button"
               className="advanced-lightbox-nav advanced-lightbox-nav--prev"
@@ -126,6 +127,8 @@ export function AdvancedPhotoLightbox({
             >
               <ChevronLeft size={36} strokeWidth={1.7} />
             </button>
+        ) : null}
+        {canGoNext ? (
             <button
               type="button"
               className="advanced-lightbox-nav advanced-lightbox-nav--next"
@@ -134,7 +137,6 @@ export function AdvancedPhotoLightbox({
             >
               <ChevronRight size={36} strokeWidth={1.7} />
             </button>
-          </>
         ) : null}
 
         <div className={`advanced-lightbox-layout${hasStory ? "" : " advanced-lightbox-layout--no-story"}`}>

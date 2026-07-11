@@ -11,7 +11,7 @@ type LandscapeSectionProps = {
   id: string;
   title: string;
   photos: Photo[];
-  onOpen: (photo: Photo) => void;
+  onOpen: (photo: Photo, carouselPhotos: Photo[]) => void;
   className?: string;
   showTitle?: boolean;
   filterLandscape?: boolean;
@@ -29,6 +29,8 @@ export function LandscapeSection({
   const [activeIndex, setActiveIndex] = useState(0);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const mainRef = useRef<HTMLButtonElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +49,20 @@ export function LandscapeSection({
       : undefined;
 
   useEffect(() => {
-    if (isPaused || total === 0 || activeIndex >= total - 1) return undefined;
+    const section = sectionRef.current;
+    if (!section) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.25 },
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isInView || isPaused || total === 0 || activeIndex >= total - 1) return undefined;
     const timer = window.setTimeout(() => {
       if (mainRef.current?.matches(":hover, :focus-visible")) {
         setIsPaused(true);
@@ -60,7 +75,7 @@ export function LandscapeSection({
       });
     }, AUTOPLAY_MS);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, isPaused, total]);
+  }, [activeIndex, isInView, isPaused, total]);
 
   useEffect(() => {
     if (previousIndex === null) return undefined;
@@ -101,6 +116,7 @@ export function LandscapeSection({
 
   return (
     <section
+      ref={sectionRef}
       className={`landscape-section${className ? ` ${className}` : ""}`}
       id={id}
       aria-label={showTitle ? undefined : `${title} gallery`}
@@ -140,8 +156,9 @@ export function LandscapeSection({
         <button
           ref={mainRef}
           type="button"
-          className="landscape-main"
-          onClick={() => onOpen(active)}
+          className={`landscape-main${active.width < active.height ? " landscape-main--portrait" : ""}`}
+          style={{ aspectRatio: `${active.width} / ${active.height}` }}
+          onClick={() => onOpen(active, landscapePhotos)}
           onBlur={() => setIsPaused(false)}
           onFocus={() => setIsPaused(true)}
           onMouseEnter={() => setIsPaused(true)}
