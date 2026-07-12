@@ -23,7 +23,7 @@ import {
 } from "./cmsQueries";
 import type { HomepageLayout } from "./homepageLayout";
 import type { PhotobalconyLayout } from "./photobalconyLayout";
-import { getSanityClient, isSanityConfigured } from "./sanity";
+import { fetchCms, isSanityConfigured } from "./sanity";
 
 export type GalleryContent = {
   photos: Photo[];
@@ -252,18 +252,12 @@ function toPhotobalconyLayout(
 }
 
 async function loadCmsContent(): Promise<GalleryContent> {
-  const client = getSanityClient();
-
-  if (!client) {
-    return staticContent;
-  }
-
   const [cmsPhotos, cmsStories, cmsSiteSettings, cmsHomepageLayout, cmsPhotobalconyLayout] = await Promise.all([
-    client.fetch<CmsPhoto[]>(cmsPhotosQuery),
-    client.fetch<CmsStory[]>(cmsStoriesQuery),
-    client.fetch<CmsSiteSettings | null>(cmsSiteSettingsQuery),
-    client.fetch<CmsHomepageLayout | null>(cmsHomepageLayoutQuery),
-    client.fetch<CmsPhotobalconyLayout | null>(cmsPhotobalconyLayoutQuery),
+    fetchCms<CmsPhoto[]>(cmsPhotosQuery),
+    fetchCms<CmsStory[]>(cmsStoriesQuery),
+    fetchCms<CmsSiteSettings | null>(cmsSiteSettingsQuery),
+    fetchCms<CmsHomepageLayout | null>(cmsHomepageLayoutQuery),
+    fetchCms<CmsPhotobalconyLayout | null>(cmsPhotobalconyLayoutQuery),
   ]);
 
   const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);

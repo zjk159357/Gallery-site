@@ -58,6 +58,48 @@ function dropWoffFallback(): Plugin {
 }
 
 /**
+ * Preload the locally bundled homepage font faces to avoid a fallback-font
+ * repaint on a cold visit.
+ */
+function fontPreloadPlugin(): Plugin {
+  const criticalFonts = [
+    'poppins-latin-400-normal',
+    'poppins-latin-600-normal',
+    'playfair-display-latin-600-normal',
+    'playfair-display-latin-600-italic',
+  ]
+
+  return {
+    name: 'font-preload',
+    apply: 'build',
+    enforce: 'post',
+    generateBundle(_options, bundle) {
+      const fontFiles = criticalFonts
+        .map((font) =>
+          Object.keys(bundle).find(
+            (fileName) => fileName.startsWith(`assets/${font}-`) && fileName.endsWith('.woff2'),
+          ),
+        )
+        .filter((fileName): fileName is string => Boolean(fileName))
+
+      if (fontFiles.length === 0) return
+
+      const links = fontFiles
+        .map((fileName) => `  <link rel="preload" as="font" type="font/woff2" href="/${fileName}" crossorigin>`)
+        .join('\n')
+
+      for (const file of Object.values(bundle)) {
+        if (file.type !== 'asset' || file.fileName !== 'index.html' || typeof file.source !== 'string') {
+          continue
+        }
+        file.source = file.source.replace('</head>', `${links}\n  </head>`)
+        break
+      }
+    },
+  }
+}
+
+/**
  * Ask Sanity which photo is the homepage hero and inject a preload link
  * so the browser can download it in parallel with the JS bundle.
  *
@@ -102,7 +144,7 @@ export default defineConfig(({ mode }) => {
     define: {
       __LAST_UPDATE__: JSON.stringify(new Date().toISOString()),
     },
-  plugins: [react(), dropWoffFallback(), heroPreloadPlugin()],
+    plugins: [react(), dropWoffFallback(), fontPreloadPlugin(), heroPreloadPlugin()],
     server: {
       proxy: {
         "/sanity": {

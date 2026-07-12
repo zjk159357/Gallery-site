@@ -2,23 +2,53 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.queenstown.top/</loc>
-    <lastmod>2026-07-11</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/journal</loc>
-    <lastmod>2026-07-11</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/about</loc>
-    <lastmod>2026-07-11</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/photobalcony</loc>
-    <lastmod>2026-07-11</lastmod>
+    <lastmod>2026-07-12</lastmod>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/beijei</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/1</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5442</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-1818</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-3950</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5944</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-0243</loc>
@@ -27,7 +57,7 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-0257</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -127,7 +157,7 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-0580</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -152,7 +182,7 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-0632</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -187,7 +217,7 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-0917</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -237,7 +267,7 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-2210</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -272,7 +302,7 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-3559</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -372,12 +402,62 @@
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-5503</loc>
-    <lastmod>2026-07-06</lastmod>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/photos/dsc-5552</loc>
     <lastmod>2026-07-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-0802</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5114</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5471</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5615</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5617</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5697</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5769</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5818</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-5973</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/photos/dsc-6080</loc>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -398,6 +478,106 @@
   <url>
     <loc>https://www.queenstown.top/stories/微距里的夏天</loc>
     <lastmod>2026-07-06</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/ancient-tower-night-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/north-street-dusk-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/white-arc-on-the-sea-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/colorful-harbor-bay-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/cape-village-road-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/wall-roses-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/tidal-flat-dusk-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/backlit-forest-road-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/archway-crowd-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/blue-sea-sunset-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/sunset-behind-the-hill-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/sea-sunset-through-trees-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/golden-fireworks-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/blue-night-fireworks-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/stone-peaks-and-forest-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/wind-turbines-on-the-ridge-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/orange-sea-boat-silhouette-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/night-crossing-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/mossy-rock-stream-note</loc>
+    <lastmod>2026-07-11</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.queenstown.top/stories/village-under-stone-mountains-note</loc>
+    <lastmod>2026-07-11</lastmod>
     <priority>0.7</priority>
   </url>
   <url>

@@ -2,6 +2,7 @@ node_modules
 dist
 dist-studio
 public/photos
+public/studio
 .sanity
 .env
 .env.*
