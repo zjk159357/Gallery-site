@@ -200,6 +200,7 @@ function PlantsReferenceLayout({
         photos={carouselPhotos}
         showTitle={false}
         className="plants-reference-carousel"
+        filterLandscape={false}
         onOpen={(photo, carouselPhotos) => onOpen(photoIndex(allPhotos, photo), carouselPhotos)}
       />
 
