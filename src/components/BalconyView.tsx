@@ -30,6 +30,14 @@ type PhotoButtonProps = {
 
 const CAROUSEL_TRANSITION_MS = 600;
 const SWIPE_THRESHOLD_PX = 48;
+const DEFAULT_BALCONY_TITLES = {
+  may: "2026",
+  march: "Jul 2026",
+  february: "May - Jun 2026",
+  january: "Apr 2026",
+  winter: "Mar 2026",
+  summer: "Jan - Feb 2026",
+};
 
 const byFilenames = (photos: Photo[], filenames: string[]) =>
   filenames.flatMap((filename) => {
@@ -220,6 +228,14 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
 
     return {
       hero: layout?.heroPhoto ?? fallbackHero,
+      titles: {
+        may: layout?.mayTitle || DEFAULT_BALCONY_TITLES.may,
+        march: layout?.marchTitle || DEFAULT_BALCONY_TITLES.march,
+        february: layout?.februaryTitle || DEFAULT_BALCONY_TITLES.february,
+        january: layout?.januaryTitle || DEFAULT_BALCONY_TITLES.january,
+        winter: layout?.winterTitle || DEFAULT_BALCONY_TITLES.winter,
+        summer: layout?.summerTitle || DEFAULT_BALCONY_TITLES.summer,
+      },
       may,
       marchPortraits,
       marchWide,
@@ -260,36 +276,36 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
         />
       </section>
 
-      <MonthTitle title="May 2025" />
-      <BalconyCarousel title="May 2025" photos={content.may} onOpen={(photo) => openPhoto(photo, content.may)} />
+      <MonthTitle title={content.titles.may} />
+      <BalconyCarousel title={content.titles.may} photos={content.may} onOpen={(photo) => openPhoto(photo, content.may)} />
 
-      <MonthTitle title="March 2025" />
-      <section className="balcony-portrait-row" aria-label="March 2025 portrait photos">
+      <MonthTitle title={content.titles.march} />
+      <section className="balcony-portrait-row" aria-label={`${content.titles.march} portrait photos`}>
         {content.marchPortraits.map((photo) => (
           <PhotoButton key={photo.id} photo={photo} className="balcony-portrait-photo" onOpen={(item) => openPhoto(item, content.marchPortraits)} />
         ))}
       </section>
-      <BalconyCarousel title="March 2025" photos={content.marchWide} onOpen={(photo) => openPhoto(photo, content.marchWide)} />
+      <BalconyCarousel title={content.titles.march} photos={content.marchWide} onOpen={(photo) => openPhoto(photo, content.marchWide)} />
 
-      <MonthTitle title="Feb 2025" />
-      <BalconyCarousel title="Feb 2025" photos={content.february} onOpen={(photo) => openPhoto(photo, content.february)} />
+      <MonthTitle title={content.titles.february} />
+      <BalconyCarousel title={content.titles.february} photos={content.february} onOpen={(photo) => openPhoto(photo, content.february)} />
 
-      <MonthTitle title="Jan 2025" />
-      <section className="balcony-grid" aria-label="Jan 2025 photo grid">
+      <MonthTitle title={content.titles.january} />
+      <section className="balcony-grid" aria-label={`${content.titles.january} photo grid`}>
         {content.january.map((photo) => (
           <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={(item) => openPhoto(item, content.january)} />
         ))}
       </section>
 
-      <MonthTitle title="Nov - Dec 2024" />
-      <section className="balcony-grid balcony-grid--wide" aria-label="Nov - Dec 2024 photo grid">
+      <MonthTitle title={content.titles.winter} />
+      <section className="balcony-grid balcony-grid--wide" aria-label={`${content.titles.winter} photo grid`}>
         {content.winter.map((photo) => (
           <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={(item) => openPhoto(item, content.winter)} />
         ))}
       </section>
 
-      <MonthTitle title="July - Aug 2024" />
-      <section className="balcony-final-stack" aria-label="July - Aug 2024 photo stack">
+      <MonthTitle title={content.titles.summer} />
+      <section className="balcony-final-stack" aria-label={`${content.titles.summer} photo stack`}>
         {content.summer.map((photo, index) => (
           <PhotoButton
             key={photo.id}

@@ -275,6 +275,12 @@ function toPhotobalconyLayout(
 
   return {
     heroPhoto: resolvePhotoId(photoMap, layout.heroPhotoId),
+    mayTitle: layout.mayTitle,
+    marchTitle: layout.marchTitle,
+    februaryTitle: layout.februaryTitle,
+    januaryTitle: layout.januaryTitle,
+    winterTitle: layout.winterTitle,
+    summerTitle: layout.summerTitle,
     mayPhotos: resolvePhotoIds(photoMap, layout.mayPhotoIds) ?? [],
     marchPortraitPhotos: resolvePhotoIds(photoMap, layout.marchPortraitPhotoIds) ?? [],
     marchWidePhotos: resolvePhotoIds(photoMap, layout.marchWidePhotoIds) ?? [],

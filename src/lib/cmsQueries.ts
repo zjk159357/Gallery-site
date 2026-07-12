@@ -65,6 +65,12 @@ export type CmsHomepageLayout = {
 
 export type CmsPhotobalconyLayout = {
   heroPhotoId?: string;
+  mayTitle?: string;
+  marchTitle?: string;
+  februaryTitle?: string;
+  januaryTitle?: string;
+  winterTitle?: string;
+  summerTitle?: string;
   mayPhotoIds?: string[];
   marchPortraitPhotoIds?: string[];
   marchWidePhotoIds?: string[];
@@ -218,6 +224,12 @@ export const cmsHomepageLayoutQuery = `*[_type == "homepageLayout"][0] {
 
 export const cmsPhotobalconyLayoutQuery = `*[_type == "photobalconyLayout"][0] {
   "heroPhotoId": heroPhoto->_id,
+  mayTitle,
+  marchTitle,
+  februaryTitle,
+  januaryTitle,
+  winterTitle,
+  summerTitle,
   "mayPhotoIds": mayPhotos[]->_id,
   "marchPortraitPhotoIds": marchPortraitPhotos[]->_id,
   "marchWidePhotoIds": marchWidePhotos[]->_id,
