@@ -114,6 +114,7 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
       >
         {previous ? (
           <img
+            key={`previous-${previous.id}`}
             className={`balcony-carousel-image balcony-carousel-image--previous balcony-carousel-image--${transitionDirection}`}
             src={sizedImageUrl(previous.src, 1500, 86)}
             srcSet={`${sizedImageUrl(previous.src, 1100)} 1100w, ${sizedImageUrl(previous.src, 1700, 86)} 1700w`}
@@ -123,6 +124,7 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
           />
         ) : null}
         <img
+          key={`active-${active.id}`}
           className={`balcony-carousel-image${previous ? ` balcony-carousel-image--active balcony-carousel-image--${transitionDirection}` : ""}`}
           src={sizedImageUrl(active.src, 1500, 86)}
           srcSet={`${sizedImageUrl(active.src, 1100)} 1100w, ${sizedImageUrl(active.src, 1700, 86)} 1700w`}

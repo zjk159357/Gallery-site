@@ -176,6 +176,7 @@ export function LandscapeSection({
         >
           {previous ? (
             <img
+              key={`previous-${previous.id}`}
               className={`landscape-image landscape-image--previous landscape-image--${transitionDirection}`}
               src={sizedImageUrl(previous.src, 1800, 84)}
               srcSet={imageSrcSet(previous.src, [900, 1400, 2000], 84)}
@@ -185,6 +186,7 @@ export function LandscapeSection({
             />
           ) : null}
           <img
+            key={`active-${active.id}`}
             className={`landscape-image landscape-image--active${previous ? ` landscape-image--${transitionDirection}` : ""}`}
             src={sizedImageUrl(active.src, 1800, 84)}
             srcSet={imageSrcSet(active.src, [900, 1400, 2000], 84)}
