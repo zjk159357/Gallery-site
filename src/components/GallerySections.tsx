@@ -310,7 +310,7 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
     },
     {
       id: "plants",
-      title: "Plants",
+      title: "Harbor",
       photos: configuredPhotos(homepageLayout?.plantsCarouselPhotos, plants.slice(0, 18)),
       variant: "cinema",
     },
@@ -381,7 +381,7 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
         onOpen={(photo, carouselPhotos) => onOpen(photoIndex(photos, photo), carouselPhotos)}
       />
       <div className="section-title-row section-title-row--compact">
-        <h2>Plants</h2>
+        <h2>Harbor</h2>
       </div>
       {bannerTwo ? (
         <PlantsReferenceLayout
