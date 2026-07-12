@@ -457,6 +457,7 @@ main {
   color: inherit;
   cursor: zoom-in;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 .landscape-image {
@@ -714,17 +715,7 @@ main {
   }
 
   .landscape-arrow {
-    top: 50%;
-    width: 44px;
-    height: 60px;
-  }
-
-  .landscape-arrow--prev {
-    left: 0;
-  }
-
-  .landscape-arrow--next {
-    right: 0;
+    display: none;
   }
 
   .landscape-thumbs {
@@ -1057,6 +1048,7 @@ main {
 .balcony-carousel-main {
   width: min(100%, 1305px);
   aspect-ratio: 16 / 9;
+  touch-action: pan-y;
 }
 
 .balcony-carousel-main img,
@@ -2420,17 +2412,7 @@ main {
   }
 
   .balcony-carousel-arrow {
-    top: calc(50% - 42px);
-    width: 44px;
-    height: 60px;
-  }
-
-  .balcony-carousel-arrow--prev {
-    left: 0;
-  }
-
-  .balcony-carousel-arrow--next {
-    right: 0;
+    display: none;
   }
 
   .balcony-portrait-row {

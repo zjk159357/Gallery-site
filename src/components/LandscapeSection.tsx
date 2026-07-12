@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import type { Photo } from "../data/photos";
 import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 
@@ -7,6 +8,7 @@ const ARROW_PATH_PREV = "m15 18-6-6 6-6";
 
 const AUTOPLAY_MS = 3000;
 const CAROUSEL_TRANSITION_MS = 600;
+const SWIPE_THRESHOLD_PX = 48;
 
 type LandscapeSectionProps = {
   id: string;
@@ -35,6 +37,8 @@ export function LandscapeSection({
   const sectionRef = useRef<HTMLElement>(null);
   const mainRef = useRef<HTMLButtonElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const ignoreNextClickRef = useRef(false);
 
   const landscapePhotos = useMemo(
     () => (filterLandscape ? photos.filter((photo) => photo.width > photo.height) : photos),
@@ -117,6 +121,39 @@ export function LandscapeSection({
   };
   const goPrev = () => changeActiveIndex((index) => Math.max(0, index - 1));
   const goNext = () => changeActiveIndex((index) => Math.min(total - 1, index + 1));
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === "touch") {
+      touchStartRef.current = { x: event.clientX, y: event.clientY };
+    }
+  };
+  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const touchStart = touchStartRef.current;
+    touchStartRef.current = null;
+    if (event.pointerType !== "touch" || !touchStart) return;
+
+    const horizontalDistance = event.clientX - touchStart.x;
+    const verticalDistance = event.clientY - touchStart.y;
+    if (
+      Math.abs(horizontalDistance) < SWIPE_THRESHOLD_PX ||
+      Math.abs(horizontalDistance) <= Math.abs(verticalDistance)
+    ) {
+      return;
+    }
+
+    ignoreNextClickRef.current = true;
+    if (horizontalDistance > 0) {
+      goPrev();
+    } else {
+      goNext();
+    }
+  };
+  const handleOpen = () => {
+    if (ignoreNextClickRef.current) {
+      ignoreNextClickRef.current = false;
+      return;
+    }
+    onOpen(active, landscapePhotos);
+  };
   const caption = active.title
     .replace(/^[A-Z]+_/i, "")
     .replace(/[_-]+/g, " ")
@@ -166,13 +203,18 @@ export function LandscapeSection({
           type="button"
           className={`landscape-main${active.width < active.height ? " landscape-main--portrait" : ""}`}
           style={{ aspectRatio: `${active.width} / ${active.height}` }}
-          onClick={() => onOpen(active, landscapePhotos)}
+          onClick={handleOpen}
           onBlur={() => setIsPaused(false)}
           onFocus={() => setIsPaused(true)}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
           onPointerEnter={() => setIsPaused(true)}
           onPointerLeave={() => setIsPaused(false)}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={() => {
+            touchStartRef.current = null;
+          }}
           aria-label={`Open ${caption}`}
         >
           {previous ? (

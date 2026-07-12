@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
 import type { PhotoMeta, PhotoStory } from "../data/stories";
@@ -28,6 +29,7 @@ type PhotoButtonProps = {
 };
 
 const CAROUSEL_TRANSITION_MS = 600;
+const SWIPE_THRESHOLD_PX = 48;
 
 const byFilenames = (photos: Photo[], filenames: string[]) =>
   filenames.flatMap((filename) => {
@@ -76,6 +78,8 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [transitionDirection, setTransitionDirection] = useState<"next" | "prev">("next");
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const ignoreNextClickRef = useRef(false);
   const active = photos[activeIndex];
   const previous = previousIndex === null ? undefined : photos[previousIndex];
 
@@ -94,6 +98,39 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
   };
   const goPrev = () => changeSlide("prev");
   const goNext = () => changeSlide("next");
+  const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === "touch") {
+      touchStartRef.current = { x: event.clientX, y: event.clientY };
+    }
+  };
+  const handlePointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const touchStart = touchStartRef.current;
+    touchStartRef.current = null;
+    if (event.pointerType !== "touch" || !touchStart) return;
+
+    const horizontalDistance = event.clientX - touchStart.x;
+    const verticalDistance = event.clientY - touchStart.y;
+    if (
+      Math.abs(horizontalDistance) < SWIPE_THRESHOLD_PX ||
+      Math.abs(horizontalDistance) <= Math.abs(verticalDistance)
+    ) {
+      return;
+    }
+
+    ignoreNextClickRef.current = true;
+    if (horizontalDistance > 0) {
+      goPrev();
+    } else {
+      goNext();
+    }
+  };
+  const handleOpen = () => {
+    if (ignoreNextClickRef.current) {
+      ignoreNextClickRef.current = false;
+      return;
+    }
+    onOpen(active);
+  };
 
   if (photos.length === 0) return null;
 
@@ -111,7 +148,12 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
       <button
         type="button"
         className="balcony-carousel-main"
-        onClick={() => onOpen(active)}
+        onClick={handleOpen}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={() => {
+          touchStartRef.current = null;
+        }}
         aria-label={`Open ${active.title}`}
       >
         {previous ? (
