@@ -2227,9 +2227,9 @@ main {
 
   .feature-card {
     width: 100%;
-    height: auto;
+    height: 120vw;
     min-height: 0;
-    aspect-ratio: 5 / 6;
+    aspect-ratio: auto;
   }
 
   .feature-card span {
