@@ -48,7 +48,7 @@ const staticContent: GalleryContent = {
   isLoading: false,
 };
 
-const CMS_CONTENT_CACHE_KEY = "queenstown.cmsContent.v2";
+const CMS_CONTENT_CACHE_KEY = "queenstown.cmsContent.v3";
 
 function blockToText(block: PortableTextBlock) {
   return block.children?.map((child) => child.text ?? "").join("") ?? "";
