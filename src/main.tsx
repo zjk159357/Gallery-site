@@ -12,7 +12,6 @@ import "@fontsource/playfair-display/latin-600.css";
 import "@fontsource/playfair-display/latin-700.css";
 import "@fontsource/playfair-display/latin-400-italic.css";
 import "@fontsource/playfair-display/latin-500-italic.css";
-import "@fontsource/playfair-display/latin-600-italic.css";
 import "./styles/global.css";
 
 createRoot(document.getElementById("root")!).render(
