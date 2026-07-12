@@ -28,6 +28,7 @@ export function LandscapeSection({
 }: LandscapeSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [transitionDirection, setTransitionDirection] = useState<"next" | "prev">("next");
   const [isPaused, setIsPaused] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -70,7 +71,10 @@ export function LandscapeSection({
       }
       setActiveIndex((index) => {
         const nextIndex = Math.min(total - 1, index + 1);
-        if (nextIndex !== index) setPreviousIndex(index);
+        if (nextIndex !== index) {
+          setTransitionDirection("next");
+          setPreviousIndex(index);
+        }
         return nextIndex;
       });
     }, AUTOPLAY_MS);
@@ -103,7 +107,10 @@ export function LandscapeSection({
   const changeActiveIndex = (getNextIndex: (index: number) => number) => {
     setActiveIndex((index) => {
       const nextIndex = getNextIndex(index);
-      if (nextIndex !== index) setPreviousIndex(index);
+      if (nextIndex !== index) {
+        setTransitionDirection(nextIndex > index ? "next" : "prev");
+        setPreviousIndex(index);
+      }
       return nextIndex;
     });
   };
@@ -169,7 +176,7 @@ export function LandscapeSection({
         >
           {previous ? (
             <img
-              className="landscape-image landscape-image--previous"
+              className={`landscape-image landscape-image--previous landscape-image--${transitionDirection}`}
               src={sizedImageUrl(previous.src, 1800, 84)}
               srcSet={imageSrcSet(previous.src, [900, 1400, 2000], 84)}
               sizes="100vw"
@@ -178,7 +185,7 @@ export function LandscapeSection({
             />
           ) : null}
           <img
-            className="landscape-image landscape-image--active"
+            className={`landscape-image landscape-image--active${previous ? ` landscape-image--${transitionDirection}` : ""}`}
             src={sizedImageUrl(active.src, 1800, 84)}
             srcSet={imageSrcSet(active.src, [900, 1400, 2000], 84)}
             sizes="100vw"

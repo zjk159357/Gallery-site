@@ -479,32 +479,50 @@ main {
 
 .landscape-image--active {
   z-index: 1;
-  animation: landscape-image-enter 760ms ease both;
 }
 
 .landscape-image--previous {
   z-index: 0;
-  animation: landscape-image-exit 760ms ease both;
 }
 
-@keyframes landscape-image-enter {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+.landscape-image--active.landscape-image--next,
+.balcony-carousel-image--active.balcony-carousel-image--next {
+  animation: carousel-image-enter-next 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes landscape-image-exit {
-  from {
-    opacity: 1;
-  }
+.landscape-image--active.landscape-image--prev,
+.balcony-carousel-image--active.balcony-carousel-image--prev {
+  animation: carousel-image-enter-prev 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
 
-  to {
-    opacity: 0;
-  }
+.landscape-image--previous.landscape-image--next,
+.balcony-carousel-image--previous.balcony-carousel-image--next {
+  animation: carousel-image-exit-next 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.landscape-image--previous.landscape-image--prev,
+.balcony-carousel-image--previous.balcony-carousel-image--prev {
+  animation: carousel-image-exit-prev 680ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes carousel-image-enter-next {
+  from { transform: translate3d(100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes carousel-image-enter-prev {
+  from { transform: translate3d(-100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes carousel-image-exit-next {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-24%, 0, 0); }
+}
+
+@keyframes carousel-image-exit-prev {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(24%, 0, 0); }
 }
 
 .landscape-caption {
@@ -1060,6 +1078,18 @@ main {
   height: 100%;
   object-fit: cover;
   transition: transform 360ms ease, filter 260ms ease;
+}
+
+.balcony-carousel-main .balcony-carousel-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: none;
+  will-change: transform;
+}
+
+.balcony-carousel-main .balcony-carousel-image--active {
+  z-index: 2;
 }
 
 .balcony-carousel-main:hover img,

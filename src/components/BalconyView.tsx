@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
 import type { PhotoMeta, PhotoStory } from "../data/stories";
@@ -72,12 +72,28 @@ function MonthTitle({ title }: { title: string }) {
 
 function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [transitionDirection, setTransitionDirection] = useState<"next" | "prev">("next");
+  const active = photos[activeIndex];
+  const previous = previousIndex === null ? undefined : photos[previousIndex];
+
+  useEffect(() => {
+    if (previousIndex === null) return undefined;
+    const timer = window.setTimeout(() => setPreviousIndex(null), 680);
+    return () => window.clearTimeout(timer);
+  }, [previousIndex]);
+
+  const changeSlide = (direction: "next" | "prev") => {
+    setTransitionDirection(direction);
+    setActiveIndex((index) => {
+      setPreviousIndex(index);
+      return direction === "next" ? (index + 1) % photos.length : (index - 1 + photos.length) % photos.length;
+    });
+  };
+  const goPrev = () => changeSlide("prev");
+  const goNext = () => changeSlide("next");
 
   if (photos.length === 0) return null;
-
-  const active = photos[activeIndex];
-  const goPrev = () => setActiveIndex((index) => (index - 1 + photos.length) % photos.length);
-  const goNext = () => setActiveIndex((index) => (index + 1) % photos.length);
 
   return (
     <section className="balcony-carousel" aria-label={`${title} slideshow`}>
@@ -96,7 +112,18 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
         onClick={() => onOpen(active)}
         aria-label={`Open ${active.title}`}
       >
+        {previous ? (
+          <img
+            className={`balcony-carousel-image balcony-carousel-image--previous balcony-carousel-image--${transitionDirection}`}
+            src={sizedImageUrl(previous.src, 1500, 86)}
+            srcSet={`${sizedImageUrl(previous.src, 1100)} 1100w, ${sizedImageUrl(previous.src, 1700, 86)} 1700w`}
+            sizes="(max-width: 900px) 100vw, 76vw"
+            alt=""
+            decoding="async"
+          />
+        ) : null}
         <img
+          className={`balcony-carousel-image${previous ? ` balcony-carousel-image--active balcony-carousel-image--${transitionDirection}` : ""}`}
           src={sizedImageUrl(active.src, 1500, 86)}
           srcSet={`${sizedImageUrl(active.src, 1100)} 1100w, ${sizedImageUrl(active.src, 1700, 86)} 1700w`}
           sizes="(max-width: 900px) 92vw, 76vw"
