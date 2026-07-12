@@ -2221,9 +2221,13 @@ main {
     grid-template-columns: 1fr;
     height: auto;
     min-height: 0;
+    justify-items: center;
+    gap: 16px;
+    padding: 20px 0;
   }
 
   .feature-card {
+    width: min(78vw, 360px);
     height: auto;
     min-height: 0;
     aspect-ratio: 5 / 6;
