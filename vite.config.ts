@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import { createClient } from '@sanity/client'
 
@@ -58,50 +58,6 @@ function dropWoffFallback(): Plugin {
 }
 
 /**
- * The font packages are bundled locally, but Vite discovers their files from
- * the application stylesheet.  Preloading the faces visible on the homepage
- * lets the browser request them directly from the document head, avoiding a
- * fallback-font repaint on a cold visit.
- */
-function fontPreloadPlugin(): Plugin {
-  const criticalFonts = [
-    'poppins-latin-400-normal',
-    'poppins-latin-600-normal',
-    'playfair-display-latin-600-normal',
-    'playfair-display-latin-600-italic',
-  ]
-
-  return {
-    name: 'font-preload',
-    apply: 'build',
-    enforce: 'post',
-    generateBundle(_options, bundle) {
-      const fontFiles = criticalFonts
-        .map((font) =>
-          Object.keys(bundle).find(
-            (fileName) => fileName.startsWith(`assets/${font}-`) && fileName.endsWith('.woff2'),
-          ),
-        )
-        .filter((fileName): fileName is string => Boolean(fileName))
-
-      if (fontFiles.length === 0) return
-
-      const links = fontFiles
-        .map((fileName) => `  <link rel="preload" as="font" type="font/woff2" href="/${fileName}" crossorigin>`)
-        .join('\n')
-
-      for (const file of Object.values(bundle)) {
-        if (file.type !== 'asset' || file.fileName !== 'index.html' || typeof file.source !== 'string') {
-          continue
-        }
-        file.source = file.source.replace('</head>', `${links}\n  </head>`)
-        break
-      }
-    },
-  }
-}
-
-/**
  * Ask Sanity which photo is the homepage hero and inject a preload link
  * so the browser can download it in parallel with the JS bundle.
  *
@@ -138,9 +94,23 @@ function heroPreloadPlugin(): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig({
-  define: {
-    __LAST_UPDATE__: JSON.stringify(new Date().toISOString()),
-  },
-  plugins: [react(), dropWoffFallback(), fontPreloadPlugin(), heroPreloadPlugin()],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const sanityProjectId = env.VITE_SANITY_PROJECT_ID || 'zj2ik922'
+
+  return {
+    define: {
+      __LAST_UPDATE__: JSON.stringify(new Date().toISOString()),
+    },
+  plugins: [react(), dropWoffFallback(), heroPreloadPlugin()],
+    server: {
+      proxy: {
+        "/sanity": {
+          target: `https://${sanityProjectId}.api.sanity.io`,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/sanity/, ""),
+        },
+      },
+    },
+  }
 })
