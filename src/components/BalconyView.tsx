@@ -27,6 +27,8 @@ type PhotoButtonProps = {
   onOpen: (photo: Photo) => void;
 };
 
+const CAROUSEL_TRANSITION_MS = 760;
+
 const byFilenames = (photos: Photo[], filenames: string[]) =>
   filenames.flatMap((filename) => {
     const photo = photos.find((item) => item.filename === filename);
@@ -79,7 +81,7 @@ function BalconyCarousel({ title, photos, onOpen }: BalconyCarouselProps) {
 
   useEffect(() => {
     if (previousIndex === null) return undefined;
-    const timer = window.setTimeout(() => setPreviousIndex(null), 680);
+    const timer = window.setTimeout(() => setPreviousIndex(null), CAROUSEL_TRANSITION_MS);
     return () => window.clearTimeout(timer);
   }, [previousIndex]);
 
