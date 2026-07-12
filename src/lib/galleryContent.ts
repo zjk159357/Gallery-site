@@ -121,9 +121,9 @@ function toPhotoMeta(photos: CmsPhoto[]) {
   }, {});
 }
 
-function toReferencedPhoto(photo: CmsSiteSettings["heroPhoto"]): Photo | undefined {
+function toReferencedPhoto(photo: CmsSiteSettings["heroPhoto"], options: { allowHidden?: boolean } = {}): Photo | undefined {
   const src = resolvePhotoSrc(photo?.src, photo?.legacyPublicPath);
-  if (photo?.isHidden || !photo?.id || !src || !photo.title || !photo.filename) {
+  if ((!options.allowHidden && photo?.isHidden) || !photo?.id || !src || !photo.title || !photo.filename) {
     return undefined;
   }
 
@@ -132,11 +132,45 @@ function toReferencedPhoto(photo: CmsSiteSettings["heroPhoto"]): Photo | undefin
     src,
     title: photo.title,
     slug: photo.slug,
-    category: "",
+    category: photo.category ?? "",
     filename: photo.filename,
     width: photo.width || 1,
     height: photo.height || 1,
   };
+}
+
+function uniquePhotosById(...groups: Photo[][]) {
+  const seen = new Set<string>();
+
+  return groups.flat().filter((photo) => {
+    if (seen.has(photo.id)) return false;
+    seen.add(photo.id);
+    return true;
+  });
+}
+
+function collectHomepageReferencedPhotos(layout: CmsHomepageLayout | null | undefined) {
+  if (!layout) {
+    return [];
+  }
+
+  const referenced = [
+    ...(layout.featureCards?.map((card) => card.photo) ?? []),
+    ...(layout.landscapePhotos ?? []),
+    ...(layout.quietPhotos ?? []),
+    layout.bannerOnePhoto,
+    ...(layout.cityPhotos ?? []),
+    layout.plantsHeroPhoto,
+    ...(layout.plantsCarouselPhotos ?? []),
+    layout.plantsFeaturePhoto,
+    ...(layout.plantsStackPhotos ?? []),
+    ...(layout.plantsSquarePhotos ?? []),
+  ];
+
+  return referenced.flatMap((photo) => {
+    const resolved = toReferencedPhoto(photo, { allowHidden: true });
+    return resolved ? [resolved] : [];
+  });
 }
 
 function toPhotoStories(stories: CmsStory[]) {
@@ -260,7 +294,13 @@ async function loadCmsContent(): Promise<GalleryContent> {
     fetchCms<CmsPhotobalconyLayout | null>(cmsPhotobalconyLayoutQuery),
   ]);
 
-  const photos = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
+  const cmsPhotoEntries = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
+  const harborFallbackPhoto = staticPhotos.find((photo) => photo.filename === "DSC_5026.JPG");
+  const photos = uniquePhotosById(
+    cmsPhotoEntries,
+    collectHomepageReferencedPhotos(cmsHomepageLayout),
+    harborFallbackPhoto ? [harborFallbackPhoto] : [],
+  );
   const heroPhoto =
     photos.find((photo) => photo.id === cmsSiteSettings?.heroPhoto?.id) ??
     toReferencedPhoto(cmsSiteSettings?.heroPhoto) ??

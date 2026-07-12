@@ -16,7 +16,7 @@ import { matchesPhotoSlug, matchesStorySlug, photoPath } from "./lib/routes";
 
 const SITE_TITLE = "Queenstown.top | Photography";
 const DEFAULT_DESCRIPTION =
-  "Queenstown.top 是 JiaKaiZhong 的摄影档案，记录山野、海岸、森林、花朵、城市边缘与旅行片段。";
+  "Queenstown.top 是 JiaKaiZhong 的摄影档案，记录山野、海港、森林、城市边缘与旅行片段。";
 
 function setMeta(name: string, content: string, attribute: "name" | "property" = "name") {
   let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${name}"]`);

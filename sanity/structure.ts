@@ -351,25 +351,25 @@ export const structure: StructureResolver = (S) =>
                         .schemaType("photo")
                         .child(photoList(S, "城市轮播", homepageArrayReferenceFilter("cityPhotos"))),
                       li(S, "photo-placement.homepage.plants-banner")
-                        .title("植物横幅")
+                        .title("Harbor 横幅")
                         .schemaType("photo")
-                        .child(photoList(S, "植物横幅", homepageSingleReferenceFilter("plantsHeroPhoto"))),
+                        .child(photoList(S, "Harbor 横幅", homepageSingleReferenceFilter("plantsHeroPhoto"))),
                       li(S, "photo-placement.homepage.plants-carousel")
-                        .title("植物轮播")
+                        .title("Harbor 轮播")
                         .schemaType("photo")
-                        .child(photoList(S, "植物轮播", homepageArrayReferenceFilter("plantsCarouselPhotos"))),
+                        .child(photoList(S, "Harbor 轮播", homepageArrayReferenceFilter("plantsCarouselPhotos"))),
                       li(S, "photo-placement.homepage.plants-feature")
-                        .title("植物特色图")
+                        .title("Harbor 特色图")
                         .schemaType("photo")
-                        .child(photoList(S, "植物特色图", homepageSingleReferenceFilter("plantsFeaturePhoto"))),
+                        .child(photoList(S, "Harbor 特色图", homepageSingleReferenceFilter("plantsFeaturePhoto"))),
                       li(S, "photo-placement.homepage.plants-stack")
-                        .title("植物全宽堆叠")
+                        .title("Harbor 全宽堆叠")
                         .schemaType("photo")
-                        .child(photoList(S, "植物全宽堆叠", homepageArrayReferenceFilter("plantsStackPhotos"))),
+                        .child(photoList(S, "Harbor 全宽堆叠", homepageArrayReferenceFilter("plantsStackPhotos"))),
                       li(S, "photo-placement.homepage.plants-squares")
-                        .title("植物方格组")
+                        .title("Harbor 方格组")
                         .schemaType("photo")
-                        .child(photoList(S, "植物方格组", homepageArrayReferenceFilter("plantsSquarePhotos"))),
+                        .child(photoList(S, "Harbor 方格组", homepageArrayReferenceFilter("plantsSquarePhotos"))),
                     ]),
                 ),
               li(S, "photo-placement.photobalcony")

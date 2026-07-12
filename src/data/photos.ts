@@ -18,7 +18,8 @@ export const categories = [
   "河流",
   "海洋",
   "石塘度假区",
-  "花朵"
+  "花朵",
+  "harbor"
 ] as const;
 
 export const photos: Photo[] = [
@@ -823,6 +824,17 @@ export const photos: Photo[] = [
     "filename": "DSC_5445.JPG",
     "width": 4032,
     "height": 6048,
+    "isHero": false
+  },
+  {
+    "id": "photo-074",
+    "src": "/photos/harbor/DSC_5026.JPG",
+    "title": "DSC_5026",
+    "slug": "dsc-5026",
+    "category": "harbor",
+    "filename": "DSC_5026.JPG",
+    "width": 6048,
+    "height": 4032,
     "isHero": false
   }
 ];

@@ -261,8 +261,14 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
   const landscape = uniquePhotos(landscapeOnly(landscapeCandidates), landscapeCandidates);
   const cityCandidates = uniquePhotos(byCategory(photos, "石塘度假区", 18), byCategory(photos, "建筑", 2));
   const city = uniquePhotos(landscapeOnly(cityCandidates), cityCandidates);
-  const plantCandidates = uniquePhotos(byCategory(photos, "花朵", 9), byCategory(photos, "森林", 5));
-  const plants = uniquePhotos(landscapeOnly(plantCandidates), plantCandidates);
+  const harborCandidates = uniquePhotos(
+    byCategory(photos, "harbor", 18),
+    byCategory(photos, "Harbor", 18),
+    byCategory(photos, "海洋", 3),
+    byCategory(photos, "石塘度假区", 8),
+  );
+  const legacyPlantFallback = uniquePhotos(byCategory(photos, "花朵", 9), byCategory(photos, "森林", 5));
+  const plants = uniquePhotos(landscapeOnly(harborCandidates), harborCandidates, landscapeOnly(legacyPlantFallback), legacyPlantFallback);
   const squareSet = byAspect(photos, "square").slice(0, 8);
   const mixedArchive = uniquePhotos(byAspect(photos, "portrait"), byAspect(photos, "landscape"), photos).slice(0, 30);
 
@@ -320,7 +326,11 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
   const plantLandscapePhotos = byAspect(plants, "landscape");
   const plantPortraitPhotos = byAspect(plants, "portrait");
   const bannerTwo =
-    homepageLayout?.plantsHeroPhoto ?? photos.find((photo) => photo.filename === "DSC_0555.JPG") ?? plantLandscapePhotos[0] ?? plants[0];
+    homepageLayout?.plantsHeroPhoto ??
+    photos.find((photo) => photo.filename === "DSC_5026.JPG") ??
+    photos.find((photo) => photo.filename === "DSC_0555.JPG") ??
+    plantLandscapePhotos[0] ??
+    plants[0];
   const plantCarouselPhotos = groups[3].photos;
   const plantStackPhotos = configuredPhotos(
     homepageLayout?.plantsStackPhotos,

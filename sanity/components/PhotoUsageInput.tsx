@@ -156,11 +156,11 @@ function activeHomepageModules(usage: UsageResult) {
     ["静谧方格", usage.quietCount],
     ["第一张宽幅横图", usage.bannerOneCount],
     ["城市轮播", usage.cityCount],
-    ["植物横幅", usage.plantsHeroCount],
-    ["植物轮播", usage.plantsCarouselCount],
-    ["植物特色图", usage.plantsFeatureCount],
-    ["植物全宽堆叠", usage.plantsStackCount],
-    ["植物方格组", usage.plantsSquareCount],
+    ["Harbor 横幅", usage.plantsHeroCount],
+    ["Harbor 轮播", usage.plantsCarouselCount],
+    ["Harbor 特色图", usage.plantsFeatureCount],
+    ["Harbor 全宽堆叠", usage.plantsStackCount],
+    ["Harbor 方格组", usage.plantsSquareCount],
   ].filter(([, count]) => Number(count) > 0);
 }
 

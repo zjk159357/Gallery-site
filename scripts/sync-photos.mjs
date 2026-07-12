@@ -11,7 +11,7 @@ const sourceRoot = projectRoot;
 const publicPhotoRoot = path.join(projectRoot, "public", "photos");
 const dataFile = path.join(projectRoot, "src", "data", "photos.ts");
 
-const categories = ["山野", "建筑", "日出日落", "森林", "河流", "海洋", "石塘度假区", "花朵"];
+const categories = ["山野", "建筑", "日出日落", "森林", "河流", "海洋", "石塘度假区", "花朵", "harbor"];
 
 const imageExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"]);
 const imageCdnParams = "?w=2560&q=90&auto=format&fit=max";

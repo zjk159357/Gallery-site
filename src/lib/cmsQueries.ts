@@ -42,16 +42,25 @@ export type CmsSiteSettings = {
 };
 
 export type CmsHomepageLayout = {
-  featureCards?: { title?: string; href?: string; photoId?: string }[];
+  featureCards?: { title?: string; href?: string; photoId?: string; photo?: CmsStoryPhoto }[];
   landscapePhotoIds?: string[];
+  landscapePhotos?: CmsStoryPhoto[];
   quietPhotoIds?: string[];
+  quietPhotos?: CmsStoryPhoto[];
   bannerOnePhotoId?: string;
+  bannerOnePhoto?: CmsStoryPhoto;
   cityPhotoIds?: string[];
+  cityPhotos?: CmsStoryPhoto[];
   plantsHeroPhotoId?: string;
+  plantsHeroPhoto?: CmsStoryPhoto;
   plantsCarouselPhotoIds?: string[];
+  plantsCarouselPhotos?: CmsStoryPhoto[];
   plantsFeaturePhotoId?: string;
+  plantsFeaturePhoto?: CmsStoryPhoto;
   plantsStackPhotoIds?: string[];
+  plantsStackPhotos?: CmsStoryPhoto[];
   plantsSquarePhotoIds?: string[];
+  plantsSquarePhotos?: CmsStoryPhoto[];
 };
 
 export type CmsPhotobalconyLayout = {
@@ -78,9 +87,23 @@ type CmsStoryPhoto = {
   isHidden?: boolean;
   legacyPublicPath?: string;
   filename?: string;
+  category?: string;
   width?: number;
   height?: number;
 };
+
+const cmsReferencedPhotoFields = `
+    "id": _id,
+    title,
+    "slug": slug.current,
+    "src": image.asset->url,
+    isHidden,
+    "legacyPublicPath": legacyPublicPath,
+    "category": category->title,
+    "filename": sourceFilename,
+    "width": coalesce(image.asset->metadata.dimensions.width, dimensions.width),
+    "height": coalesce(image.asset->metadata.dimensions.height, dimensions.height)
+`;
 
 export const cmsPhotosQuery = `*[_type == "photo" && isHidden != true] | order(sortOrder asc, date desc) {
   "id": _id,
@@ -170,17 +193,27 @@ export const cmsHomepageLayoutQuery = `*[_type == "homepageLayout"][0] {
   featureCards[]{
     title,
     href,
-    "photoId": photo->_id
+    "photoId": photo->_id,
+    "photo": photo->{${cmsReferencedPhotoFields}}
   },
   "landscapePhotoIds": landscapePhotos[]->_id,
+  "landscapePhotos": landscapePhotos[]->{${cmsReferencedPhotoFields}},
   "quietPhotoIds": quietPhotos[]->_id,
+  "quietPhotos": quietPhotos[]->{${cmsReferencedPhotoFields}},
   "bannerOnePhotoId": bannerOnePhoto->_id,
+  "bannerOnePhoto": bannerOnePhoto->{${cmsReferencedPhotoFields}},
   "cityPhotoIds": cityPhotos[]->_id,
+  "cityPhotos": cityPhotos[]->{${cmsReferencedPhotoFields}},
   "plantsHeroPhotoId": plantsHeroPhoto->_id,
+  "plantsHeroPhoto": plantsHeroPhoto->{${cmsReferencedPhotoFields}},
   "plantsCarouselPhotoIds": plantsCarouselPhotos[]->_id,
+  "plantsCarouselPhotos": plantsCarouselPhotos[]->{${cmsReferencedPhotoFields}},
   "plantsFeaturePhotoId": plantsFeaturePhoto->_id,
+  "plantsFeaturePhoto": plantsFeaturePhoto->{${cmsReferencedPhotoFields}},
   "plantsStackPhotoIds": plantsStackPhotos[]->_id,
-  "plantsSquarePhotoIds": plantsSquarePhotos[]->_id
+  "plantsStackPhotos": plantsStackPhotos[]->{${cmsReferencedPhotoFields}},
+  "plantsSquarePhotoIds": plantsSquarePhotos[]->_id,
+  "plantsSquarePhotos": plantsSquarePhotos[]->{${cmsReferencedPhotoFields}}
 }`;
 
 export const cmsPhotobalconyLayoutQuery = `*[_type == "photobalconyLayout"][0] {

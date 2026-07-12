@@ -100,14 +100,14 @@ export function Footer({ aboutData, showPreview = false, variant = "default" }: 
         </div>
 
         <p className="footer-tagline">
-          A quiet photography archive - landscape, plants, city edges, and small travel fragments.
+          A quiet photography archive - landscape, harbor light, city edges, and small travel fragments.
         </p>
 
         <div className="footer-grid">
           <div className="footer-about">
             <h2 className="footer-label">About</h2>
             <p>
-              Queenstown.top is a quiet photography archive shaped around landscape, plants, city edges, and small
+              Queenstown.top is a quiet photography archive shaped around landscape, harbor light, city edges, and small
               travel fragments. The site keeps images large, direct, and close to the rhythm of a visual notebook.
             </p>
           </div>
