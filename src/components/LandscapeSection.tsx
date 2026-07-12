@@ -6,6 +6,7 @@ const ARROW_PATH_NEXT = "m9 18 6-6-6-6";
 const ARROW_PATH_PREV = "m15 18-6-6 6-6";
 
 const AUTOPLAY_MS = 3000;
+const CAROUSEL_TRANSITION_MS = 600;
 
 type LandscapeSectionProps = {
   id: string;
@@ -83,7 +84,7 @@ export function LandscapeSection({
 
   useEffect(() => {
     if (previousIndex === null) return undefined;
-    const timer = window.setTimeout(() => setPreviousIndex(null), 760);
+    const timer = window.setTimeout(() => setPreviousIndex(null), CAROUSEL_TRANSITION_MS);
     return () => window.clearTimeout(timer);
   }, [previousIndex]);
 

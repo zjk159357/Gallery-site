@@ -27,7 +27,7 @@ type PhotoButtonProps = {
   onOpen: (photo: Photo) => void;
 };
 
-const CAROUSEL_TRANSITION_MS = 760;
+const CAROUSEL_TRANSITION_MS = 600;
 
 const byFilenames = (photos: Photo[], filenames: string[]) =>
   filenames.flatMap((filename) => {

@@ -487,42 +487,32 @@ main {
 
 .landscape-image--active.landscape-image--next,
 .balcony-carousel-image--active.balcony-carousel-image--next {
-  animation: carousel-image-enter-next 760ms cubic-bezier(0.87, 0, 0.13, 1) both;
+  animation: carousel-image-fade-in 600ms ease both;
 }
 
 .landscape-image--active.landscape-image--prev,
 .balcony-carousel-image--active.balcony-carousel-image--prev {
-  animation: carousel-image-enter-prev 760ms cubic-bezier(0.87, 0, 0.13, 1) both;
+  animation: carousel-image-fade-in 600ms ease both;
 }
 
 .landscape-image--previous.landscape-image--next,
 .balcony-carousel-image--previous.balcony-carousel-image--next {
-  animation: carousel-image-exit-next 760ms cubic-bezier(0.87, 0, 0.13, 1) both;
+  animation: carousel-image-fade-out 600ms ease both;
 }
 
 .landscape-image--previous.landscape-image--prev,
 .balcony-carousel-image--previous.balcony-carousel-image--prev {
-  animation: carousel-image-exit-prev 760ms cubic-bezier(0.87, 0, 0.13, 1) both;
+  animation: carousel-image-fade-out 600ms ease both;
 }
 
-@keyframes carousel-image-enter-next {
-  from { transform: translate3d(100%, 0, 0); }
-  to { transform: translate3d(0, 0, 0); }
+@keyframes carousel-image-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes carousel-image-enter-prev {
-  from { transform: translate3d(-100%, 0, 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
-
-@keyframes carousel-image-exit-next {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-100%, 0, 0); }
-}
-
-@keyframes carousel-image-exit-prev {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(100%, 0, 0); }
+@keyframes carousel-image-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 .landscape-caption {
