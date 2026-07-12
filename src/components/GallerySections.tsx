@@ -37,7 +37,8 @@ const byFilenames = (photos: Photo[], filenames: string[]) =>
     return photo ? [photo] : [];
   });
 
-const configuredPhotos = (photos: Photo[] | undefined, fallback: Photo[]) => (photos?.length ? photos : fallback);
+const configuredPhotos = (layout: HomepageLayout | undefined, photos: Photo[] | undefined, fallback: Photo[]) =>
+  layout ? (photos ?? []) : fallback;
 
 function uniquePhotos(...groups: Photo[][]) {
   const seen = new Set<string>();
@@ -300,25 +301,25 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
     {
       id: "landscape",
       title: "Landscape",
-      photos: configuredPhotos(homepageLayout?.landscapePhotos, landscape.slice(0, 24)),
+      photos: configuredPhotos(homepageLayout, homepageLayout?.landscapePhotos, landscape.slice(0, 24)),
       variant: "cinema",
     },
     {
       id: "quiet",
       title: "Quiet moments",
-      photos: configuredPhotos(homepageLayout?.quietPhotos, squareSet.length ? squareSet : plants.slice(0, 8)),
+      photos: configuredPhotos(homepageLayout, homepageLayout?.quietPhotos, squareSet.length ? squareSet : plants.slice(0, 8)),
       variant: "square",
     },
     {
       id: "city",
       title: "City",
-      photos: configuredPhotos(homepageLayout?.cityPhotos, city.slice(0, 22)),
+      photos: configuredPhotos(homepageLayout, homepageLayout?.cityPhotos, city.slice(0, 22)),
       variant: "cinema",
     },
     {
       id: "plants",
       title: "Harbor",
-      photos: configuredPhotos(homepageLayout?.plantsCarouselPhotos, plants.slice(0, 18)),
+      photos: configuredPhotos(homepageLayout, homepageLayout?.plantsCarouselPhotos, plants.slice(0, 18)),
       variant: "cinema",
     },
   ];
@@ -334,6 +335,7 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
     plants[0];
   const plantCarouselPhotos = groups[3].photos;
   const plantStackPhotos = configuredPhotos(
+    homepageLayout,
     homepageLayout?.plantsStackPhotos,
     byFilenames(photos, ["DSC_3343.JPG", "DSC_2952.JPG", "DSC_3247.JPG", "DSC_0243.JPG", "DSC_0257.JPG"]),
   );
@@ -341,6 +343,7 @@ export function GallerySections({ photos, homepageLayout, onOpen }: GallerySecti
     homepageLayout?.plantsFeaturePhoto ??
     photos.find((photo) => photo.filename === "52f66c_f3b6720d4f004573ab558814dd14c842~mv2.avif");
   const plantSquarePhotos = configuredPhotos(
+    homepageLayout,
     homepageLayout?.plantsSquarePhotos,
     uniquePhotos(plantPortraitPhotos.slice(1), plantLandscapePhotos.slice(8), mixedArchive).slice(0, 8),
   );

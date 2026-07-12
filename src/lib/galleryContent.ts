@@ -296,10 +296,12 @@ async function loadCmsContent(): Promise<GalleryContent> {
 
   const cmsPhotoEntries = cmsPhotos.map(toPhoto).filter((photo): photo is Photo => photo !== null);
   const harborFallbackPhoto = staticPhotos.find((photo) => photo.filename === "DSC_5026.JPG");
+  const needsHarborFallback =
+    harborFallbackPhoto && !cmsPhotoEntries.some((photo) => photo.filename === harborFallbackPhoto.filename);
   const photos = uniquePhotosById(
     cmsPhotoEntries,
     collectHomepageReferencedPhotos(cmsHomepageLayout),
-    harborFallbackPhoto ? [harborFallbackPhoto] : [],
+    needsHarborFallback ? [harborFallbackPhoto] : [],
   );
   const heroPhoto =
     photos.find((photo) => photo.id === cmsSiteSettings?.heroPhoto?.id) ??
