@@ -255,15 +255,24 @@ function resolveLayoutPhotos(
   ids: string[] | undefined,
   referencedPhotos: CmsPhotobalconyLayout["summerPhotos"],
 ) {
-  const byId = resolvePhotoIds(photoMap, ids) ?? [];
-  if (byId.length) {
-    return byId;
+  const maxLength = Math.max(ids?.length ?? 0, referencedPhotos?.length ?? 0);
+  const seen = new Set<string>();
+  const resolved: Photo[] = [];
+
+  for (let index = 0; index < maxLength; index += 1) {
+    const photo =
+      resolvePhotoId(photoMap, ids?.[index]) ??
+      toReferencedPhoto(referencedPhotos?.[index], { allowHidden: true });
+
+    if (!photo || seen.has(photo.id)) {
+      continue;
+    }
+
+    seen.add(photo.id);
+    resolved.push(photo);
   }
 
-  return referencedPhotos?.flatMap((photo) => {
-    const resolved = toReferencedPhoto(photo, { allowHidden: true });
-    return resolved ? [resolved] : [];
-  }) ?? [];
+  return resolved;
 }
 
 function toHomepageLayout(layout: CmsHomepageLayout | null | undefined, photos: Photo[]): HomepageLayout | undefined {
