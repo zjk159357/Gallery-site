@@ -3,7 +3,7 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Photo } from "../data/photos";
 import type { PhotoMeta, PhotoStory } from "../data/stories";
-import { sizedImageUrl } from "../lib/imageUrl";
+import { imageSrcSet, sizedImageUrl } from "../lib/imageUrl";
 import type { PhotobalconyLayout } from "../lib/photobalconyLayout";
 import { photoPath } from "../lib/routes";
 import { AdvancedPhotoLightbox } from "./AdvancedPhotoLightbox";
@@ -24,6 +24,9 @@ type BalconyCarouselProps = {
 type PhotoButtonProps = {
   photo: Photo;
   className: string;
+  sizes?: string;
+  src?: string;
+  srcSet?: string;
   loading?: "eager" | "lazy";
   onOpen: (photo: Photo) => void;
 };
@@ -57,13 +60,21 @@ function uniquePhotos(...groups: Photo[][]) {
   });
 }
 
-function PhotoButton({ photo, className, loading = "lazy", onOpen }: PhotoButtonProps) {
+function PhotoButton({
+  photo,
+  className,
+  sizes = "(max-width: 700px) 92vw, 32vw",
+  src = sizedImageUrl(photo.src, 900),
+  srcSet = imageSrcSet(photo.src, [700, 1100]),
+  loading = "lazy",
+  onOpen,
+}: PhotoButtonProps) {
   return (
     <button type="button" className={className} onClick={() => onOpen(photo)} aria-label={`Open ${photo.title}`}>
       <img
-        src={sizedImageUrl(photo.src, 900)}
-        srcSet={`${sizedImageUrl(photo.src, 700)} 700w, ${sizedImageUrl(photo.src, 1100)} 1100w`}
-        sizes="(max-width: 700px) 92vw, 32vw"
+        src={src}
+        srcSet={srcSet}
+        sizes={sizes}
         alt={`${photo.category} ${photo.title}`}
         width={photo.width}
         height={photo.height}
@@ -311,6 +322,9 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
             key={photo.id}
             photo={photo}
             className={index === 0 ? "balcony-final-photo balcony-final-photo--large" : "balcony-final-photo"}
+            src={sizedImageUrl(photo.src, 1800, 86)}
+            srcSet={imageSrcSet(photo.src, [1200, 1800, 2400], 86)}
+            sizes="100vw"
             onOpen={(item) => openPhoto(item, content.summer)}
           />
         ))}
