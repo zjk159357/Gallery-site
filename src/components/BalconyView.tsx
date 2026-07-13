@@ -310,8 +310,16 @@ export function BalconyView({ photos, layout, photoMeta, photoStories }: Balcony
 
       <MonthTitle title={content.titles.winter} />
       <section className="balcony-grid balcony-grid--wide" aria-label={`${content.titles.winter} photo grid`}>
-        {content.winter.map((photo) => (
-          <PhotoButton key={photo.id} photo={photo} className="balcony-grid-photo" onOpen={(item) => openPhoto(item, content.winter)} />
+        {content.winter.map((photo, index) => (
+          <PhotoButton
+            key={photo.id}
+            photo={photo}
+            className="balcony-grid-photo"
+            src={sizedImageUrl(photo.src, 1800, 86)}
+            srcSet={imageSrcSet(photo.src, [1200, 1800, 2400], 86)}
+            sizes={index === 0 ? "100vw" : "(max-width: 700px) 100vw, 50vw"}
+            onOpen={(item) => openPhoto(item, content.winter)}
+          />
         ))}
       </section>
 
