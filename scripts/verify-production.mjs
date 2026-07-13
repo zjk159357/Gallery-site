@@ -115,6 +115,7 @@ async function checkSanity() {
     "siteSettings": count(*[_type == "siteSettings"]),
     "homepageLayouts": count(*[_type == "homepageLayout"]),
     "photobalconyLayouts": count(*[_type == "photobalconyLayout"]),
+    "photoIds": *[_type == "photo"]._id,
     "heroFlags": count(*[_type == "photo" && isHero == true]),
     "hiddenHomepagePhotos": count(*[
       _type == "photo" &&
@@ -154,6 +155,10 @@ async function checkSanity() {
   if (counts.photos < expectedMinimums.photos) issues.push("No photos found.");
   if (counts.photosWithImages !== counts.photos) {
     issues.push(`Image upload incomplete: ${counts.photosWithImages}/${counts.photos} photos have image assets.`);
+  }
+  const dottedPhotoIds = counts.photoIds.filter((id) => id.startsWith("photo."));
+  if (dottedPhotoIds.length > 0) {
+    issues.push(`${dottedPhotoIds.length} photo documents use private dotted IDs: ${dottedPhotoIds.slice(0, 5).join(", ")}.`);
   }
   if (counts.siteSettings < expectedMinimums.siteSettings) issues.push("No siteSettings document found.");
   if (counts.homepageLayouts < expectedMinimums.homepageLayouts) issues.push("No homepageLayout document found.");

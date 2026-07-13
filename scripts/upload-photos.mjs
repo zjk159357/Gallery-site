@@ -1,5 +1,6 @@
 import { readdir, readFile, stat, writeFile, mkdir } from "node:fs/promises";
 import { createReadStream } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 
@@ -159,6 +160,24 @@ function fileBase(filename) {
   return path.basename(filename, path.extname(filename));
 }
 
+function stableHash(value, length = 8) {
+  return createHash("sha1").update(value).digest("hex").slice(0, length);
+}
+
+function sanitizeIdPart(value, fallback) {
+  const ascii = String(value)
+    .normalize("NFKD")
+    .replace(/[^\w-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .toLowerCase();
+
+  return ascii || `${fallback}-${stableHash(String(value))}`;
+}
+
+function photoDocumentId(category, basename) {
+  return `photo-${sanitizeIdPart(category, "category")}-${sanitizeIdPart(basename, "photo")}`;
+}
+
 function slugifyForCategory(category, basename) {
   const base = `${category}-${basename}`
     .toLowerCase()
@@ -213,7 +232,7 @@ async function ensureCategory(title) {
 
 async function uploadOne(category, categoryId, sourceDirAbs, localPath, filename, opts) {
   const base = fileBase(filename);
-  const docId = `photo.${category.toLowerCase()}-${base.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  const docId = photoDocumentId(category, base);
   const slug = slugifyForCategory(category, base);
 
   const createMut = await mutate({
