@@ -55,6 +55,23 @@ export const storyType = defineType({
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
+      name: "isPinned",
+      title: "Pin to top",
+      type: "boolean",
+      fieldset: "identity",
+      initialValue: false,
+      description: "When enabled, this story appears before non-pinned stories in /journal.",
+    }),
+    defineField({
+      name: "pinOrder",
+      title: "Pin order",
+      type: "number",
+      fieldset: "identity",
+      initialValue: 100,
+      hidden: ({ parent }) => parent?.isPinned !== true,
+      description: "When multiple stories are pinned, smaller numbers appear first.",
+    }),
+    defineField({
       name: "excerpt",
       title: "摘要",
       type: "text",
@@ -123,6 +140,8 @@ export const storyType = defineType({
       name: "publishedAtDesc",
       by: [
         { field: "isHidden", direction: "asc" },
+        { field: "isPinned", direction: "desc" },
+        { field: "pinOrder", direction: "asc" },
         { field: "publishedAt", direction: "desc" },
       ],
     },
@@ -137,17 +156,20 @@ export const storyType = defineType({
       title: "title",
       excerpt: "excerpt",
       publishedAt: "publishedAt",
+      pinned: "isPinned",
+      pinOrder: "pinOrder",
       hidden: "isHidden",
       coverImage: "coverPhoto.image",
     },
-    prepare({ title, excerpt, publishedAt, hidden, coverImage }) {
+    prepare({ title, excerpt, publishedAt, pinned, pinOrder, hidden, coverImage }) {
       const dateLabel = publishedAt ? new Date(publishedAt).toISOString().slice(0, 10) : "未设置日期";
       const status = hidden ? "已隐藏" : "正常显示";
+      const pinnedLabel = pinned ? `置顶 ${pinOrder ?? 100}` : null;
       const excerptLabel = excerpt ? `"${excerpt.slice(0, 60)}${excerpt.length > 60 ? "…" : ""}"` : null;
 
       return {
         title,
-        subtitle: [dateLabel, status, excerptLabel].filter(Boolean).join(" / "),
+        subtitle: [dateLabel, pinnedLabel, status, excerptLabel].filter(Boolean).join(" / "),
         media: coverImage,
       };
     },

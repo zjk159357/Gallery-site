@@ -80,6 +80,23 @@ function StoryEntry({
   );
 }
 
+function storyTime(story: PhotoStoryData) {
+  const time = story.publishedAt ? Date.parse(story.publishedAt) : 0;
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function compareStories(a: PhotoStoryData, b: PhotoStoryData) {
+  if (a.isPinned !== b.isPinned) {
+    return a.isPinned ? -1 : 1;
+  }
+
+  if (a.isPinned && b.isPinned) {
+    return (a.pinOrder ?? 100) - (b.pinOrder ?? 100) || storyTime(b) - storyTime(a);
+  }
+
+  return storyTime(b) - storyTime(a);
+}
+
 export function AboutSection({ aboutData = staticAboutData }: { aboutData?: AboutData }) {
   return (
     <section className="story-section story-about" aria-labelledby="story-about-title">
@@ -165,7 +182,8 @@ export function JournalSection({ photos, photoStories = staticPhotoStories }: Ph
       if (!photo) return [];
       return storyList.map((story) => ({ photo, story }));
     })
-    .filter((entry): entry is { photo: Photo; story: PhotoStoryData } => entry !== null);
+    .filter((entry): entry is { photo: Photo; story: PhotoStoryData } => entry !== null)
+    .sort((a, b) => compareStories(a.story, b.story));
 
   return (
     <section className="story-section story-entries-section" aria-labelledby="story-entries-title">

@@ -12,6 +12,9 @@ export type PhotoMeta = {
 export type PhotoStory = {
   title: string;
   slug?: string;
+  publishedAt?: string;
+  isPinned?: boolean;
+  pinOrder?: number;
   excerpt: string;
   body: string[];
 };

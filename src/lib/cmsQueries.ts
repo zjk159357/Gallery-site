@@ -25,6 +25,8 @@ export type CmsStory = {
   slug?: string;
   excerpt?: string;
   publishedAt?: string;
+  isPinned?: boolean;
+  pinOrder?: number;
   body?: PortableTextBlock[];
   coverPhoto?: CmsStoryPhoto;
   relatedPhotos?: CmsStoryPhoto[];
@@ -158,6 +160,8 @@ export const cmsStoriesQuery = `*[
   "slug": slug.current,
   excerpt,
   publishedAt,
+  isPinned,
+  pinOrder,
   body,
   "coverPhoto": coverPhoto->{
     "id": _id,

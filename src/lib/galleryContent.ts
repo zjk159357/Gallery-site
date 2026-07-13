@@ -203,6 +203,9 @@ function toPhotoStories(stories: CmsStory[]) {
     const entry: PhotoStory = {
       title: story.title,
       slug: story.slug,
+      publishedAt: story.publishedAt,
+      isPinned: story.isPinned,
+      pinOrder: story.pinOrder,
       excerpt: story.excerpt ?? "",
       body: blocksToLines(story.body),
     };
