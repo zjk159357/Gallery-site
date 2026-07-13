@@ -48,7 +48,7 @@ const staticContent: GalleryContent = {
   isLoading: false,
 };
 
-const CMS_CONTENT_CACHE_KEY = "queenstown.cmsContent.v3";
+const CMS_CONTENT_CACHE_KEY = "queenstown.cmsContent.v4";
 
 function blockToText(block: PortableTextBlock) {
   return block.children?.map((child) => child.text ?? "").join("") ?? "";
@@ -173,6 +173,28 @@ function collectHomepageReferencedPhotos(layout: CmsHomepageLayout | null | unde
   });
 }
 
+function collectPhotobalconyReferencedPhotos(layout: CmsPhotobalconyLayout | null | undefined) {
+  if (!layout) {
+    return [];
+  }
+
+  const referenced = [
+    layout.heroPhoto,
+    ...(layout.mayPhotos ?? []),
+    ...(layout.marchPortraitPhotos ?? []),
+    ...(layout.marchWidePhotos ?? []),
+    ...(layout.februaryPhotos ?? []),
+    ...(layout.januaryPhotos ?? []),
+    ...(layout.winterPhotos ?? []),
+    ...(layout.summerPhotos ?? []),
+  ];
+
+  return referenced.flatMap((photo) => {
+    const resolved = toReferencedPhoto(photo, { allowHidden: true });
+    return resolved ? [resolved] : [];
+  });
+}
+
 function toPhotoStories(stories: CmsStory[]) {
   return stories.reduce<Record<string, PhotoStory[]>>((storiesByFilename, story) => {
     const filename = story.coverPhoto?.filename ?? story.relatedPhotos?.find((photo) => photo.filename)?.filename;
@@ -228,6 +250,22 @@ function resolvePhotoId(photoMap: Map<string, Photo>, id: string | undefined) {
   return id ? photoMap.get(id) : undefined;
 }
 
+function resolveLayoutPhotos(
+  photoMap: Map<string, Photo>,
+  ids: string[] | undefined,
+  referencedPhotos: CmsPhotobalconyLayout["summerPhotos"],
+) {
+  const byId = resolvePhotoIds(photoMap, ids) ?? [];
+  if (byId.length) {
+    return byId;
+  }
+
+  return referencedPhotos?.flatMap((photo) => {
+    const resolved = toReferencedPhoto(photo, { allowHidden: true });
+    return resolved ? [resolved] : [];
+  }) ?? [];
+}
+
 function toHomepageLayout(layout: CmsHomepageLayout | null | undefined, photos: Photo[]): HomepageLayout | undefined {
   if (!layout) {
     return undefined;
@@ -274,20 +312,20 @@ function toPhotobalconyLayout(
   const photoMap = photosById(photos);
 
   return {
-    heroPhoto: resolvePhotoId(photoMap, layout.heroPhotoId),
+    heroPhoto: resolvePhotoId(photoMap, layout.heroPhotoId) ?? toReferencedPhoto(layout.heroPhoto, { allowHidden: true }),
     mayTitle: layout.mayTitle,
     marchTitle: layout.marchTitle,
     februaryTitle: layout.februaryTitle,
     januaryTitle: layout.januaryTitle,
     winterTitle: layout.winterTitle,
     summerTitle: layout.summerTitle,
-    mayPhotos: resolvePhotoIds(photoMap, layout.mayPhotoIds) ?? [],
-    marchPortraitPhotos: resolvePhotoIds(photoMap, layout.marchPortraitPhotoIds) ?? [],
-    marchWidePhotos: resolvePhotoIds(photoMap, layout.marchWidePhotoIds) ?? [],
-    februaryPhotos: resolvePhotoIds(photoMap, layout.februaryPhotoIds) ?? [],
-    januaryPhotos: resolvePhotoIds(photoMap, layout.januaryPhotoIds) ?? [],
-    winterPhotos: resolvePhotoIds(photoMap, layout.winterPhotoIds) ?? [],
-    summerPhotos: resolvePhotoIds(photoMap, layout.summerPhotoIds) ?? [],
+    mayPhotos: resolveLayoutPhotos(photoMap, layout.mayPhotoIds, layout.mayPhotos),
+    marchPortraitPhotos: resolveLayoutPhotos(photoMap, layout.marchPortraitPhotoIds, layout.marchPortraitPhotos),
+    marchWidePhotos: resolveLayoutPhotos(photoMap, layout.marchWidePhotoIds, layout.marchWidePhotos),
+    februaryPhotos: resolveLayoutPhotos(photoMap, layout.februaryPhotoIds, layout.februaryPhotos),
+    januaryPhotos: resolveLayoutPhotos(photoMap, layout.januaryPhotoIds, layout.januaryPhotos),
+    winterPhotos: resolveLayoutPhotos(photoMap, layout.winterPhotoIds, layout.winterPhotos),
+    summerPhotos: resolveLayoutPhotos(photoMap, layout.summerPhotoIds, layout.summerPhotos),
   };
 }
 
@@ -307,6 +345,7 @@ async function loadCmsContent(): Promise<GalleryContent> {
   const photos = uniquePhotosById(
     cmsPhotoEntries,
     collectHomepageReferencedPhotos(cmsHomepageLayout),
+    collectPhotobalconyReferencedPhotos(cmsPhotobalconyLayout),
     needsHarborFallback ? [harborFallbackPhoto] : [],
   );
   const heroPhoto =

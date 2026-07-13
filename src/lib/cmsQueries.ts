@@ -65,6 +65,7 @@ export type CmsHomepageLayout = {
 
 export type CmsPhotobalconyLayout = {
   heroPhotoId?: string;
+  heroPhoto?: CmsStoryPhoto;
   mayTitle?: string;
   marchTitle?: string;
   februaryTitle?: string;
@@ -72,12 +73,19 @@ export type CmsPhotobalconyLayout = {
   winterTitle?: string;
   summerTitle?: string;
   mayPhotoIds?: string[];
+  mayPhotos?: CmsStoryPhoto[];
   marchPortraitPhotoIds?: string[];
+  marchPortraitPhotos?: CmsStoryPhoto[];
   marchWidePhotoIds?: string[];
+  marchWidePhotos?: CmsStoryPhoto[];
   februaryPhotoIds?: string[];
+  februaryPhotos?: CmsStoryPhoto[];
   januaryPhotoIds?: string[];
+  januaryPhotos?: CmsStoryPhoto[];
   winterPhotoIds?: string[];
+  winterPhotos?: CmsStoryPhoto[];
   summerPhotoIds?: string[];
+  summerPhotos?: CmsStoryPhoto[];
 };
 
 export type PortableTextBlock = {
@@ -224,6 +232,7 @@ export const cmsHomepageLayoutQuery = `*[_type == "homepageLayout"][0] {
 
 export const cmsPhotobalconyLayoutQuery = `*[_type == "photobalconyLayout"][0] {
   "heroPhotoId": heroPhoto->_id,
+  "heroPhoto": heroPhoto->{${cmsReferencedPhotoFields}},
   mayTitle,
   marchTitle,
   februaryTitle,
@@ -231,10 +240,17 @@ export const cmsPhotobalconyLayoutQuery = `*[_type == "photobalconyLayout"][0] {
   winterTitle,
   summerTitle,
   "mayPhotoIds": mayPhotos[]->_id,
+  "mayPhotos": mayPhotos[]->{${cmsReferencedPhotoFields}},
   "marchPortraitPhotoIds": marchPortraitPhotos[]->_id,
+  "marchPortraitPhotos": marchPortraitPhotos[]->{${cmsReferencedPhotoFields}},
   "marchWidePhotoIds": marchWidePhotos[]->_id,
+  "marchWidePhotos": marchWidePhotos[]->{${cmsReferencedPhotoFields}},
   "februaryPhotoIds": februaryPhotos[]->_id,
+  "februaryPhotos": februaryPhotos[]->{${cmsReferencedPhotoFields}},
   "januaryPhotoIds": januaryPhotos[]->_id,
+  "januaryPhotos": januaryPhotos[]->{${cmsReferencedPhotoFields}},
   "winterPhotoIds": winterPhotos[]->_id,
-  "summerPhotoIds": summerPhotos[]->_id
+  "winterPhotos": winterPhotos[]->{${cmsReferencedPhotoFields}},
+  "summerPhotoIds": summerPhotos[]->_id,
+  "summerPhotos": summerPhotos[]->{${cmsReferencedPhotoFields}}
 }`;
