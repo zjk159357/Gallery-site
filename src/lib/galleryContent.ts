@@ -197,7 +197,7 @@ function collectPhotobalconyReferencedPhotos(layout: CmsPhotobalconyLayout | nul
 
 function toPhotoStories(stories: CmsStory[]) {
   return stories.reduce<Record<string, PhotoStory[]>>((storiesByFilename, story) => {
-    const filename = story.coverPhoto?.filename ?? story.relatedPhotos?.find((photo) => photo.filename)?.filename;
+    const filename = story.coverPhoto?.filename ?? story.relatedPhotos?.find((photo) => photo?.filename)?.filename;
     if (!filename || !story.title) return storiesByFilename;
 
     const entry: PhotoStory = {
