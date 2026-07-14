@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.queenstown.top/</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-14</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/journal</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-14</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/about</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-14</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://www.queenstown.top/photobalcony</loc>
-    <lastmod>2026-07-13</lastmod>
+    <lastmod>2026-07-14</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
@@ -391,6 +391,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.queenstown.top/photos/dsc-4354</loc>
+    <lastmod>2026-07-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.queenstown.top/photos/dsc-4826</loc>
     <lastmod>2026-07-06</lastmod>
     <priority>0.8</priority>
@@ -498,11 +503,6 @@
   <url>
     <loc>https://www.queenstown.top/photos/ff</loc>
     <lastmod>2026-07-12</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.queenstown.top/photos/img-5427</loc>
-    <lastmod>2026-07-13</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1036,6 +1036,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.queenstown.top/stories/color-boat-on-river-note</loc>
+    <lastmod>2026-07-13</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.queenstown.top/stories/blue-sea-sunset-note</loc>
     <lastmod>2026-07-11</lastmod>
     <priority>0.7</priority>
@@ -1108,11 +1113,6 @@
   <url>
     <loc>https://www.queenstown.top/stories/dsc_2952-c52f47</loc>
     <lastmod>2026-07-06</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://www.queenstown.top/stories/red-lanterns-stairs-note</loc>
-    <lastmod>2026-07-13</lastmod>
     <priority>0.7</priority>
   </url>
   <url>

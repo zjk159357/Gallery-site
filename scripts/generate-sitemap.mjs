@@ -78,6 +78,10 @@ async function fetchCmsEntries() {
   const photosQuery = `*[_type == "photo" && isHidden != true]{
       "slug": slug.current,
       "filename": sourceFilename,
+      title,
+      "category": category->title,
+      "hasImage": defined(image.asset),
+      legacyPublicPath,
       "updatedAt": _updatedAt,
       date
     }`;
@@ -89,7 +93,9 @@ async function fetchCmsEntries() {
       title,
       "slug": slug.current,
       "updatedAt": _updatedAt,
-      publishedAt
+      publishedAt,
+      "coverFilename": coverPhoto->sourceFilename,
+      "relatedFilenames": relatedPhotos[]->sourceFilename
     }`;
 
   let photos;
@@ -112,7 +118,20 @@ async function fetchCmsEntries() {
     );
   }
 
-  return { photos, stories };
+  const publishablePhotos = photos.filter(
+    (photo) =>
+      photo?.filename &&
+      photo.title &&
+      photo.category &&
+      (photo.hasImage || photo.legacyPublicPath),
+  );
+  const publishableFilenames = new Set(publishablePhotos.map((photo) => photo.filename));
+  const publishableStories = stories.filter((story) => {
+    const filenames = [story.coverFilename, ...(story.relatedFilenames ?? [])].filter(Boolean);
+    return story.title && filenames.some((filename) => publishableFilenames.has(filename));
+  });
+
+  return { photos: publishablePhotos, stories: publishableStories };
 }
 
 async function loadStaticEntries() {

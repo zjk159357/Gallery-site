@@ -1,13 +1,18 @@
-import { cpSync, existsSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 
-const src = "dist";
+const src = "dist-studio";
 const dst = "public/studio";
 
 if (!existsSync(src + "/index.html")) {
-  console.log("studio dist/ not found — skip");
+  console.log("studio dist-studio/ not found; skip");
   process.exit(0);
 }
 
+for (const assetDir of ["hero", "photos"]) {
+  rmSync(`${src}/${assetDir}`, { recursive: true, force: true });
+}
+
+rmSync(dst, { recursive: true, force: true });
 mkdirSync(dst, { recursive: true });
 cpSync(src, dst, { recursive: true, force: true });
 
