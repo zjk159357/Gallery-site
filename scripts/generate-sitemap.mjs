@@ -64,6 +64,24 @@ async function loadEnvFile(filename) {
   }
 }
 
+async function fetchWithRetry(label, fetcher, attempts = 3) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fetcher();
+    } catch (error) {
+      lastError = error;
+      if (attempt === attempts) break;
+      const delayMs = attempt * 1500;
+      console.warn(`Sitemap: ${label} query failed, retrying in ${delayMs}ms (${attempt}/${attempts})`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+
+  throw lastError;
+}
+
 async function fetchCmsEntries() {
   await loadEnvFile(".env.local");
   await loadEnvFile(".env");
@@ -100,7 +118,7 @@ async function fetchCmsEntries() {
 
   let photos;
   try {
-    photos = await client.fetch(photosQuery);
+    photos = await fetchWithRetry("Sanity photo", () => client.fetch(photosQuery));
   } catch (error) {
     throw new Error(
       `Sitemap: Sanity photo query failed (${error instanceof Error ? error.message : "unknown error"}). ` +
@@ -110,7 +128,7 @@ async function fetchCmsEntries() {
 
   let stories;
   try {
-    stories = await client.fetch(storiesQuery);
+    stories = await fetchWithRetry("Sanity story", () => client.fetch(storiesQuery));
   } catch (error) {
     throw new Error(
       `Sitemap: Sanity story query failed (${error instanceof Error ? error.message : "unknown error"}). ` +
