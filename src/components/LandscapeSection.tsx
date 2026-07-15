@@ -46,8 +46,7 @@ export function LandscapeSection({
   );
 
   const total = landscapePhotos.length;
-  const isFirst = total > 0 && activeIndex === 0;
-  const isLast = total > 0 && activeIndex === total - 1;
+  const hasMultiplePhotos = total > 1;
   const active = total > 0 ? landscapePhotos[activeIndex] : undefined;
   const previous =
     previousIndex !== null && previousIndex !== activeIndex
@@ -68,14 +67,14 @@ export function LandscapeSection({
   }, []);
 
   useEffect(() => {
-    if (!isInView || isPaused || total === 0 || activeIndex >= total - 1) return undefined;
+    if (!isInView || isPaused || !hasMultiplePhotos) return undefined;
     const timer = window.setTimeout(() => {
       if (mainRef.current?.matches(":hover, :focus-visible")) {
         setIsPaused(true);
         return;
       }
       setActiveIndex((index) => {
-        const nextIndex = Math.min(total - 1, index + 1);
+        const nextIndex = (index + 1) % total;
         if (nextIndex !== index) {
           setTransitionDirection("next");
           setPreviousIndex(index);
@@ -84,7 +83,7 @@ export function LandscapeSection({
       });
     }, AUTOPLAY_MS);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, isInView, isPaused, total]);
+  }, [activeIndex, hasMultiplePhotos, isInView, isPaused, total]);
 
   useEffect(() => {
     if (previousIndex === null) return undefined;
@@ -109,18 +108,18 @@ export function LandscapeSection({
 
   if (!active) return null;
 
-  const changeActiveIndex = (getNextIndex: (index: number) => number) => {
+  const changeActiveIndex = (getNextIndex: (index: number) => number, direction?: "next" | "prev") => {
     setActiveIndex((index) => {
       const nextIndex = getNextIndex(index);
       if (nextIndex !== index) {
-        setTransitionDirection(nextIndex > index ? "next" : "prev");
+        setTransitionDirection(direction ?? (nextIndex > index ? "next" : "prev"));
         setPreviousIndex(index);
       }
       return nextIndex;
     });
   };
-  const goPrev = () => changeActiveIndex((index) => Math.max(0, index - 1));
-  const goNext = () => changeActiveIndex((index) => Math.min(total - 1, index + 1));
+  const goPrev = () => changeActiveIndex((index) => (index - 1 + total) % total, "prev");
+  const goNext = () => changeActiveIndex((index) => (index + 1) % total, "next");
   const handlePointerDown = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.pointerType === "touch") {
       touchStartRef.current = { x: event.clientX, y: event.clientY };
@@ -174,7 +173,7 @@ export function LandscapeSection({
       ) : null}
 
       <div className="landscape-stage">
-        {!isFirst && (
+        {hasMultiplePhotos && (
           <button
             type="button"
             className="landscape-arrow landscape-arrow--prev"
@@ -241,7 +240,7 @@ export function LandscapeSection({
           <span className="landscape-caption">{caption}</span>
         </button>
 
-        {!isLast && (
+        {hasMultiplePhotos && (
           <button
             type="button"
             className="landscape-arrow landscape-arrow--next"
