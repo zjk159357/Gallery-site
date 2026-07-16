@@ -20,7 +20,11 @@ function findPhoto(photos: Photo[], filename: string): Photo | undefined {
   return photos.find((photo) => photo.filename === filename);
 }
 
-function MetaRow({ label, value }: { label: string; value: string | number }) {
+function MetaRow({ label, value }: { label: string; value?: string | number }) {
+  if (value === undefined || value === "") {
+    return null;
+  }
+
   return (
     <div className="story-meta-row">
       <span className="story-meta-label">{label}</span>
@@ -37,7 +41,7 @@ function MetaCard({ photo, meta }: { photo: Photo; meta: PhotoMeta }) {
       </div>
       <div className="story-meta-body">
         <h3 className="story-meta-title">{photo.title}</h3>
-        <p className="story-meta-subtitle">{meta.location}</p>
+        <p className="story-meta-subtitle">{meta.location ?? photo.category}</p>
         <dl className="story-meta-list">
           <MetaRow label="日期" value={meta.date} />
           <MetaRow label="相机" value={meta.camera} />
@@ -86,6 +90,14 @@ function storyTime(story: PhotoStoryData) {
 }
 
 function compareStories(a: PhotoStoryData, b: PhotoStoryData) {
+  if (a.orderRank && b.orderRank && a.orderRank !== b.orderRank) {
+    return a.orderRank.localeCompare(b.orderRank);
+  }
+
+  if (a.orderRank !== b.orderRank) {
+    return a.orderRank ? -1 : 1;
+  }
+
   if (a.isPinned !== b.isPinned) {
     return a.isPinned ? -1 : 1;
   }

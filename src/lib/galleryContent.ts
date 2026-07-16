@@ -58,15 +58,15 @@ function blocksToLines(blocks: PortableTextBlock[] | undefined) {
   return blocks?.map(blockToText).filter(Boolean) ?? [];
 }
 
-function isCompleteMeta(photo: CmsPhoto) {
+function hasMeta(photo: CmsPhoto) {
   return Boolean(
-    photo.date &&
-      photo.location &&
-      photo.camera &&
-      photo.lens &&
-      photo.aperture &&
-      photo.shutter &&
-      typeof photo.iso === "number" &&
+    photo.date ||
+      photo.location ||
+      photo.camera ||
+      photo.lens ||
+      photo.aperture ||
+      photo.shutter ||
+      typeof photo.iso === "number" ||
       photo.focalLength,
   );
 }
@@ -104,17 +104,17 @@ function resolvePhotoSrc(sanityUrl: string | undefined, legacyPublicPath: string
 
 function toPhotoMeta(photos: CmsPhoto[]) {
   return photos.reduce<Record<string, PhotoMeta>>((metaByFilename, photo) => {
-    if (!isCompleteMeta(photo)) return metaByFilename;
+    if (!hasMeta(photo)) return metaByFilename;
 
     metaByFilename[photo.filename] = {
-      date: photo.date ?? "",
-      location: photo.location ?? "",
-      camera: photo.camera ?? "",
-      lens: photo.lens ?? "",
-      aperture: photo.aperture ?? "",
-      shutter: photo.shutter ?? "",
-      iso: photo.iso ?? 0,
-      focalLength: photo.focalLength ?? "",
+      date: photo.date,
+      location: photo.location,
+      camera: photo.camera,
+      lens: photo.lens,
+      aperture: photo.aperture,
+      shutter: photo.shutter,
+      iso: photo.iso,
+      focalLength: photo.focalLength,
     };
 
     return metaByFilename;
@@ -204,6 +204,7 @@ function toPhotoStories(stories: CmsStory[]) {
       title: story.title,
       slug: story.slug,
       publishedAt: story.publishedAt,
+      orderRank: story.orderRank,
       isPinned: story.isPinned,
       pinOrder: story.pinOrder,
       excerpt: story.excerpt ?? "",

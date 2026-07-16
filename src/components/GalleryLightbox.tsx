@@ -19,6 +19,19 @@ type GalleryLightboxProps = {
   showMeta?: boolean;
 };
 
+function LightboxMetaRow({ label, value }: { label: string; value?: string | number }) {
+  if (value === undefined || value === "") {
+    return null;
+  }
+
+  return (
+    <div>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
 export function GalleryLightbox({
   photos,
   index,
@@ -57,7 +70,17 @@ export function GalleryLightbox({
 
           const meta = photoMeta[photo.filename];
           const story = photoStories[photo.filename]?.[0];
-          const title = story?.title ?? photo.title;
+          const title = photo.title;
+          const exposure = meta
+            ? [
+                meta.focalLength,
+                meta.aperture,
+                meta.shutter,
+                typeof meta.iso === "number" ? `ISO ${meta.iso}` : undefined,
+              ]
+                .filter(Boolean)
+                .join(" · ")
+            : undefined;
 
           return (
             <div className="lightbox-meta">
@@ -66,22 +89,10 @@ export function GalleryLightbox({
                 <span>{meta?.location ?? photo.category}</span>
                 {meta ? (
                   <dl className="lightbox-meta-list">
-                    <div>
-                      <dt>日期</dt>
-                      <dd>{meta.date}</dd>
-                    </div>
-                    <div>
-                      <dt>器材</dt>
-                      <dd>{meta.camera}</dd>
-                    </div>
-                    <div>
-                      <dt>镜头</dt>
-                      <dd>{meta.lens}</dd>
-                    </div>
-                    <div>
-                      <dt>参数</dt>
-                      <dd>{`${meta.focalLength} · ${meta.aperture} · ${meta.shutter} · ISO ${meta.iso}`}</dd>
-                    </div>
+                    <LightboxMetaRow label="日期" value={meta.date} />
+                    <LightboxMetaRow label="器材" value={meta.camera} />
+                    <LightboxMetaRow label="镜头" value={meta.lens} />
+                    <LightboxMetaRow label="参数" value={exposure} />
                   </dl>
                 ) : null}
                 {story ? (

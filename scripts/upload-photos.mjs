@@ -2,6 +2,7 @@ import { readdir, readFile, stat, writeFile, mkdir } from "node:fs/promises";
 import { createReadStream } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import exifr from "exifr";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
@@ -193,6 +194,107 @@ function formatSize(bytes) {
     : `${(bytes / 1024).toFixed(0)}KB`;
 }
 
+function cleanExifString(value) {
+  if (typeof value !== "string") return undefined;
+  const cleaned = value.replace(/\0/g, "").trim();
+  return cleaned || undefined;
+}
+
+function formatDate(value) {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+
+  if (typeof value === "string") {
+    const match = value.match(/^(\d{4})[:/-](\d{2})[:/-](\d{2})/);
+    if (match) return `${match[1]}-${match[2]}-${match[3]}`;
+  }
+
+  return undefined;
+}
+
+function formatAperture(value) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined;
+  return `f/${Number.isInteger(value) ? value : value.toFixed(1).replace(/\.0$/, "")}`;
+}
+
+function formatShutter(value) {
+  if (typeof value === "string") return cleanExifString(value);
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined;
+
+  if (value >= 1) {
+    return `${Number.isInteger(value) ? value : value.toFixed(1).replace(/\.0$/, "")}s`;
+  }
+
+  const denominator = Math.round(1 / value);
+  return denominator > 0 ? `1/${denominator}s` : undefined;
+}
+
+function formatFocalLength(value) {
+  if (typeof value === "string") return cleanExifString(value);
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined;
+  const focal = Number.isInteger(value) ? String(value) : value.toFixed(1).replace(/\.0$/, "");
+  return `${focal}mm`;
+}
+
+function formatCamera(make, model) {
+  const makeLabel = cleanExifString(make);
+  const modelLabel = cleanExifString(model);
+  if (!makeLabel && !modelLabel) return undefined;
+  if (!makeLabel) return modelLabel;
+  if (!modelLabel) return makeLabel;
+  return modelLabel.toLowerCase().includes(makeLabel.toLowerCase()) ? modelLabel : `${makeLabel} ${modelLabel}`;
+}
+
+async function readPhotoExif(localPath) {
+  try {
+    const exif = await exifr.parse(localPath, [
+      "Make",
+      "Model",
+      "LensModel",
+      "Lens",
+      "FNumber",
+      "ExposureTime",
+      "ISO",
+      "FocalLength",
+      "DateTimeOriginal",
+      "CreateDate",
+      "ModifyDate",
+    ]);
+
+    if (!exif) return {};
+
+    const metadata = {
+      date: formatDate(exif.DateTimeOriginal ?? exif.CreateDate ?? exif.ModifyDate),
+      camera: formatCamera(exif.Make, exif.Model),
+      lens: cleanExifString(exif.LensModel) ?? cleanExifString(exif.Lens),
+      aperture: formatAperture(exif.FNumber),
+      shutter: formatShutter(exif.ExposureTime),
+      iso: typeof exif.ISO === "number" && Number.isFinite(exif.ISO) ? exif.ISO : undefined,
+      focalLength: formatFocalLength(exif.FocalLength),
+    };
+
+    return Object.fromEntries(Object.entries(metadata).filter(([, value]) => value !== undefined));
+  } catch (e) {
+    console.warn(`Could not read EXIF from ${localPath}: ${e.message ?? e}`);
+    return {};
+  }
+}
+
+function summarizeExif(metadata) {
+  const parts = [
+    metadata.date,
+    metadata.camera,
+    metadata.lens,
+    metadata.focalLength,
+    metadata.aperture,
+    metadata.shutter,
+    typeof metadata.iso === "number" ? `ISO ${metadata.iso}` : undefined,
+  ].filter(Boolean);
+
+  return parts.length ? parts.join(" / ") : "no EXIF metadata";
+}
+
 async function runPool(items, concurrency, worker) {
   let cursor = 0;
   const workers = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
@@ -234,6 +336,7 @@ async function uploadOne(category, categoryId, sourceDirAbs, localPath, filename
   const base = fileBase(filename);
   const docId = photoDocumentId(category, base);
   const slug = slugifyForCategory(category, base);
+  const exifMetadata = await readPhotoExif(localPath);
 
   const createMut = await mutate({
     mutations: [
@@ -250,6 +353,7 @@ async function uploadOne(category, categoryId, sourceDirAbs, localPath, filename
           legacyLocalPath: localPath,
           legacyPublicPath: path.posix.join("photos", category, filename),
           dimensions: { _type: "object", width: null, height: null },
+          ...exifMetadata,
         },
       },
     ],
@@ -271,7 +375,7 @@ async function uploadOne(category, categoryId, sourceDirAbs, localPath, filename
     ],
   });
 
-  return { photoId: docId, assetId: asset._id, mutationId: createMut.transactionId };
+  return { photoId: docId, assetId: asset._id, mutationId: createMut.transactionId, exifMetadata };
 }
 
 async function main() {
@@ -352,8 +456,11 @@ async function main() {
     for (const it of limited) {
       const matches = existingByName.get(it.filename) ?? [];
       const status = matches.length ? "exists" : "would-create";
-      console.log(`[${formatSize(it.size)}] ${it.filename} -> ${status}${matches.length ? " existing=" + matches.map((m) => m._id).join(",") : ""}`);
-      report.push({ file: it.filename, size: it.size, status, existing: matches.map((m) => m._id) });
+      const exifMetadata = await readPhotoExif(it.localPath);
+      console.log(
+        `[${formatSize(it.size)}] ${it.filename} -> ${status}${matches.length ? " existing=" + matches.map((m) => m._id).join(",") : ""} | ${summarizeExif(exifMetadata)}`,
+      );
+      report.push({ file: it.filename, size: it.size, status, existing: matches.map((m) => m._id), exifMetadata });
     }
     const would = report.filter((r) => r.status === "would-create").length;
     const exists = report.filter((r) => r.status === "exists").length;
@@ -386,7 +493,7 @@ async function main() {
       });
       ok += 1;
       const elapsed = ((Date.now() - startedAt) / 1000).toFixed(1);
-      console.log(`${prefix} ok  ${item.filename} -> photo=${r.photoId} asset=${r.assetId}  (${elapsed}s)`);
+      console.log(`${prefix} ok  ${item.filename} -> photo=${r.photoId} asset=${r.assetId}  ${summarizeExif(r.exifMetadata)}  (${elapsed}s)`);
       report.push({ ...item, status: "uploaded", ...r });
     } catch (e) {
       failed += 1;

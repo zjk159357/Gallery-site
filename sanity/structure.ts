@@ -1,8 +1,9 @@
 import type { StructureResolver } from "sanity/structure";
+import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import { PublishingChecklistDashboard } from "./components/PublishingChecklistDashboard";
 
 const photoOrdering = [{ field: "sortOrder", direction: "asc" as const }];
-const storyOrdering = [{ field: "publishedAt", direction: "desc" as const }];
+const storyOrdering = [{ field: "orderRank", direction: "asc" as const }];
 const categoryOrdering = [{ field: "sortOrder", direction: "asc" as const }];
 
 const photoList = (
@@ -155,7 +156,7 @@ const categoryPhotoItem = (S: Parameters<StructureResolver>[0], title: string) =
 
 const li = (S: Parameters<StructureResolver>[0], id: string) => S.listItem().id(id);
 
-export const structure: StructureResolver = (S) =>
+export const structure: StructureResolver = (S, context) =>
   S.list()
     .id("gallery")
     .title("Gallery 内容管理")
@@ -525,10 +526,13 @@ export const structure: StructureResolver = (S) =>
             .id("journal-list")
             .title("日志")
             .items([
-              li(S, "journal.all-stories")
-                .title("全部手记")
-                .schemaType("story")
-                .child(storyList(S, "全部手记", '_type == "story"')),
+              orderableDocumentListDeskItem({
+                type: "story",
+                id: "journal.all-stories",
+                title: "全部手记",
+                S,
+                context,
+              }),
               li(S, "journal.stories-missing-cover")
                 .title("缺少封面的手记")
                 .schemaType("story")

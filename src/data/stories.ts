@@ -1,18 +1,19 @@
 export type PhotoMeta = {
-  date: string;
-  location: string;
-  camera: string;
-  lens: string;
-  aperture: string;
-  shutter: string;
-  iso: number;
-  focalLength: string;
+  date?: string;
+  location?: string;
+  camera?: string;
+  lens?: string;
+  aperture?: string;
+  shutter?: string;
+  iso?: number;
+  focalLength?: string;
 };
 
 export type PhotoStory = {
   title: string;
   slug?: string;
   publishedAt?: string;
+  orderRank?: string;
   isPinned?: boolean;
   pinOrder?: number;
   excerpt: string;

@@ -25,6 +25,7 @@ export type CmsStory = {
   slug?: string;
   excerpt?: string;
   publishedAt?: string;
+  orderRank?: string;
   isPinned?: boolean;
   pinOrder?: number;
   body?: PortableTextBlock[];
@@ -154,12 +155,13 @@ export const cmsStoriesQuery = `*[
   _type == "story" &&
   isHidden != true &&
   (!defined(publishedAt) || dateTime(publishedAt) <= dateTime(now()))
-] | order(publishedAt desc) {
+] | order(coalesce(orderRank, "zzzzzz") asc, publishedAt desc) {
   "id": _id,
   title,
   "slug": slug.current,
   excerpt,
   publishedAt,
+  orderRank,
   isPinned,
   pinOrder,
   body,

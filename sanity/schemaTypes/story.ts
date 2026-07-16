@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { orderRankField, orderRankOrdering } from "@sanity/orderable-document-list";
 
 export const storyType = defineType({
   name: "story",
@@ -27,6 +28,7 @@ export const storyType = defineType({
     },
   ],
   fields: [
+    orderRankField({ type: "story", newItemPosition: "before" }),
     defineField({
       name: "title",
       title: "标题",
@@ -135,6 +137,7 @@ export const storyType = defineType({
     }),
   ],
   orderings: [
+    orderRankOrdering,
     {
       title: "最新优先",
       name: "publishedAtDesc",
